@@ -1,0 +1,63 @@
+2005-9-15  Alejandro Cornejo <acornejo1@users.sourceforge.net>
+	* Merged bufWindow and glWindow into a single class
+	* Added glX based window transparency
+
+2005-5-28  Alejandro Cornejo <acornejo1@users.sourceforge.net>
+	* Added Curve Routines (Hermite, Bezier, etc).
+	* Added dimension independent Vector class.
+
+2005-3-13  Alejandro Cornejo <acornejo1@users.sourceforge.net>
+	* Separated image loading and saving routines into ImageLib to avoid
+	  compilation delays and size bloat.
+	* Added FixedPoint class to Math library.
+
+2005-2-13  Alejandro Cornejo <acornejo1@users.sourceforge.net>
+	* Added alarm function to Timer class to allow easier
+	  event programming.
+	* Added preliminar text support to Window class, currently
+	  only fully implemented for glWindow.
+
+2004-12-23 Alejandro Cornejo <acornejo1@users.sourceforge.net>
+	* Splitted Socket, ServerSocket and InetAddress
+	* Added Buffer class with MD5, SH1 and encryption
+	  capabilities.
+	* Added DatagramPacket class to encapsulate a Buffer and
+	  a InetAddress object.
+	* Added DatagramSocket for connectionless UDP
+	  communications.
+
+2004-12-05 Alejandro Cornejo <acornejo1@users.sourceforge.net>
+	* Changed Image.convert method to allow image resizing
+	  for up and down rescaling. Internally it uses glu
+	  functions to performe rescale.
+
+2004-09-24 Alejandro Cornejo <acornejo1@users.sourceforge.net>
+	* Updated FreeImage to 3.4.0
+	* Changed configuration script to better detect target host
+	* Fixed gray scale image saving
+	* Changed the error reporting in File.*
+
+2003-06-08 Alejandro Cornejo <acornejo1@users.sourceforge.net>
+	* Updated FreeImage to 3.3.0 and added script to
+	  simplify Makefile.am creation for FreeImage
+	* Added script to create binary distributions
+
+2003-04-26 Alejandro Cornejo <acornejo1@users.sourceforge.net>
+	* Added Directory to Util
+	* Fixed error in File.seek
+	* Added File loading to Image
+
+2003-04-17 Alejandro Cornejo <acornejo1@users.sourceforge.net>
+	* Finally removed LibMNG support (really unused and 
+	  just bloated the library with 500K.
+	* Changed FreeImage to use also autotools for a cleaner
+	  distribution. This should simplify the porting procedure.
+
+2003-04-10 Alejandro Cornejo <acornejo1@users.sourceforge.net>
+	* Now Image, Util, Math and Window all lie in the
+	  same namespace and the same shared library
+
+2003-02-03 Alejandro Cornejo <acornejo1@users.sourceforge.net>
+    * Changed all the library to make it more portable and
+	easier to build with added modules.
+	* Now uses autoconf, automake and pkg-config

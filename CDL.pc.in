@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: @LIBRARY_NAME@
+Description: @LIBRARY_DESC@
+Version: @VERSION@
+Requires: @LIBRARY_PREREQ@
+Libs: -L${libdir} -l@LIBRARY_NAME@ @LIBRARY_LIBS@
+Cflags: -I${includedir}/@LIBRARY_NAME@ -I${libdir}/@LIBRARY_NAME@/include

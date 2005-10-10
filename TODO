@@ -1,0 +1,16 @@
+Math
+----
+* Add Matrix class for arbitrary size matrix
+* Encapsulate FFT, filter in class Signal
+* Also incorporate stuff from DET into Signal
+* Add perlin noise
+* Add 128-bit fixed point, BigFixed with 64.64 format
+
+Image
+-----
+* Fix interlacing/deinterlacing (interlace is to convert from 012345 to 024135)
+
+Util
+----
+* Add object serialization to Stream and Variable
+* Add ZDirectory and ZFile for compressed streams

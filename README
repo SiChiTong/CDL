@@ -1,0 +1,50 @@
+CDL - C++ Development Library
+------------------------------
+This library is intended to simplify development of any application, in
+particular mathematical and graphical applications. One of my principal
+concerns is portability. When using this library the same source code can
+be compiled under Windows, Linux or Solaris and will produce exactly the
+same output. The library is divided into the following modules:
+
+Window
+------
+A wrapper for opening OpenGL and buffered windows, these windows handle
+all keyboard and mouse events internally. All windows created with this
+class will be fixed size, at creation time the programmer can choose to
+create the window normally or fullscreened.
+There are some other options when creating the windows, such as hiding
+the cursor or centering it permanently. The window interface is actually
+very simple it hides all OS specific details, it is as optimized as
+possible without loosing generality.
+
+Image
+-----
+The image class is able to load and save images in a variety of formats,
+including jpeg, png, tiff, tga, pcx, bmp, xpm and ppm. You can convert
+between formats by just loading in one format and saving in another,
+completly transparent to the programmer. This class also allows for some
+basic image filtering (BLUR, SHARPEN, EMBOSS, etc), blending, converting
+between color modes (GRAY, RGB, BGR, RGBA, etc), modulating, interlacing,
+flipping, etc.
+
+Util
+----
+In this module I've included some of the most usefull but usually
+unportable code to do all kinds of programs. Most of the classes included
+in here are for multithreaded applications, and these include a class
+Thread, Mutex and CondVar (Condition Variable). There are also classes for
+streams (Stream, File, etc) and sockets for network programming (Socket).
+I've also included a class to handle configuration files in a simple
+yet powerfull manner, this class is called Variable, and it reads and
+writes XML style files. Also a Timer class with milli second accuracy.
+
+Math
+----
+Well by the na me you've probably guessed what we have in this module,
+but I'll list it anyway. A complex number class, a FFT class (Fast Fourier
+Transform, and obviously its inverse, both in 1 and 2 dimensions), a
+Quaternion class, a Random number class which can generate random numbers
+in quite a few distributions (including Possion, Gaussian,etc). A vector
+and matrix class, with optimized versions for 2, 3 and 4 dimensions. And
+finally a set of geometry class for primitive intersection, with Ray,
+Sphere, Plane, Polygon, etc).
