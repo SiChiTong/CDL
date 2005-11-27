@@ -149,6 +149,16 @@ namespace CDL
         return m_name;
     }
 
+    const char *File::getExtension() const
+    {
+        size_t len=strlen(m_name);
+        for (int i=0; i<len; i++)
+            if (m_name[i] == '.')
+                return &m_name[i+1];
+
+        return "";
+    }
+
     void File::flush()
     {
         if (m_mode&WRITE)

@@ -369,6 +369,11 @@ namespace CDL
         m[M4_ij(3,0)]=m[M4_ij(3,1)]=m[M4_ij(3,2)]=m[M4_ij(0,3)]=m[M4_ij(1,3)]=m[M4_ij(2,3)]=0;
         m[M4_ij(3,3)]=1;
     }
+    DefType Quaternion::det() const
+    {
+         const DefType d=X*X+Y*Y+Z*Z+W*W;
+         return d*d;
+    }
 
     DefType Quaternion::norm() const
     {

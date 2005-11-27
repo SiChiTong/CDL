@@ -22,6 +22,7 @@ namespace CDL
             File(const File &);
             File& operator=(const File &);
             const char *getName() const;
+            const char *getExtension() const;
             static bool exists(const char *);
             int size();
             int  read(void *, const int &);

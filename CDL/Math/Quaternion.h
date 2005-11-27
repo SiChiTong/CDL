@@ -51,6 +51,7 @@ namespace CDL
             const Quaternion &invert();
 			void toMatrix(Mat3t &) const;
 			void toMatrix(Mat4t &) const;
+            DefType det()    const;
             DefType norm()   const;
             DefType length() const;
 			DefType angle()  const;
