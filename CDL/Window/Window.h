@@ -22,6 +22,7 @@ namespace CDL
             int   m_flags;
             int   m_keyPress;
             bool  m_keys[300];
+            void *m_winid;
 
         public:
             Window();
@@ -38,6 +39,8 @@ namespace CDL
             const int &getWidth()  const;
             const int &getHeight() const;
             const int &getKeyPress() const;
+            void setPosition(const int &, const int &);
+            void getPosition(int &, int &);
             void setKeyPress(const int &);
             bool getKey(const int &) const;
             void setKey(const int &, const bool &);

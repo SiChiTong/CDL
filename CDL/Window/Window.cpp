@@ -22,7 +22,15 @@
 #define WINPROCNAME glWinProc
 #include <CDL/Window/xwinProc.h>
 #include "toon_root.h"
+
+typedef struct
+{
+    Display *dpy;
+    ::Window win;
+} winid_t;
 #endif
+
+
 namespace CDL
 {
     DEFCLASS("Window");
@@ -182,6 +190,49 @@ namespace CDL
         glDeleteLists(BACKTEXTURE_LIST,1);
     }
 
+    void Window::setPosition(const int &x, const int &y)
+    {
+         if (m_winid == NULL)
+         {
+              Error_send("Window has not been created\n");
+         }
+         else
+         {
+            #ifdef Windows_NT
+             HWND hWnd=*((HWND *)m_winid);
+             SetPosition(hWnd,HWND_TOPMOST,x,y,0,0,SWP_NOACTIVATE|SWP_NOSIZE|SWP_NOZORDER);
+            #else
+                winid_t winid=*((winid_t*)m_winid);
+                XMoveWindow(winid.dpy,winid.win,x,y);
+            #endif
+         }
+    }
+
+    void Window::getPosition(int &x, int &y)
+    {
+         if (m_winid == NULL)
+         {
+              Error_send("Window has not been created\n");
+         }
+         else
+         {
+            #ifdef Windows_NT
+             HWND hWnd=*((HWND *)m_winid);
+             RECT rect;
+             GetWindowRect(hWnd,&rect);
+             x=rect.left;
+             y=rect.top;
+            #else
+                winid_t winid=*((winid_t*)m_winid);
+                ::Window root, parent, child, *childs;
+                size_t width,height,border,depth, num_childs;
+                XGetGeometry(winid.dpy,winid.win,&root,&x,&y,&width,&height,&border,&depth);
+                XQueryTree(winid.dpy,winid.win,&root,&parent,&childs,&num_childs);
+                XFree(childs);
+                XTranslateCoordinates(winid.dpy,parent,root,x,y,&x,&y,&child);
+            #endif
+         }
+    }
 #ifdef Windows_NT
     void Window::open(const char *tit, const int &w, const int &h)
     {
@@ -261,7 +312,10 @@ namespace CDL
             dws|=WS_POPUP;
         }
         else
-            dws|=WS_OVERLAPPEDWINDOW&~WS_THICKFRAME&~WS_MAXIMIZEBOX;
+            if (m_flags&NOBORDER)
+                dws|=WS_POPUP|WS_VISIBLE;
+            else
+                dws|=WS_OVERLAPPEDWINDOW&~WS_THICKFRAME&~WS_MAXIMIZEBOX;
         if (m_flags&NOCURSOR)
             ShowCursor(FALSE);
 
@@ -304,6 +358,7 @@ namespace CDL
             return;
         }
 
+        m_winid=&hWnd;
         ShowWindow(hWnd, SW_SHOW);
         SetForegroundWindow(hWnd);
         SetFocus(hWnd);
@@ -490,6 +545,8 @@ namespace CDL
         }
         if (m_flags&DESKTOPLEVEL)
             root=RootWindow(dpy,screen);
+        winid_t winid={dpy,win};
+        m_winid=&winid;
         XMapWindow(dpy, win);
         XSizeHints sh;
         sh.flags=PMinSize|PMaxSize;
@@ -542,6 +599,7 @@ namespace CDL
 
     Window::Window()
     {
+        m_winid=NULL;
         m_visible=false;
         m_running=false;
         m_width=0;
