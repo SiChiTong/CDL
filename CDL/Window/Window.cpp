@@ -190,48 +190,73 @@ namespace CDL
         glDeleteLists(BACKTEXTURE_LIST,1);
     }
 
+    void Window::getDesktopSize(int &width, int &height)
+    {
+#ifdef Windows_NT
+        RECT rect;
+        GetWindowRect(GetDesktopWindow(),&rect);
+        width=rect.right;
+        height=rect.bottom;
+#else
+        Display *dpy=XOpenDisplay(0);
+        int screen=DefaultScreen(dpy), clk;
+        XF86VidModeModeLine modeline;
+        if (!XF86VidModeGetModeLine(dpy,screen,&clk,&modeline))
+        {
+            width=height=0;
+            Error_send("Unable to query video mode\n");
+        }
+        else
+        {
+            width=modeline.hdisplay;
+            height=modeline.vdisplay;
+        }
+        XCloseDisplay(dpy);
+#endif
+    }
+
     void Window::setPosition(const int &x, const int &y)
     {
-         if (m_winid == NULL)
-         {
-              Error_send("Window has not been created\n");
-         }
-         else
-         {
-            #ifdef Windows_NT
-             HWND hWnd=*((HWND *)m_winid);
-             SetPosition(hWnd,HWND_TOPMOST,x,y,0,0,SWP_NOACTIVATE|SWP_NOSIZE|SWP_NOZORDER);
-            #else
-                winid_t winid=*((winid_t*)m_winid);
-                XMoveWindow(winid.dpy,winid.win,x,y);
-            #endif
-         }
+        if (m_winid == NULL)
+        {
+            Error_send("Window has not been created\n");
+        }
+        else
+        {
+#ifdef Windows_NT
+            HWND hWnd=*((HWND *)m_winid);
+            SetWindowPos(hWnd,HWND_TOPMOST,x,y,0,0,SWP_NOACTIVATE|SWP_NOSIZE|SWP_NOZORDER);
+#else
+            winid_t winid=*((winid_t*)m_winid);
+            XMoveWindow(winid.dpy,winid.win,x,y);
+#endif
+        }
     }
 
     void Window::getPosition(int &x, int &y)
     {
-         if (m_winid == NULL)
-         {
-              Error_send("Window has not been created\n");
-         }
-         else
-         {
-            #ifdef Windows_NT
-             HWND hWnd=*((HWND *)m_winid);
-             RECT rect;
-             GetWindowRect(hWnd,&rect);
-             x=rect.left;
-             y=rect.top;
-            #else
-                winid_t winid=*((winid_t*)m_winid);
-                ::Window root, parent, child, *childs;
-                size_t width,height,border,depth, num_childs;
-                XGetGeometry(winid.dpy,winid.win,&root,&x,&y,&width,&height,&border,&depth);
-                XQueryTree(winid.dpy,winid.win,&root,&parent,&childs,&num_childs);
-                XFree(childs);
-                XTranslateCoordinates(winid.dpy,parent,root,x,y,&x,&y,&child);
-            #endif
-         }
+        if (m_winid == NULL)
+        {
+            Error_send("Window has not been created\n");
+        }
+        else
+        {
+#ifdef Windows_NT
+            HWND hWnd=*((HWND *)m_winid);
+            RECT rect;
+            GetWindowRect(hWnd,&rect);
+            x=rect.left;
+            y=rect.top;
+#else
+            winid_t winid=*((winid_t*)m_winid);
+            ::Window root, parent, child, *childs;
+            size_t width,height,border,depth, num_childs;
+            XGetGeometry(winid.dpy,winid.win,&root,&x,&y,&width,&height,&border,&depth);
+            XQueryTree(winid.dpy,winid.win,&root,&parent,&childs,&num_childs);
+            XFree(childs);
+            XTranslateCoordinates(winid.dpy,parent,root,x,y,&x,&y,&child);
+#endif
+        }
     }
 #ifdef Windows_NT
     void Window::open(const char *tit, const int &w, const int &h)

@@ -33,12 +33,13 @@ namespace CDL
             virtual void init() {};
             virtual void update()=0;
             virtual void deinit() {};
-            virtual void close();
+            void close();
             const bool &isRunning()  const;
             const bool &isVisible() const;
             const int &getWidth()  const;
             const int &getHeight() const;
             const int &getKeyPress() const;
+            static void getDesktopSize(int &, int &);
             void setPosition(const int &, const int &);
             void getPosition(int &, int &);
             void setKeyPress(const int &);
