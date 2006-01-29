@@ -17,6 +17,15 @@ namespace CDL
             virtual void close() {};
     };
 
+    class DLL_API RandomAccessStream: public virtual Stream
+    {
+        public:
+            virtual int  seek(const long &, const int &m=SEEK_SET)=0;
+            virtual long tell()=0;
+            virtual int  size();
+            virtual bool isEOF();
+    };
+
     class DLL_API InputStream: public virtual Stream
     {
         public:
@@ -51,6 +60,9 @@ namespace CDL
     };
 
     class DLL_API IOStream: public InputStream, public OutputStream {};
+    class DLL_API RandomAccessInputStream: public InputStream, public RandomAccessStream {};
+    class DLL_API RandomAccessOutputStream: public OutputStream, public RandomAccessStream {};
+    class DLL_API RandomAccessIOStream: public IOStream, public RandomAccessStream {};
 }
 
 #endif//__CDL_STREAM_H__

@@ -8,107 +8,159 @@ namespace CDL
 {
     DEFCLASS("Buffer");
 
-    Buffer::Buffer(const int &length)
+    Buffer::Buffer(const int &length, unsigned char *data)
     {
         m_length=length;
         m_pos=0;
+        m_clean=false;
         if (m_length)
         {
-            m_data=new unsigned char[m_length];
-            memset(m_data,0, m_length);
+            if (data)
+                 m_data=data;
+            else
+            {
+                m_data=new unsigned char[m_length];
+                memset(m_data,0, m_length);
+                m_clean=true;
+            }
         }
         else
             m_data='\0';
+    }
+
+    Buffer::Buffer(const char *str)
+    {
+         m_length=strlen(str);
+         m_pos=0;
+         m_clean=false;
+         if (m_length)
+              m_data=(unsigned char *)str;
+         else
+             m_data='\0';
     }
 
     Buffer::Buffer(const Buffer &b)
     {
         m_pos=b.m_pos;
         m_length=b.m_length;
-        if (b.m_data && m_length)
+        m_clean=b.m_clean;
+        if (m_clean)
         {
             m_data=new unsigned char [m_length];
             memcpy(m_data,b.m_data,m_length);
         }
         else
-            m_data='\0';
+            m_data=b.m_data;
     }
 
     Buffer::~Buffer()
     {
-        if (m_data && m_length)
+        if (m_data && m_length && m_clean)
             delete [](unsigned char *)m_data;
     }
 
-    Buffer &Buffer::operator=(const Buffer &b)
+    const Buffer &Buffer::operator=(const Buffer &b)
     {
         if (&b != this)
         {
-            if (m_data && m_length)
+            if (m_data && m_length && m_clean)
                 delete [](unsigned char *)m_data;
             m_length=b.m_length;
             m_pos=b.m_pos;
-            if (b.m_data && m_length)
+            m_pos=b.m_pos;
+            m_length=b.m_length;
+            m_clean=b.m_clean;
+            if (m_clean)
             {
                 m_data=new unsigned char [m_length];
                 memcpy(m_data,b.m_data,m_length);
             }
             else
-                m_data='\0';
+                m_data=b.m_data;
         }
         return *this;
     }
 
     int Buffer::read(void *data, const int &size)
     {
-         if (m_pos+size <= m_length)
-         {
-             memcpy(data, &((unsigned char *)m_data)[m_pos], size);
-             m_pos+=size;
-             return size;
-         }
-         else
-         {
-             int sz=m_length-m_pos;
-             if (sz >0)
-             {
-                 memcpy(data, &((unsigned char *)m_data)[m_pos], sz);
-                 m_pos+=sz;
-                 return sz;
-             }
-             else
-             {
-                 Error_send("Pointer is already at end of stream\n");
-                 return 0;
-             }
-         }
+        if (m_pos+size <= m_length)
+        {
+            memcpy(data, &((unsigned char *)m_data)[m_pos], size);
+            m_pos+=size;
+            return size;
+        }
+        else
+        {
+            int sz=m_length-m_pos;
+            if (sz >0)
+            {
+                memcpy(data, &((unsigned char *)m_data)[m_pos], sz);
+                m_pos+=sz;
+                return sz;
+            }
+            else
+            {
+                Error_send("Pointer is already at end of stream\n");
+                return 0;
+            }
+        }
     }
 
     int Buffer::write(const void *data, const int &size)
     {
-         if (m_pos+size <= m_length)
-         {
-             memcpy(&((unsigned char *)m_data)[m_pos], data, size);
-             m_pos+=size;
-             return size;
-         }
-         else
-         {
-             int sz=m_length-m_pos;
-             if (sz >0)
-             {
-                 memcpy(&((unsigned char *)m_data)[m_pos], data, sz);
-                 m_pos+=sz;
-                 return sz;
-             }
-             else
-             {
-                 Error_send("Pointer is already at end of stream\n");
-                 return 0;
-             }
-         }
+        if (m_pos+size <= m_length)
+        {
+            memcpy(&((unsigned char *)m_data)[m_pos], data, size);
+            m_pos+=size;
+            return size;
+        }
+        else
+        {
+            int sz=m_length-m_pos;
+            if (sz >0)
+            {
+                memcpy(&((unsigned char *)m_data)[m_pos], data, sz);
+                m_pos+=sz;
+                return sz;
+            }
+            else
+            {
+                Error_send("Pointer is already at end of stream\n");
+                return 0;
+            }
+        }
     }
 
+    int Buffer::seek(const long &pos, const int &m)
+    {
+        switch(m)
+        {
+            case SEEK_SET:
+                m_pos=pos;
+                break;
+            case SEEK_CUR:
+                m_pos+=pos;
+                break;
+            case SEEK_END:
+                m_pos=m_length+pos;
+                break;
+            default:
+                Error_send("Invalid seek mode %d\n", m);
+                return -1;
+        }
+
+        if (m_pos > m_length || m_pos < 0)
+        {
+            Error_send("Seek went past valid position to %d\n", m_pos);
+            return -1;
+        }
+        return 0;
+    }
+
+    long Buffer::tell()
+    {
+        return m_pos;
+    }
 
     bool Buffer::operator==(const Buffer &b) const
     {
@@ -190,7 +242,7 @@ namespace CDL
         unsigned char digest[16]={0};
         MD5_CTX context;
 
-        MD5Init(&context); 
+        MD5Init(&context);
         MD5Update(&context, (unsigned char *)m_data, m_length);
         MD5Final(digest,&context);
 

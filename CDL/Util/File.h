@@ -5,7 +5,7 @@
 
 namespace CDL
 {
-    class DLL_API File: public IOStream
+    class DLL_API File: public RandomAccessIOStream
     {
         private:
             FILE *m_fp;
@@ -24,14 +24,12 @@ namespace CDL
             const char *getName() const;
             const char *getExtension() const;
             static bool exists(const char *);
-            int size();
             int  read(void *, const int &);
             int  write(const void *, const int &);
-            void putback(const int&);
-            bool isEOF() const;
-            void flush();
             int  seek(const long&, const int &m=SEEK_SET);
             long tell();
+            void putback(const char &);
+            void flush();
             void close();
     };
 }

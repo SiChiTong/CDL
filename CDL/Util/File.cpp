@@ -173,10 +173,10 @@ namespace CDL
         }
     }
 
-    void File::putback(const int &c)
+    void File::putback(const char &c)
     {
         if (m_mode&READ)
-            ungetc(c,m_fp);
+            ungetc((int)c,m_fp);
         else
         {
             if (m_mode&WRITE)
@@ -185,15 +185,6 @@ namespace CDL
                 return;
             }
         }
-    }
-
-    int File::size()
-    {
-         int pos=tell();
-         seek(0L,SEEK_END);
-         int size=tell();
-         seek(pos,SEEK_SET);
-         return size;
     }
 
     int File::read(void *vData, const int &cnt)
@@ -236,14 +227,9 @@ namespace CDL
         }
     }
 
-    bool File::isEOF() const
-    {
-        return feof(m_fp) != 0;
-    }
-
     int File::seek(const long &aPos, const int &type)
     {
-        return fseek(m_fp, aPos, type);
+        fseek(m_fp, aPos, type);
     }
 
     long  File::tell()

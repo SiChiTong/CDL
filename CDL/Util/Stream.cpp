@@ -17,6 +17,27 @@ namespace CDL
         return m_mode != 0;
     }
 
+    int RandomAccessStream::size()
+    {
+         size_t pos_old=tell(), size;
+         seek(0,SEEK_END);
+         size=tell();
+         seek(pos_old,SEEK_SET);
+
+         return size;
+    }
+
+    bool RandomAccessStream::isEOF()
+    {
+         size_t pos_old=tell(), pos_new;
+         seek(0,SEEK_END);
+         pos_new=tell();
+         seek(pos_old,SEEK_SET);
+
+         if (pos_old == pos_new) return true;
+         return false;
+    }
+
     void InputStream::readChar(char &aChar)
     {
         read(&aChar, sizeof(char));

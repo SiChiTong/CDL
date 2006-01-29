@@ -18,5 +18,6 @@
 #include <CDL/Util/FormatString.h>
 #include <CDL/Util/Buffer.h>
 #include <CDL/Util/Digest.h>
+#include <CDL/Util/StringTokenizer.h>
 
 #endif//__CDL_UTIL_H__
