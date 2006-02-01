@@ -93,10 +93,17 @@ namespace CDL
 
     void Window::put(const size_t &x, const size_t &y, const Image &img)
     {
-        glPushAttrib(GL_CURRENT_BIT|GL_PIXEL_MODE_BIT);
+        glPushAttrib(GL_CURRENT_BIT|GL_PIXEL_MODE_BIT|GL_COLOR_BUFFER_BIT);
         glCallList(PUTBEGIN_LIST);
         glRasterPos2i(x,y);
         glCallList(PUTEND_LIST);
+        size_t fmt=getFormat(img);
+        bool blend= fmt == GL_RGBA ? true : fmt == GL_BGRA ? true : fmt == GL_LUMINANCE_ALPHA ? true : false;
+        if (blend)
+        {
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glEnable(GL_BLEND);
+        }
         glDrawPixels(img.getWidth(), img.getHeight(), getFormat(img), GL_UNSIGNED_BYTE, img.getData());
         glPopAttrib();
     }
