@@ -4,7 +4,7 @@
  *  @author   acornejo
  *  @date
  *   Created:       01:23:39 24/01/2006
- *   Last Update:   01:59:37 24/01/2006
+ *   Last Update:   19:51:46 02/02/2006
  */
 //========================================================================
 #include <CDL/Util/StringTokenizer.h>
@@ -17,17 +17,38 @@ namespace CDL
 
      StringTokenizer::StringTokenizer(const char *str, const char *delim)
      {
-          m_str=str;
-          m_ptr=&m_str[0];
-          m_delim=delim;
+          setDelimiter(delim);
+          setString(str);
      }
 
      StringTokenizer::~StringTokenizer() {}
 
+     void StringTokenizer::setDelimiter(const char *delim)
+     {
+          m_delim=delim;
+          m_delimCount=strlen(m_delim);
+     }
+
+     void StringTokenizer::setString(const char *str)
+     {
+          m_str=str;
+          m_ptr=&m_str[0];
+     }
+
+     const char *StringTokenizer::getDelimiter() const
+     {
+          return m_delim;
+     }
+
+     const char *StringTokenizer::getString() const
+     {
+          return m_str;
+     }
+
      size_t StringTokenizer::countTokens() const
      {
           size_t tokens=0;
-          size_t pos=0, delimCount=strlen(m_delim);
+          size_t pos=0;
 
           while (true)
           {
@@ -35,7 +56,7 @@ namespace CDL
                char c=m_str[pos];
 
                if (c == '\0') break;
-               for (int i=0; i<delimCount; i++)
+               for (int i=0; i<m_delimCount; i++)
                    if (c == m_delim[i]) foundToken=false;
 
                if (foundToken)
@@ -45,7 +66,7 @@ namespace CDL
                     {
                          pos++;
                          c=m_str[pos];
-                         for (int i=0; i<delimCount; i++)
+                         for (int i=0; i<m_delimCount; i++)
                              if (c == m_delim[i]) foundToken=false;
                     }
                     while (foundToken && c != '\0');
@@ -57,31 +78,44 @@ namespace CDL
           return tokens;
      }
 
-     bool StringTokenizer::hasMoreTokens() const
+     bool StringTokenizer::hasMoreTokens()
      {
-          size_t pos=0, delimCount=strlen(m_delim);
-
          while(true)
          {
               bool foundToken=true;
-              char c=m_ptr[pos++];
-              if (c == '\0') return false;
-              for (int i=0; i<delimCount; i++)
+              char c=*m_ptr;
+              for (int i=0; i<m_delimCount; i++)
                   if (c == m_delim[i]) foundToken=false;
 
-              if (foundToken) return true;
+              if (foundToken)
+              {
+                  if (c == '\0')
+                      return false;
+                  else
+                      return true;
+              }
+              else
+                  m_ptr++;
          }
      }
 
-     void StringTokenizer::nextToken(char *token)
+     const char *StringTokenizer::nextToken(char *_token)
      {
-          size_t delimCount=strlen(m_delim);
+          static char f_token[512];
+          char *token;
+          const char *token_ptr;
+
+          if (_token)
+              token=_token;
+          else
+              token=f_token;
+          token_ptr=&token[0];
 
           while (true)
           {
                bool foundToken=true;
                char c=*m_ptr;
-               for (int i=0; i<delimCount; i++)
+               for (int i=0; i<m_delimCount; i++)
                    if (c == m_delim[i]) foundToken=false;
 
                if (foundToken)
@@ -91,12 +125,12 @@ namespace CDL
                          if (*m_ptr == '\0') break;
                          *(token++)=*(m_ptr++);
                          c=*m_ptr;
-                         for (int i=0; i<delimCount; i++)
+                         for (int i=0; i<m_delimCount; i++)
                                 if (c == m_delim[i]) foundToken=false;
                     }
                     while (foundToken);
                     *token='\0';
-                    return;
+                    return token_ptr;
                }
                else
                    m_ptr++;
