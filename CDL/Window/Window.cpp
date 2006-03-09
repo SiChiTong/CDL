@@ -104,7 +104,17 @@ namespace CDL
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_BLEND);
         }
-        glDrawPixels(img.getWidth(), img.getHeight(), getFormat(img), GL_UNSIGNED_BYTE, img.getData());
+        size_t mod=img.getWidth()%4;
+        if (mod)
+        {
+             size_t stride=(img.getWidth()+4-mod)*img.getChannels(), stride2=img.getWidth()*img.getChannels();
+             unsigned char tmp[stride*img.getHeight()];
+             for (int i=0; i<img.getHeight(); i++)
+                  memcpy(tmp+i*stride,img.getData()+i*stride2,stride2);
+            glDrawPixels(stride/img.getChannels(), img.getHeight(), fmt, GL_UNSIGNED_BYTE, tmp);
+        }
+        else
+            glDrawPixels(img.getWidth(), img.getHeight(), fmt, GL_UNSIGNED_BYTE, img.getData());
         glPopAttrib();
     }
 

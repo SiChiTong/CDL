@@ -4,7 +4,7 @@
  *  @author   acornejo
  *  @date
  *   Created:       22:58:14 07/06/2005
- *   Last Update:   02:14:56 23/06/2005
+ *   Last Update:   16:07:29 18/02/2006
  */
 //========================================================================
 
@@ -41,7 +41,7 @@ namespace CDL
                     }
                     symbol2 forward(symbol1 key) const
                     {
-                        std::map<symbol1,symbol2>::const_iterator i(m_forward.find(key));
+                        typename std::map<symbol1,symbol2>::const_iterator i(m_forward.find(key));
                         if (i == m_forward.end())
                             return m_forward.begin()->second;
                         else
@@ -49,7 +49,7 @@ namespace CDL
                     }
                     symbol1 backward(symbol2 key) const
                     {
-                        std::map<symbol2,symbol1>::const_iterator i(m_backward.find(key));
+                        typename std::map<symbol2,symbol1>::const_iterator i(m_backward.find(key));
                         if (i == m_backward.end())
                             return m_backward.begin()->second;
                         else

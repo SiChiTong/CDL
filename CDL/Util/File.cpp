@@ -10,32 +10,6 @@ namespace CDL
 {
     DEFCLASS("File");
 
-    File::File(const char *name)
-    {
-        m_ref=new int(1);
-        if (name)
-        {
-            if ((m_fp=fopen(name, "r")) != NULL)
-            {
-                m_mode=READ;
-                m_name=new char[strlen(name)+1];
-                strcpy(m_name, name);
-            }
-            else
-            {
-                Error_send("Unable to open file %s\n", name);
-                m_mode=0;
-                m_name='\0';
-            }
-        }
-        else
-        {
-            m_fp=NULL;
-            m_mode=0;
-            m_name='\0';
-        }
-    }
-
     File::File(const char *name, const int &mode)
     {
         m_ref=new int(1);
@@ -62,7 +36,7 @@ namespace CDL
             }
             else
             {
-                Error_send("Unable to open file %s\n", name);
+                Error_send("Unable to open file %s as %s\n", name, strMode);
                 m_mode=0;
                 m_name='\0';
             }
