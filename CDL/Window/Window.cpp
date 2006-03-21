@@ -140,7 +140,7 @@ namespace CDL
         Display *dpy=XOpenDisplay(0);
         XFontStruct *font;
         font=XLoadQueryFont(dpy, XFontStr);
-        glXUseXFont(font->fid, 0, 256, FONT_LIST);
+//        glXUseXFont(font->fid, 0, 256, FONT_LIST);
         XFreeFont(dpy, font);
         XCloseDisplay(dpy);
 #endif
@@ -267,7 +267,7 @@ namespace CDL
 #else
             winid_t winid=*((winid_t*)m_winid);
             ::Window root, parent, child, *childs;
-            size_t width,height,border,depth, num_childs;
+            unsigned int width,height,border,depth, num_childs;
             XGetGeometry(winid.dpy,winid.win,&root,&x,&y,&width,&height,&border,&depth);
             XQueryTree(winid.dpy,winid.win,&root,&parent,&childs,&num_childs);
             XFree(childs);
@@ -358,8 +358,7 @@ namespace CDL
                 dws|=WS_POPUP|WS_VISIBLE;
             else
                 dws|=WS_OVERLAPPEDWINDOW&~WS_THICKFRAME&~WS_MAXIMIZEBOX;
-        if (m_flags&NOCURSOR)
-            ShowCursor(FALSE);
+        if (m_flags&NOCURSOR) ShowCursor(FALSE);
 
         AdjustWindowRect(&r, dws, false);
 
@@ -507,6 +506,29 @@ namespace CDL
         glCallList(BACKTEXTURE_LIST);
     }
 
+    Cursor create_blank_cursor(Display *dpy, ::Window win)
+    {
+        Pixmap cursormask = XCreatePixmap( dpy, win, 1, 1, 1 /*depth*/ );
+        XGCValues xgc;
+        GC gc;
+        XColor dummycolour;
+        Cursor cursor;
+        xgc.function = GXclear;
+        gc = XCreateGC(dpy, cursormask, GCFunction, &xgc);
+        XFillRectangle(dpy, cursormask, gc, 0, 0, 1, 1);
+
+        dummycolour.pixel = 0;
+        dummycolour.red = 0;
+        dummycolour.flags = 04;
+
+        cursor = XCreatePixmapCursor( dpy, cursormask, cursormask, &dummycolour, &dummycolour, 0, 0 );
+
+        XFreePixmap( dpy, cursormask );
+        XFreeGC( dpy, gc );
+
+        return cursor;
+    }
+
     void Window::open(const char *t, const int &w, const int &h)
     {
         m_width=w;
@@ -601,6 +623,10 @@ namespace CDL
         wh.initial_state=NormalState;
         XSetWMHints(dpy,win,&wh);
         XStoreName(dpy, win, t);
+        m_mouseX=m_width/2;
+        m_mouseY=m_height/2;
+        XWarpPointer(dpy,win,win,0,0,0,0,m_mouseX,m_mouseY);
+        if (m_flags&NOCURSOR) XDefineCursor(dpy,win,create_blank_cursor(dpy,win));
 
         initGL(m_list, m_width, m_height);
         init();
@@ -610,7 +636,7 @@ namespace CDL
             if (XPending(dpy) > 0)
             {
                 XNextEvent(dpy, &event);
-                WINPROCNAME(*this,event,dpy);
+                WINPROCNAME(*this,event,dpy,win);
             }
             else
             {
@@ -625,6 +651,7 @@ namespace CDL
         deinit();
         deinitGL(m_list);
 
+        if (m_flags&NOCURSOR) XUndefineCursor(dpy,win);
         if (m_flags&FULLSCREEN)
         {
             XUngrabPointer(dpy,CurrentTime);
