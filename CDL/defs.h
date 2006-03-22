@@ -81,7 +81,5 @@ typedef float DefType;       // What type to use for Math.*
 #include <time.h>         // Used for Random.randomize(-1)
 #include <stdio.h>        // File.*
 #include <string.h>       // memcpy, strlen, strcpy
-#include <GL/gl.h>        // glWindow.*
-#include <GL/glu.h>       // glWindow.*
 
 #endif//__DEFS_H__

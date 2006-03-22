@@ -1,5 +1,8 @@
 #include <CDL/Window/Window.h>
 #include <cstdarg>
+#include <GL/gl.h>        // glWindow.*
+#include <GL/glu.h>       // glWindow.*
+
 
 #define XFontStr "-*-fixed-medium-r-*-*-15-*-*-*-*-*-iso8859-1"
 #define FONT_LIST m_list[0]
@@ -7,7 +10,6 @@
 #define PUTEND_LIST m_list[2]
 #define BACKTEXTURE m_list[3]
 #define BACKTEXTURE_LIST m_list[4]
-
 
 #if defined(Windows_NT)
 #include <windows.h>
