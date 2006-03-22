@@ -62,7 +62,7 @@ namespace CDL
     class DLL_API IOStream: public InputStream, public OutputStream {};
     class DLL_API RandomAccessInputStream: public InputStream, public RandomAccessStream {};
     class DLL_API RandomAccessOutputStream: public OutputStream, public RandomAccessStream {};
-    class DLL_API RandomAccessIOStream: public IOStream, public RandomAccessStream {};
+    class DLL_API RandomAccessIOStream: public RandomAccessOutputStream, public RandomAccessInputStream {};
 }
 
 #endif//__CDL_STREAM_H__
