@@ -18,6 +18,9 @@
 #define GL_BGRA                                 0x80E1
 #define WINPROCNAME glWinProc
 #include <CDL/Window/winProc.h>
+#define GL_BGR					0x80E0
+#define GL_BGRA					0x80E1
+#define GL_CLAMP_TO_EDGE			0x812F
 #else
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -292,6 +295,7 @@ namespace CDL
         PIXELFORMATDESCRIPTOR pfd;
         DEVMODE               dms;
         DWORD                 dws=WS_CLIPSIBLINGS|WS_CLIPCHILDREN;
+        DWORD                 dws_ex=0;
         RECT                  r;
         MSG                   msg;
         GLuint                pfmt;
@@ -364,10 +368,12 @@ namespace CDL
             else
                 dws|=WS_OVERLAPPEDWINDOW&~WS_THICKFRAME&~WS_MAXIMIZEBOX;
         if (m_flags&NOCURSOR) ShowCursor(FALSE);
+        if (m_flags&TOPMOST)
+                dws_ex|=WS_EX_TOPMOST;
 
         AdjustWindowRect(&r, dws, false);
 
-        if (!(hWnd=CreateWindow(classname, tit, dws, CW_USEDEFAULT, CW_USEDEFAULT, r.right-r.left, r.bottom-r.top, NULL, NULL, hInstance, this)))
+        if (!(hWnd=CreateWindowEx(dws_ex,classname, tit, dws, CW_USEDEFAULT, CW_USEDEFAULT, r.right-r.left, r.bottom-r.top, NULL, NULL, hInstance, this)))
         {
             Error_send("Unable to create window\n");
             PostQuitMessage(0);
