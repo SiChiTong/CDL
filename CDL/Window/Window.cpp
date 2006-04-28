@@ -13,6 +13,9 @@
 
 #if defined(Windows_NT)
 #include <windows.h>
+#define GL_CLAMP_TO_EDGE                        0x812F
+#define GL_BGR                                  0x80E0
+#define GL_BGRA                                 0x80E1
 #define WINPROCNAME glWinProc
 #include <CDL/Window/winProc.h>
 #else
@@ -142,7 +145,7 @@ namespace CDL
         Display *dpy=XOpenDisplay(0);
         XFontStruct *font;
         font=XLoadQueryFont(dpy, XFontStr);
-        glXUseXFont(font->fid, 0, 256, FONT_LIST);
+//        glXUseXFont(font->fid, 0, 256, FONT_LIST);
         XFreeFont(dpy, font);
         XCloseDisplay(dpy);
 #endif

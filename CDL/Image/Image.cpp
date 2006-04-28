@@ -98,6 +98,37 @@ namespace CDL
 
     }
 
+    void Image::copy(const Image &img)
+    {
+        bool erase=m_clean&&!identical(*this,img);
+
+        if (erase)
+            destroy();
+
+        m_width=img.m_width;
+        m_height=img.m_height;
+        m_channels=img.m_channels;
+
+        if (m_data != img.m_data && img.m_type != NONE)
+        {
+            if (erase || !m_type && img.m_clean)
+            {
+                m_data=new byte[m_width*m_height*m_channels];
+                m_clean=true;
+            }
+
+            if (m_clean)
+                memcpy(m_data, img.m_data, m_width*m_height*m_channels);
+            else
+            {
+               m_data=img.m_data;
+               m_clean=false;
+            }
+        }
+
+        m_type=img.m_type;
+    }
+
     Image::Image(const size_t &width, const size_t &height, const Image_type &type, byte *data)
     {
         create(width,height,type,data);
@@ -110,54 +141,15 @@ namespace CDL
 
     Image::Image(const Image &img)
     {
-        m_width=img.m_width;
-        m_height=img.m_height;
-        m_type=img.m_type;
-        m_channels=img.m_channels;
-        m_clean=img.m_clean;
-        if (m_clean)
-        {
-            m_data=new byte[m_width*m_height*m_channels];
-            memcpy(m_data, img.m_data, m_width*m_height*m_channels);
-        }
-        else
-            m_data=img.m_data;
+        m_clean=false;
+        m_type=NONE;
+        copy(img);
     }
 
     Image& Image::operator=(const Image &img)
     {
         if (this != &img)
-        {
-            bool erase=m_clean&&(m_width!=img.m_width||m_height!=img.m_height||m_channels!=img.m_channels||!img.m_type);
-            m_width=img.m_width;
-            m_height=img.m_height;
-            m_channels=img.m_channels;
-
-            if (erase)
-            {
-                delete []m_data;
-                m_clean=false;
-            }
-
-            if (m_data != img.m_data && img.m_type)
-            {
-                if (erase || !m_type && img.m_clean)
-                {
-                    m_data=new byte[m_width*m_height*m_channels];
-                    m_clean=true;
-                }
-
-                if (m_clean)
-                    memcpy(m_data, img.m_data, m_width*m_height*m_channels);
-                else
-                {
-                    m_data=img.m_data;
-                    m_clean=false;
-                }
-            }
-
-            m_type=img.m_type;
-        }
+            copy(img);
 
         return *this;
     }
@@ -166,7 +158,6 @@ namespace CDL
     {
         Image &alpha=*this;
         Image res(alpha.getWidth(), alpha.getHeight(), tex[0].getType());
-
 
         float step=256.0f/(num-1);
         for (size_t x=0; x<res.getWidth(); x++)
@@ -263,12 +254,18 @@ namespace CDL
         }
     }
 
-    void Image::resizeCanvas(const size_t &width,const size_t &height,const Image_alignment &x,const Image_alignment &y)
+    void Image::resizeCanvas(const size_t &width,const size_t &height,const Image_halignment &x,const Image_valignment &y)
     {
         size_t mwidth=MIN(width,m_width), mheight=MIN(height,m_height);
         byte *data=new byte[width*height*m_channels];
         size_t stride1=m_width*m_channels, stride2=width*m_channels, stride=mwidth*m_channels;
 
+/*        iswitch(y)
+        {
+            case TOP:
+                break;
+            case
+        }*/
         for (size_t i=0; i<mheight; i++)
             memcpy(m_data+i*stride1, data+i*stride2, stride);
 
@@ -945,9 +942,8 @@ namespace CDL
     {
         if (!identical(*this,src))
         {
-            if (m_clean)
-                destroy();
-            create(src.m_width,src.m_height,src.m_type, '\0');
+            destroy();
+            create(src.m_width,src.m_height,src.m_type);
         }
 
         size_t sum;

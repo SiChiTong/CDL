@@ -83,8 +83,9 @@ namespace CDL
         pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 #endif
 
-        if (m_alive)
-            return;
+//        if (m_alive)
+//            return;
+        m_alive=true;
         Thread_create(m_handle);
 #if defined(Linux)
         pthread_attr_destroy(&attr);
