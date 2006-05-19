@@ -45,5 +45,5 @@ namespace CDL
     const size_t &Digest::getLength() const
     {
          return m_length;
-    } 
+    }
 }

@@ -148,7 +148,7 @@ namespace CDL
         Display *dpy=XOpenDisplay(0);
         XFontStruct *font;
         font=XLoadQueryFont(dpy, XFontStr);
-//        glXUseXFont(font->fid, 0, 256, FONT_LIST);
+        glXUseXFont(font->fid, 0, 256, FONT_LIST);
         XFreeFont(dpy, font);
         XCloseDisplay(dpy);
 #endif
