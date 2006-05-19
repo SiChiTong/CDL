@@ -7,7 +7,7 @@ namespace CDL
 {
     typedef unsigned char byte;
 
-    class Image
+    class DLL_API Image
     {
         public:
             typedef enum {BLUR=0, SHARPEN, EMBOSS, EDGE, GAUSS_BLUR, SMOOTH, MAX_IMG_FILTERS} Image_filter;
