@@ -126,7 +126,7 @@ namespace CDL
         glPopAttrib();
     }
 
-    void initGL(int *m_list, const size_t &width, const size_t &height)
+    void initGL(int *m_list, const size_t &width, const size_t &height, void *_winid)
     {
         glViewport(0,0,width, height);
         glMatrixMode(GL_PROJECTION);
@@ -145,12 +145,11 @@ namespace CDL
         oldfont=(HFONT)SelectObject(hDC,font);wglUseFontBitmaps(hDC, 0, 256, FONT_LIST);
         SelectObject(hDC,oldfont);DeleteObject((HGDIOBJ)(HFONT)(font));
 #else
-        Display *dpy=XOpenDisplay(0);
+        winid_t winid=*((winid_t*)_winid);
         XFontStruct *font;
-        font=XLoadQueryFont(dpy, XFontStr);
-//        glXUseXFont(font->fid, 0, 256, FONT_LIST);
-        XFreeFont(dpy, font);
-        XCloseDisplay(dpy);
+        font=XLoadQueryFont(winid.dpy, XFontStr);
+        glXUseXFont(font->fid, 0, 256, FONT_LIST);
+        XFreeFont(winid.dpy, font);
 #endif
         PUTBEGIN_LIST=glGenLists(1);
         glNewList(PUTBEGIN_LIST, GL_COMPILE);
@@ -417,7 +416,7 @@ namespace CDL
         SetActiveWindow(hWnd);
         SendMessage(hWnd, WM_SIZE, 0, w|h<<16);
 
-        initGL(m_list, m_width, m_height);
+        initGL(m_list, m_width, m_height, m_winid);
         init();
         m_running=true;
         do
@@ -639,7 +638,7 @@ namespace CDL
         XWarpPointer(dpy,win,win,0,0,0,0,m_mouseX,m_mouseY);
         if (m_flags&NOCURSOR) XDefineCursor(dpy,win,create_blank_cursor(dpy,win));
 
-        initGL(m_list, m_width, m_height);
+        initGL(m_list, m_width, m_height, m_winid);
         init();
         m_running=true;
         do
