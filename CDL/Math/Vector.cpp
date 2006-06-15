@@ -48,6 +48,43 @@ namespace CDL
         return Vec4t(p[1]*q[2]-p[2]*q[1], p[2]*q[0]-p[0]*q[2], p[0]*q[1]-p[1]*q[0], p[3]*q[3]);
     }
 
+#define ANG(x) (acos(x)*180.0/MM_PI)
+
+    DT angle(const Vector &v1, const Vector &v2)
+    {
+        const DT *p=(DT *)&v1, *q=(DT *)&v2;
+        const size_t &length=v1.getLength();
+        DT ab=0, aa=0, bb=0;
+
+        for (int i=0; i<length; i++)
+        {
+            ab+=p[i]*q[i];
+            aa+=p[i]*p[i];
+            bb+=q[i]*q[i];
+        }
+
+        return ANG(ab/sqrt(aa*bb));
+    }
+
+    DT angle(const Vec2t &v1, const Vec2t &v2)
+    {
+         const DT *p=(DT *)&v1, *q=(DT *)&v2;
+         return ANG((p[0]*q[0]+p[1]*q[1])/sqrt((p[0]*p[0]+p[1]*p[1])*(q[0]*q[0]+q[1]*q[1])));
+    }
+
+    DT angle(const Vec3t &v1, const Vec3t &v2)
+    {
+         const DT *p=(DT *)&v1, *q=(DT *)&v2;
+         return ANG((p[0]*q[0]+p[1]*q[1]+p[2]*q[2])/sqrt((p[0]*p[0]+p[1]*p[1]+p[2]*p[2])*(q[0]*q[0]+q[1]*q[1]+q[2]*q[2])));
+    }
+
+    DT angle(const Vec4t &v1, const Vec4t &v2)
+    {
+         const DT *p=(DT *)&v1, *q=(DT *)&v2;
+         return ANG((p[0]*q[0]+p[1]*q[1]+p[2]*q[2]+p[3]*q[3])/sqrt((p[0]*p[0]+p[1]*p[1]+p[2]*p[2]+p[3]*p[3])*(q[0]*q[0]+q[1]*q[1]+q[2]*q[2]+q[3]*q[3])));
+    }
+
+
     // ******************************************************************
     // ****                         Vector                           ****
     // ******************************************************************

@@ -16,7 +16,6 @@ namespace CDL
         protected:
             bool  m_running, m_visible;
             int   m_list[5];
-            float m_pixelSize;
             int   m_x, m_y, m_width, m_height;
             int   m_mouseX, m_mouseY, m_mouseB;
             int   m_flags;
@@ -29,7 +28,6 @@ namespace CDL
             void open(const char *title, const int &width, const int &height);
             void print(const int &, const int &, const char *fmt, ...);
             void put(const size_t &x, const size_t &y, const Image &img);
-            const float &getPixelSize() const;
             virtual void init() {};
             virtual void update()=0;
             virtual void deinit() {};

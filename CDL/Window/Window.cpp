@@ -306,7 +306,6 @@ namespace CDL
 
         m_width=w;
         m_height=h;
-        m_pixelSize=2.0*tan(DEG2RAD(view_fov/2.0))/(float)m_height;
 
         wc.style         = CS_HREDRAW|CS_VREDRAW|CS_OWNDC;
         wc.lpfnWndProc   = WINPROCNAME;
@@ -543,7 +542,6 @@ namespace CDL
     {
         m_width=w;
         m_height=h;
-        m_pixelSize=2.0*tan(DEG2RAD(view_fov/2.0))/(float)m_height;
 
         XVisualInfo *vi;
         GLXContext ctx;
@@ -689,11 +687,6 @@ namespace CDL
         m_mouseB=0;
         for (int i=0; i<300; i++)
             m_keys[i]=false;
-    }
-
-    const float &Window::getPixelSize() const
-    {
-        return m_pixelSize;
     }
 
     void Window::close()

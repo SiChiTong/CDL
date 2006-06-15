@@ -163,6 +163,11 @@ namespace CDL
     DT dot(const Vec4t &, const Vec4t &);
     Vec3t cross(const Vec3t &, const Vec3t &);
     Vec4t cross(const Vec4t &, const Vec4t &);
+    DT angle(const Vector &, const Vector &);
+    DT angle(const Vec2t &, const Vec2t &);
+    DT angle(const Vec3t &, const Vec3t &);
+    DT angle(const Vec4t &, const Vec4t &);
+
 #undef DT
 }
 
