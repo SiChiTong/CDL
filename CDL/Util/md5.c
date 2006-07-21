@@ -334,7 +334,6 @@ POINTER output;
 int value;
 unsigned int len;
 {
-	memset(output,value,len);
   unsigned int i;
 
   for (i = 0; i < len; i++)

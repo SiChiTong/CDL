@@ -79,7 +79,7 @@ namespace CDL
         }
     }
 
-    void Window::print(const int &x, const int &y, const char *str, ...)
+    void Window::print(const int &x, const int &y, const char *str, ...) const
     {
         va_list ap;
         char strText[256];

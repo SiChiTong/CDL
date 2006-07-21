@@ -26,7 +26,7 @@ namespace CDL
         public:
             Window();
             void open(const char *title, const int &width, const int &height);
-            void print(const int &, const int &, const char *fmt, ...);
+            void print(const int &, const int &, const char *fmt, ...) const;
             void put(const size_t &x, const size_t &y, const Image &img);
             virtual void init() {};
             virtual void update()=0;

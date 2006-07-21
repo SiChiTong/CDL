@@ -3,6 +3,7 @@
 #include <CDL/Util/md5.h>
 #include <CDL/Util/sha1.h>
 #include <CDL/Util/crc64.h>
+#include <CDL/Util/sha512.h>
 
 namespace CDL
 {
@@ -32,9 +33,12 @@ namespace CDL
     {
          m_length=strlen(str);
          m_pos=0;
-         m_clean=false;
+         m_clean=true;
          if (m_length)
-              m_data=(unsigned char *)str;
+         {
+             m_data=new char[m_length+1];
+             memcpy(m_data,str,m_length+1);
+         }
          else
              m_data='\0';
     }
@@ -219,22 +223,42 @@ namespace CDL
         m_pos=0;
     }
 
-    void Buffer::encrypt(const long &key)
+    void Buffer::RC4(const char *key_text)
     {
-        Random rnd(key);
-        int count=(m_length/sizeof(long)), mod=m_length-count*sizeof(long);
+        size_t i, j, key_length=strlen(key_text);
+        unsigned char S[256], T;
 
-        long *dataptr=(long *)m_data;
+        for (i=0; i<256; i++)
+            S[i]=i;
+        for (i=0, j=0; i<256; i++)
+        {
+            j=(j+S[i]+key_text[i%key_length])&0xFF;
+            T=S[i];
+            S[i]=S[j];
+            S[j]=T;
+        }
 
-        for (int i=0; i<count; i++)
-            (*dataptr++)^=rnd.irnd();
+        i=0;
+        j=0;
+/*        for (size_t k=0; k<1024; k++) // Skip first 1024 bytes
+        {
+            i=(i+1)&0xFF;
+            j=(j+S[i])&0xFF;
+            T=S[i];
+            S[i]=S[j];
+            S[j]=T;
+        }*/
 
-        long rndnum=rnd.irnd();
-        unsigned char *dataptr2=(unsigned char *)dataptr;
-        unsigned char *rndptr=(unsigned char *)&rndnum;
-
-        for (int i=0; i<mod; i++)
-            *(dataptr2++)^=*(rndptr++);
+        unsigned char *data=(unsigned char *)m_data;
+        for (size_t total=m_length; total; total--)
+        {
+            i=(i+1)&0xFF;
+            j=(j+S[i])&0xFF;
+            T=S[i];
+            S[i]=S[j];
+            S[j]=T;
+            *(data++)^=S[(S[i]+S[j])&0xFF];
+        }
     }
 
     Digest Buffer::getMD5() const
@@ -259,6 +283,18 @@ namespace CDL
         SHA1Result(&context, digest);
 
         return Digest(digest,20);
+    }
+
+    Digest Buffer::getSHA512() const
+    {
+        unsigned char digest[64]={0};
+        sha512_ctx context;
+
+        sha512_init(&context);
+        sha512_update(&context, (unsigned char *)m_data, m_length);
+        sha512_final(&context, digest);
+
+        return Digest(digest,64);
     }
 
     Digest Buffer::getCRC64() const

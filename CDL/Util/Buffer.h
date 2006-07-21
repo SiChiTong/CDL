@@ -32,9 +32,10 @@ namespace CDL
 			void setLength(const int &);
 			void copy(const Buffer &, const int &o=0);
 			void clear();
-			void encrypt(const long &);
+            void RC4(const char *);
 			Digest getMD5() const;
 			Digest getSHA1() const;
+            Digest getSHA512() const;
 			Digest getCRC64() const;
 	};
 }
