@@ -32,5 +32,5 @@ rm -f missing && \
 rm -f mkinstalldirs && \
 echo "- *.o Makefile.in Makefile .XXdir" && \
 find ./ \( -name "*.o" -o -name "Makefile.in" -o -name "Makefile" \) -exec rm \{\} \; && \
-find ./ \( -name ".??*" -a -type d \) -exec rm -fR \{\} \; && \
+find ./ \( -name ".??*" -a -type d \) -not -name ".svn" -exec rm -fR \{\} \; && \
 exit 0
