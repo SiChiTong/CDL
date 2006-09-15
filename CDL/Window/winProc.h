@@ -35,13 +35,30 @@ LRESULT CALLBACK WINPROCNAME(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         break;
     case WM_KEYDOWN:
         {
-        int kshift=GetKeyState(VK_SHIFT) < 0, klock=GetKeyState(VK_CAPITAL)&0x01;
-        if ((wParam >= 'A' && wParam <= 'Z') && ((klock && kshift) || (!klock && !kshift)))
-            win->setKeyPress(wParam|0x20);
-        else
-            win->setKeyPress(wParam);
+            int kshift=GetKeyState(VK_SHIFT) < 0, klock=GetKeyState(VK_CAPITAL)&0x01;
+            if (wParam == win->getConsoleKey())
+            {
+                win->toggleConsole();
+            }
+            else
+            {
+                if (win->isConsoleActive())
+                {
+                    int rk=wParam;
+                    if ((wParam >= 'A' && wParam <= 'Z') && ((klock && kshift) || (!klock && !kshift)))
+                        rk|=0x20;
+                    win->getConsole().processKey(rk);
+                }
+                else
+                {
+                    if ((wParam >= 'A' && wParam <= 'Z') && ((klock && kshift) || (!klock && !kshift)))
+                        win->setKeyPress(wParam|0x20);
+                    else
+                        win->setKeyPress(wParam);
+                    win->setKey(wParam,true);
+                }
+            }
         }
-        win->setKey(wParam,true);
         break;
     case WM_KEYUP:
         win->setKey(wParam,false);

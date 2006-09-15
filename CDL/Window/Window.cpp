@@ -99,6 +99,11 @@ namespace CDL
         glTranslatef(-x,-y,0);
     }
 
+    void Window::processCommand(const char *str)
+    {
+        m_console.print("Unknown command '%s'\n", str);
+    }
+
     void Window::put(const size_t &x, const size_t &y, const Image &img)
     {
         glPushAttrib(GL_CURRENT_BIT|GL_PIXEL_MODE_BIT|GL_COLOR_BUFFER_BIT);
@@ -415,6 +420,8 @@ namespace CDL
         SetActiveWindow(hWnd);
         SendMessage(hWnd, WM_SIZE, 0, w|h<<16);
 
+        setConsoleKey(Window::KEY_TAB);
+        m_consoleActive=false;
         initGL(m_list, m_width, m_height, m_winid);
         init();
         m_running=true;
@@ -433,6 +440,8 @@ namespace CDL
             else
             {
                 update();
+                if (m_consoleActive)
+                    m_console.render();
                 m_keyPress=0;
                 SwapBuffers(hDC);
             }
@@ -636,6 +645,8 @@ namespace CDL
         XWarpPointer(dpy,win,win,0,0,0,0,m_mouseX,m_mouseY);
         if (m_flags&NOCURSOR) XDefineCursor(dpy,win,create_blank_cursor(dpy,win));
 
+        setConsoleKey(Window::KEY_TAB);
+        m_consoleActive=false;
         initGL(m_list, m_width, m_height, m_winid);
         init();
         m_running=true;
@@ -651,6 +662,8 @@ namespace CDL
                 if (m_flags&TRANSPARENT)
                     updateBackground(dpy,win,root,m_list);
                 update();
+                if (m_consoleActive)
+                    m_console.render();
                 m_keyPress=0;
                 glXSwapBuffers(dpy, win);
             }
@@ -674,7 +687,7 @@ namespace CDL
     }
 #endif
 
-    Window::Window()
+    Window::Window(): m_console(*this)
     {
         m_winid=NULL;
         m_visible=false;
@@ -707,6 +720,16 @@ namespace CDL
     const bool &Window::isVisible() const
     {
         return m_visible;
+    }
+
+    void Window::toggleConsole()
+    {
+        m_consoleActive=!m_consoleActive;
+    }
+
+    const bool &Window::isConsoleActive() const
+    {
+        return m_consoleActive;
     }
 
     const bool &Window::isRunning() const
@@ -777,5 +800,20 @@ namespace CDL
     void Window::setFlags(const int &f)
     {
         m_flags=f;
+    }
+
+    const int &Window::getConsoleKey() const
+    {
+        return m_consoleKey;
+    }
+
+    void Window::setConsoleKey(const int &ck)
+    {
+        m_consoleKey=ck;
+    }
+
+    Console &Window::getConsole()
+    {
+        return m_console;
     }
 }

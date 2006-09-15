@@ -71,7 +71,7 @@ static const u64 sha512_K[80] =
 
 static inline void LOAD_OP(int I, u64 *W, const u8 *input)
 {
-    W[I] = __be64_to_cpu( ((__be64*)(input))[I] );
+    W[I] = BE64_TO_CPU(((long long *)(input))[I]);
 }
 
 static inline void BLEND_OP(int I, u64 *W)
@@ -182,8 +182,8 @@ void sha512_final(void *ctx, u8 *hash)
 {
     struct sha512_ctx *sctx = ctx;
     static u8 padding[128] = { 0x80, };
-    __be64 *dst = (__be64 *)hash;
-    __be32 bits[4];
+    long long *dst=(long long *)hash;
+    long long bits[4];
     unsigned int index, pad_len;
     int i;
 

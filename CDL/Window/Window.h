@@ -2,6 +2,7 @@
 #define __CDL_WINDOW_H__
 
 #include <CDL/Image/Image.h>
+#include <CDL/Window/Console.h>
 
 namespace CDL
 {
@@ -21,6 +22,9 @@ namespace CDL
             int   m_flags;
             int   m_keyPress;
             bool  m_keys[300];
+            int   m_consoleKey;
+            bool  m_consoleActive;
+            Console m_console;
             void *m_winid;
 
         public:
@@ -31,9 +35,12 @@ namespace CDL
             virtual void init() {};
             virtual void update()=0;
             virtual void deinit() {};
+            virtual void processCommand(const char *);
             void close();
             const bool &isRunning()  const;
             const bool &isVisible() const;
+            const bool &isConsoleActive() const;
+            void toggleConsole();
             const int &getWidth()  const;
             const int &getHeight() const;
             const int &getKeyPress() const;
@@ -51,6 +58,9 @@ namespace CDL
             void  setMouseX(const int &);
             const int &getMouseY() const;
             void  setMouseY(const int &);
+            void setConsoleKey(const int &);
+            const int &getConsoleKey() const;
+            Console &getConsole();
     };
 }
 

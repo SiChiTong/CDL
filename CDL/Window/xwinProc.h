@@ -50,11 +50,28 @@ void WINPROCNAME(CDL::Window &win, XEvent &event, Display *dpy, ::Window mwin)
                     break;
                 case KeyPress:
                     k=keycodes[XLookupKeysym(&event.xkey,0)&0xFF];
-                    if ((k >= 'A' && k <= 'Z') && ((klock && kshift) || (!klock && !kshift)))
-                        win.setKeyPress(k|0x20);
+                    if (win.getConsoleKey() == k)
+                    {
+                        win.toggleConsole();
+                    }
                     else
-                        win.setKeyPress(k);
-                    win.setKey(k,true);
+                    {
+                        if (win.isConsoleActive())
+                        {
+                            int rk=k;
+                            if ((k >= 'A' && k <= 'Z') && ((klock && kshift) || (!klock && !kshift)))
+                                rk|=0x20;
+                            win.getConsole().processKey(rk);
+                        }
+                        else
+                        {
+                            if ((k >= 'A' && k <= 'Z') && ((klock && kshift) || (!klock && !kshift)))
+                                win.setKeyPress(k|0x20);
+                            else
+                                win.setKeyPress(k);
+                            win.setKey(k,true);
+                        }
+                    }
                     break;
                 case KeyRelease:
                     if (XPending(dpy)) // to avoid autorepeat

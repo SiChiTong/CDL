@@ -1,7 +1,7 @@
 ## Source directory
 
-h_sources = Window.h
-cpp_sources = Window.cpp
+h_sources = Window.h Console.h
+cpp_sources = Window.cpp Console.cpp
 
 noinst_LTLIBRARIES = libWindow.la
 libWindow_la_SOURCES = $(h_sources) $(cpp_sources)

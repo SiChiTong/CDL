@@ -4,7 +4,7 @@
  *  @author   acornejo
  *  @date
  *   Created:       02:32:06 19/06/2005
- *   Last Update:   02:26:46 14/08/2005
+ *   Last Update:   08:47:06 08/09/2006
  */
 //========================================================================
 
@@ -43,9 +43,15 @@ static unsigned long long bswap_64(const unsigned long long &x)
     #define LE16_TO_CPU(x) (*((unsigned short *)&x)=bswap_16(*(unsigned short *)&x))
     #define LE32_TO_CPU(x) (*((unsigned int *)&x)=bswap_32(*(unsigned int *)&x))
     #define LE64_TO_CPU(x) (*((unsigned long long *)&x)=bswap_64(*(unsigned long long *)&x))
+    #define BE16_TO_CPU(x) (x)
+    #define BE32_TO_CPU(x) (x)
+    #define BE64_TO_CPU(x) (x)
 #else
     #define LE16_TO_CPU(x) (x)
     #define LE32_TO_CPU(x) (x)
     #define LE64_TO_CPU(x) (x)
+    #define BE16_TO_CPU(x) (*((unsigned short *)&x)=bswap_16(*(unsigned short *)&x))
+    #define BE32_TO_CPU(x) (*((unsigned int *)&x)=bswap_32(*(unsigned int *)&x))
+    #define BE64_TO_CPU(x) (*((unsigned long long *)&x)=bswap_64(*(unsigned long long *)&x))
 #endif
 
