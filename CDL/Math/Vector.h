@@ -157,16 +157,16 @@ namespace CDL
             void reset();
     };
 
-    DT dot(const Vector &, const Vector &);
-    DT dot(const Vec2t &, const Vec2t &);
-    DT dot(const Vec3t &, const Vec3t &);
-    DT dot(const Vec4t &, const Vec4t &);
-    Vec3t cross(const Vec3t &, const Vec3t &);
-    Vec4t cross(const Vec4t &, const Vec4t &);
-    DT angle(const Vector &, const Vector &);
-    DT angle(const Vec2t &, const Vec2t &);
-    DT angle(const Vec3t &, const Vec3t &);
-    DT angle(const Vec4t &, const Vec4t &);
+    DLL_API DT DLL_CALLCONV dot(const Vector &, const Vector &);
+    DLL_API DT DLL_CALLCONV dot(const Vec2t &, const Vec2t &);
+    DLL_API DT DLL_CALLCONV dot(const Vec3t &, const Vec3t &);
+    DLL_API DT DLL_CALLCONV dot(const Vec4t &, const Vec4t &);
+    DLL_API Vec3t DLL_CALLCONV cross(const Vec3t &, const Vec3t &);
+    DLL_API Vec4t DLL_CALLCONV cross(const Vec4t &, const Vec4t &);
+    DLL_API DT DLL_CALLCONV angle(const Vector &, const Vector &);
+    DLL_API DT DLL_CALLCONV angle(const Vec2t &, const Vec2t &);
+    DLL_API DT DLL_CALLCONV angle(const Vec3t &, const Vec3t &);
+    DLL_API DT DLL_CALLCONV angle(const Vec4t &, const Vec4t &);
 
 #undef DT
 }

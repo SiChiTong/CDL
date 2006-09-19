@@ -4,7 +4,7 @@
  *  @author   acornejo
  *  @date
  *   Created:       12:54:30 21/07/2006
- *   Last Update:   17:50:28 14/09/2006
+ *   Last Update:   11:22:59 15/09/2006
  */
 //========================================================================
 
@@ -13,8 +13,6 @@
 
 #include <stdint.h>
 #include <string.h>
-#include <linux/types.h>
-#include <asm/byteorder.h>
 #include <CDL/endian.h>
 
 struct sha512_ctx

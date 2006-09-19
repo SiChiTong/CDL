@@ -4,7 +4,7 @@
  *  @author   acornejo
  *  @date
  *   Created:       15:27:46 14/09/2006
- *   Last Update:   17:42:24 14/09/2006
+ *   Last Update:   13:38:09 15/09/2006
  */
 //========================================================================
 
@@ -17,7 +17,7 @@ namespace CDL { class Window; }
 
 namespace CDL
 {
-    class Console
+    class DLL_API Console
     {
         private:
             Window &m_win;

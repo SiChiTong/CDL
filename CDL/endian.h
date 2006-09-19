@@ -4,9 +4,12 @@
  *  @author   acornejo
  *  @date
  *   Created:       02:32:06 19/06/2005
- *   Last Update:   08:47:06 08/09/2006
+ *   Last Update:   11:24:17 15/09/2006
  */
 //========================================================================
+
+#ifndef __CDL_ENDIAN_H__
+#define __CDL_ENDIAN_H__
 
 #ifdef HAVE_CONFIG_H
     #include <config.h>
@@ -15,18 +18,18 @@
     #endif
 #endif
 #ifndef HAVE_BYTESWAP_H
-static unsigned short bswap_16 (const unsigned short &x)
+static unsigned short bswap_16 (const unsigned short x)
 {
     return ((((x) >> 8) & 0xff) | (((x) & 0xff) << 8));
 }
 
-static unsigned int bswap_32(const unsigned int &x)
+static unsigned int bswap_32(const unsigned int x)
 {
     return ((((x) & 0xff000000) >> 24) | (((x) & 0x00ff0000) >>  8) | \
       (((x) & 0x0000ff00) <<  8) | (((x) & 0x000000ff) << 24));
 }
 
-static unsigned long long bswap_64(const unsigned long long &x)
+static unsigned long long bswap_64(const unsigned long long x)
 {
      return ((((x) & 0xff00000000000000ull) >> 56)				  \
       | (((x) & 0x00ff000000000000ull) >> 40)				      \
@@ -55,3 +58,4 @@ static unsigned long long bswap_64(const unsigned long long &x)
     #define BE64_TO_CPU(x) (*((unsigned long long *)&x)=bswap_64(*(unsigned long long *)&x))
 #endif
 
+#endif
