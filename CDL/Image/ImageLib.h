@@ -4,7 +4,7 @@
  *  @author   alcoco
  *  @date     
  *   Created:       00:28:32 06/03/2005
- *   Last Update:   19:06:17 18/09/2006
+ *   Last Update:   22:18:36 18/09/2006
  */
 //========================================================================
 #ifndef __CDL_IMAGELIB_H__
@@ -16,7 +16,7 @@
 namespace CDL
 {
 
-    class ImageLib
+    class DLL_API ImageLib
     {
         private:
             static ImageLib *m_instance;
