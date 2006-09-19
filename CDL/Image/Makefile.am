@@ -1,7 +1,7 @@
 ## Source directory
 
-h_sources =  Image.h
-cpp_sources = Image.cpp
+h_sources =  Image.h ImageLib.h
+cpp_sources = Image.cpp ImageLib.cpp
 
 noinst_LTLIBRARIES  = libImage.la
 libImage_la_SOURCES = $(h_sources) $(cpp_sources)

@@ -1,7 +1,7 @@
 #ifndef __CDL_IMAGE_H__
 #define __CDL_IMAGE_H__
 
-#include <CDL/Util/File.h>
+#include <CDL/defs.h>
 
 namespace CDL
 {
@@ -56,5 +56,7 @@ namespace CDL
             void invert();
     };
 }
+
+#include <CDL/Image/ImageLib.h>
 
 #endif//__CDL_IMAGE_H__
