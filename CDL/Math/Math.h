@@ -39,6 +39,7 @@ namespace CDL
     DLL_API DefType DLL_CALLCONV acosh(const DefType &);
     DLL_API DefType DLL_CALLCONV atanh(const DefType &);
     DLL_API DefType DLL_CALLCONV sqrt(const DefType &);
+    DLL_API DefType DLL_CALLCONV inv_sqrt(const DefType &);
     DLL_API DefType DLL_CALLCONV hypot(const DefType &, const DefType &);
     DLL_API bool DLL_CALLCONV equal(const DefType &, const DefType &);
     DLL_API DefType DLL_CALLCONV atan(const DefType &, const DefType &);

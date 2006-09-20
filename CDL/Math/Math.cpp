@@ -129,6 +129,15 @@ namespace CDL
         return sqrtf(n);
     }
 
+    DefType inv_sqrt(const DefType &n)
+    {
+        float v_half = n * 0.5f;
+        int i = *(int *) &n;
+        i = 0x5f3759df - (i >> 1);
+        float v = *(float *) &i;
+        return v * (1.5f - v_half * v * v);
+    }
+
     DefType solver1D(DefType (*func)(const DefType&), const DefType &h, const DefType &y0, const DE_type &method)
     {
         DefType ynew=y0;
