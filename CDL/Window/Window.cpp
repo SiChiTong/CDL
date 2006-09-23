@@ -104,7 +104,7 @@ namespace CDL
         m_console.print("Unknown command '%s'\n", str);
     }
 
-    void Window::put(const size_t &x, const size_t &y, const Image &img)
+    void Window::write(const Image &img, const size_t &x, const size_t &y)
     {
         glPushAttrib(GL_CURRENT_BIT|GL_PIXEL_MODE_BIT|GL_COLOR_BUFFER_BIT);
         glCallList(PUTBEGIN_LIST);
@@ -129,6 +129,24 @@ namespace CDL
         else
             glDrawPixels(img.getWidth(), img.getHeight(), fmt, GL_UNSIGNED_BYTE, img.getData());
         glPopAttrib();
+    }
+
+    void Window::read(Image &img, const size_t &x, const size_t &y, const size_t &w, const size_t &h)
+    {
+        size_t width, height;
+
+        if (!w) width=m_width-x;
+        else if (w > m_width-x) width=m_width-x;
+        else width=w;
+
+        if (!h) height=m_height-y;
+        else if (w > m_height-y) height=m_height-y;
+        else height=h;
+
+        if (img.getType() != Image::RGB || img.getWidth() != width || img.getHeight() != height)
+            img=Image(width,height,Image::RGB);
+        glReadPixels(x,y,width,height,GL_RGB,GL_UNSIGNED_BYTE,img.getData());
+        img.flip();
     }
 
     void initGL(int *m_list, const size_t &width, const size_t &height, void *_winid)
