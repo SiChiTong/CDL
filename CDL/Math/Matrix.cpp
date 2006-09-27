@@ -60,6 +60,12 @@ namespace CDL
                 vp[0]*mp[M4_ij(3,0)]+vp[1]*mp[M4_ij(3,1)]+vp[2]*mp[M4_ij(3,2)]+vp[3]*mp[M4_ij(3,3)]);
     }
 
+    Mat3t star(const Vec3t &v)
+    {
+        const DT *p=(DT *)&v;
+        return Mat3t(0,-p[2],p[1],p[2],0,-p[0],-p[1],p[0],0);
+    }
+
     Mat2t::Mat2t()
     {}
 

@@ -167,7 +167,6 @@ namespace CDL
     DLL_API DT DLL_CALLCONV angle(const Vec2t &, const Vec2t &);
     DLL_API DT DLL_CALLCONV angle(const Vec3t &, const Vec3t &);
     DLL_API DT DLL_CALLCONV angle(const Vec4t &, const Vec4t &);
-
 #undef DT
 }
 

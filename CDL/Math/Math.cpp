@@ -138,56 +138,6 @@ namespace CDL
         return v * (1.5f - v_half * v * v);
     }
 
-    DefType solver1D(DefType (*func)(const DefType&), const DefType &h, const DefType &y0, const DE_type &method)
-    {
-        DefType ynew=y0;
-        DefType k1, k2, k3, k4, k5, k6;
-
-        switch(method)
-        {
-            case DE_EULER:
-                k1=h*func(y0);
-                ynew=y0+k1;
-                break;
-            case DE_EULER_EXT:
-                k1=h*func(y0);
-                k2=h*func(y0+k1);
-                ynew=y0+(k1+k2)*0.5;
-                break;
-            case DE_HEUNS:
-                k1=h*func(y0);
-                k2=h*func(y0+k1*(2.0/3.0));
-                ynew=y0+k1*0.25+k2*(3.0*0.25);
-                break;
-            case DE_MIDPOINT:
-                k1=h*func(y0);
-                k2=h*func(y0+k1*0.5);
-                ynew=y0+k2;
-                break;
-            case DE_RUNGEKUTTA:
-                k1=h*func(y0);
-                k2=h*func(y0+k1*0.5);
-                k3=h*func(y0+k2*0.5);
-                k4=h*func(y0+k3);
-                ynew=y0+k1/6.0+k2/3.0+k3/3.0+k4/6.0;
-                break;
-            case DE_ENGLAND:
-                k1=h*func(y0);
-                k2=h*func(y0+k1*0.5);
-                k3=h*func(y0+(k1+k2)*0.25);
-                k4=h*func(y0-k2+k3*2.0);
-                k5=h*func(y0+(k1*7.0+k2*10+k4)/27.0);
-                k6=h*func(y0+(k1*28.0-k2*125.0+k3*546.0+k4*54.0-k5*378.0)/625.0);
-                ynew=y0+k1/6.0+k3*(2.0/3.0)+k4/6.0;
-                break;
-            default:
-                ynew=y0;
-                Error_send("Invalid method for differencial equations\n");
-        }
-
-        return ynew;
-    }
-
     DefType simpson1D(DefType (*func)(const DefType &), const DefType &a, const DefType &b, const int &steps)
     {
         DefType sum=0;

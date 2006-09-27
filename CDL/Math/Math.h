@@ -17,10 +17,10 @@
 #include <CDL/Math/Sphere.h>
 #include <CDL/Math/Ray.h>
 #include <CDL/Math/FixedPoint.h>
+#include <CDL/Math/ODESolver.h>
 
 namespace CDL
 {
-    typedef enum {DE_EULER=0, DE_EULER_EXT, DE_HEUNS, DE_MIDPOINT, DE_RUNGEKUTTA, DE_ENGLAND} DE_type;
     DLL_API DefType DLL_CALLCONV linear_interp(const DefType &, const DefType &, const DefType &);
     DLL_API DefType DLL_CALLCONV cosine_interp(const DefType &, const DefType &, const DefType &);
     DLL_API DefType DLL_CALLCONV cubic_interp(const DefType &, const DefType &, const DefType &, const DefType &, const DefType &);
@@ -43,7 +43,6 @@ namespace CDL
     DLL_API DefType DLL_CALLCONV hypot(const DefType &, const DefType &);
     DLL_API bool DLL_CALLCONV equal(const DefType &, const DefType &);
     DLL_API DefType DLL_CALLCONV atan(const DefType &, const DefType &);
-    DLL_API DefType  DLL_CALLCONV solver1D(DefType (*f)(const DefType &), const DefType &, const DefType &, const DE_type &);
     DLL_API DefType DLL_CALLCONV simpson1D(DefType (*f)(const DefType &), const DefType &, const DefType &, const int &);
 }
 

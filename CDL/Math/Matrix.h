@@ -163,7 +163,7 @@ namespace CDL
     DLL_API Vec3t DLL_CALLCONV operator*(const Vec3t &, const Mat3t &);
     DLL_API Vec3t DLL_CALLCONV operator*(const Vec3t &, const Mat4t &);
     DLL_API Vec4t DLL_CALLCONV operator*(const Vec4t &, const Mat4t &);
-
+    DLL_API Mat3t DLL_CALLCONV star(const Vec3t &);
 #undef DT
 
 }
