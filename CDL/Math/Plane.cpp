@@ -6,7 +6,7 @@ namespace CDL
     {
         m_point=p;
         m_normal=n;
-        m_normal.normalize();
+//        m_normal.normalize();
         m_D=-dot(m_normal,m_point);
     }
 
@@ -36,6 +36,7 @@ namespace CDL
     void Plane::setPoint(const Vec3t &point)
     {
         m_point=point;
+        m_D=-dot(m_normal,m_point);
     }
 
     const Vec3t& Plane::getNormal() const

@@ -414,10 +414,14 @@ namespace CDL
 
     const Vector& Vector::normalize()
     {
-        DT l=1/length();
+        DT l=norm();
 
-        for (int i=0; i<m_length; i++)
-            m_v[i]*=l;
+        if (l != 1.0f)
+        {
+            l=1/sqrtf(l);
+            for (int i=0; i<m_length; i++)
+                m_v[i]*=l;
+        }
 
         return *this;
     }
@@ -598,9 +602,15 @@ namespace CDL
 
     const Vec2t& Vec2t::normalize()
     {
-        DT l=1/sqrtf(v[0]*v[0]+v[1]*v[1]);
-        v[0]*=l;
-        v[1]*=l;
+        DT l=v[0]*v[0]+v[1]*v[1];
+
+        if (l != 1.0f)
+        {
+            l=1/sqrtf(l);
+            v[0]*=l;
+            v[1]*=l;
+        }
+
         return *this;
     }
 
@@ -825,10 +835,16 @@ namespace CDL
 
     const Vec3t& Vec3t::normalize()
     {
-        DT l=1/sqrtf(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]);
-        v[0]*=l;
-        v[1]*=l;
-        v[2]*=l;
+        DT l=v[0]*v[0]+v[1]*v[1]+v[2]*v[2];
+
+        if (l != 1.0f)
+        {
+            l=1/sqrtf(l);
+            v[0]*=l;
+            v[1]*=l;
+            v[2]*=l;
+        }
+
         return *this;
     }
 
@@ -1052,11 +1068,17 @@ namespace CDL
 
     const Vec4t& Vec4t::normalize()
     {
-        DT l=1/sqrtf(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]+v[3]*v[3]);
-        v[0]*=l;
-        v[1]*=l;
-        v[2]*=l;
-        v[3]*=l;
+        DT l=v[0]*v[0]+v[1]*v[1]+v[2]*v[2]+v[3]*v[3];
+
+        if (l != 1.0f)
+        {
+            l=1/sqrtf(l);
+            v[0]*=l;
+            v[1]*=l;
+            v[2]*=l;
+            v[3]*=l;
+        }
+
         return *this;
     }
 
