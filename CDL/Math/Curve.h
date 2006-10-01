@@ -8,12 +8,12 @@ namespace CDL
     class DLL_API Curve
     {
         protected:
-            int   m_N;
+            size_t   m_N;
 
         public:
             Curve();
             virtual ~Curve();
-            const int &getNumPoints() const;
+            const size_t &getNumPoints() const;
             virtual Vec3t getPoint(const DefType &) const=0;
     };
 }

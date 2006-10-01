@@ -12,7 +12,7 @@ namespace CDL
         m_N=0;
     }
 
-    const int &Curve::getNumPoints() const
+    const size_t &Curve::getNumPoints() const
     {
         return m_N;
     }

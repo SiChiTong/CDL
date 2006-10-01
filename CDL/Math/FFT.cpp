@@ -2,6 +2,8 @@
 
 namespace CDL
 {
+
+    const size_t invalid=0xFFFFFFFF;
     /**
       powerOfTwo calulates a number m so that
       when elevating 2 to the m you obtain n
@@ -9,16 +11,16 @@ namespace CDL
       If there is no such number m that satisfies
       the described properties it returns -1.
       */
-    int powerOfTwo(const int &n)
+    size_t powerOfTwo(const size_t &n)
     {
-        int m=0, p=1;
+        size_t m=0, p=1;
         while (p<n)
         {
             p*=2;
             m++;
         }
         if (p != n)
-            return -1;
+            return invalid;
         return m;
     }
 
@@ -32,11 +34,11 @@ namespace CDL
     DLL_API void DLL_CALLCONV FFT(Complex *c, const unsigned long &n)
     {
         unsigned long i, i1, i2, j, k, l1, l2;
-        int m, l;
+        size_t m, l;
         Complex t, u, r;
 
         /* Check if length is a power of 2 */
-        if ((m=powerOfTwo(n)) == -1)
+        if ((m=powerOfTwo(n)) == invalid)
             return;
 
         /* Do the bit reversal */
@@ -150,7 +152,7 @@ namespace CDL
       in FFT it stores the result in the same
       array.
       */
-    DLL_API void DLL_CALLCONV FFT2D(Complex *c, const int &nx, const int &ny)
+    DLL_API void DLL_CALLCONV FFT2D(Complex *c, const size_t &nx, const size_t &ny)
     {
         Complex *t;
 
@@ -160,14 +162,14 @@ namespace CDL
 
         /* Calculate the FFT for rows */
         t=new Complex[nx];
-        for (int j=0; j<ny; j++)
+        for (size_t j=0; j<ny; j++)
         {
-            for (int i=0; i<nx; i++)
+            for (size_t i=0; i<nx; i++)
                 t[i]=c[j*nx+i];
 
             FFT(t, nx);
 
-            for (int i=0; i<nx; i++)
+            for (size_t i=0; i<nx; i++)
                 c[j*nx+i]=t[i];
 
         }
@@ -175,14 +177,14 @@ namespace CDL
 
         /* Calculate the FFT for columns */
         t=new Complex[ny];
-        for (int i=0; i<nx; i++)
+        for (size_t i=0; i<nx; i++)
         {
-            for (int j=0; j<ny; j++)
+            for (size_t j=0; j<ny; j++)
                 t[j]=c[j*nx+i];
 
             FFT(t, ny);
 
-            for (int j=0; j<ny; j++)
+            for (size_t j=0; j<ny; j++)
                 c[j*nx+i]=t[j];
         }
         delete t;
@@ -195,7 +197,7 @@ namespace CDL
       in FFT it stores the result in the same
       array.
       */
-    DLL_API void DLL_CALLCONV iFFT2D(Complex *c, const int &nx, const int &ny)
+    DLL_API void DLL_CALLCONV iFFT2D(Complex *c, const size_t &nx, const size_t &ny)
     {
         Complex *t;
 
@@ -205,14 +207,14 @@ namespace CDL
 
         /* Calculate the FFT for rows */
         t=new Complex[nx];
-        for (int j=0; j<ny; j++)
+        for (size_t j=0; j<ny; j++)
         {
-            for (int i=0; i<nx; i++)
+            for (size_t i=0; i<nx; i++)
                 t[i]=c[j*nx+i];
 
             iFFT(t, nx);
 
-            for (int i=0; i<nx; i++)
+            for (size_t i=0; i<nx; i++)
                 c[j*nx+i]=t[i];
 
         }
@@ -220,25 +222,25 @@ namespace CDL
 
         /* Calculate the FFT for columns */
         t=new Complex[ny];
-        for (int i=0; i<nx; i++)
+        for (size_t i=0; i<nx; i++)
         {
-            for (int j=0; j<ny; j++)
+            for (size_t j=0; j<ny; j++)
                 t[j]=c[j*nx+i];
 
             iFFT(t, ny);
 
-            for (int j=0; j<ny; j++)
+            for (size_t j=0; j<ny; j++)
                 c[j*nx+i]=t[j];
         }
         delete t;
     }
 
-    DLL_API void DLL_CALLCONV filter2D(Complex *c, const int &nx, const int &ny, const FFT_filter &flt, const DefType &p)
+    DLL_API void DLL_CALLCONV filter2D(Complex *c, const size_t &nx, const size_t &ny, const FFT_filter &flt, const DefType &p)
     {
         DefType r, r1, r2, r3, r4;
 
-        for (int i=0; i<nx; i++)
-            for (int j=0; j<ny; j++)
+        for (size_t i=0; i<nx; i++)
+            for (size_t j=0; j<ny; j++)
             {
                 r1=i*i+j*j;
                 r2=(i-nx)*(i-nx)+j*j;
