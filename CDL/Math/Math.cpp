@@ -138,16 +138,26 @@ namespace CDL
         return v * (1.5f - v_half * v * v);
     }
 
-    DefType simpson1D(DefType (*func)(const DefType &), const DefType &a, const DefType &b, const int &steps)
+    DefType simpson1D(DefType (*func)(const DefType &), const DefType &a, const DefType &b, const size_t &steps)
     {
         DefType sum=0;
         DefType dx=(b-a)/steps;
 
-        for (int i=0; i<steps; i+=2)
+        for (size_t i=0; i<steps; i+=2)
             sum+=(func(a+i*dx)+4*func(a+(i+1)*dx)+func(a+(i+2)*dx));
 
         sum*=dx/3;
 
         return sum;
+    }
+
+    bool coplanar(const Vec3t &v0, const Vec3t &v1, const Vec3t &v2, const Vec3t &v3)
+    {
+        return (fabs(dot(cross(v2-v1,v0-v1),v3-v2)) <= MM_EPSILON);
+    }
+
+    bool colinear(const Vec3t &v0, const Vec3t &v1, const Vec3t &v2)
+    {
+        return (cross(v1-v0,v0-v2).norm() <= MM_EPSILON);
     }
 }

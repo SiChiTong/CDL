@@ -43,7 +43,9 @@ namespace CDL
     DLL_API DefType DLL_CALLCONV hypot(const DefType &, const DefType &);
     DLL_API bool DLL_CALLCONV equal(const DefType &, const DefType &);
     DLL_API DefType DLL_CALLCONV atan(const DefType &, const DefType &);
-    DLL_API DefType DLL_CALLCONV simpson1D(DefType (*f)(const DefType &), const DefType &, const DefType &, const int &);
+    DLL_API DefType DLL_CALLCONV simpson1D(DefType (*f)(const DefType &), const DefType &, const DefType &, const size_t &);
+    DLL_API bool DLL_CALLCONV coplanar(const Vec3t &, const Vec3t &, const Vec3t &, const Vec3t &);
+    DLL_API bool DLL_CALLCONV colinear(const Vec3t &, const Vec3t &, const Vec3t &);
 }
 
 #endif//__CDL_MATH_H__

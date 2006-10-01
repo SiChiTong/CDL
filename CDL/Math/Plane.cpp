@@ -6,7 +6,6 @@ namespace CDL
     {
         m_point=p;
         m_normal=n;
-//        m_normal.normalize();
         m_D=-dot(m_normal,m_point);
     }
 
@@ -48,6 +47,12 @@ namespace CDL
     {
         m_normal=normal;
         m_D=-dot(m_normal,m_point);
+    }
+
+    void Plane::flipNormal()
+    {
+        m_normal=-m_normal;
+        m_D=-m_D;
     }
 
     Intersection Plane::intersect(const Ray &r) const

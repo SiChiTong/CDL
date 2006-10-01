@@ -305,11 +305,17 @@ namespace CDL
 
     const Quaternion& Quaternion::normalize()
     {
-        const DefType l=1.0/length();
-        X*=l;
-        Y*=l;
-        Z*=l;
-        W*=l;
+        DefType l=norm();
+
+        if (l != 1.0f)
+        {
+            l=1.0/sqrtf(l);
+            X*=l;
+            Y*=l;
+            Z*=l;
+            W*=l;
+        }
+
         return *this;
     }
 

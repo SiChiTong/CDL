@@ -21,9 +21,9 @@ namespace CDL
             Mat2t (const Mat2t &);
             Mat2t (const Vec2t &, const Vec2t &);
             Mat2t (const DT &, const DT &, const DT &, const DT &);
-            const DT &minor(const int &, const int &) const;
-            Vec2t & operator[] (const int &);
-            const Vec2t &operator[] (const int &) const;
+            const DT &minor(const size_t &, const size_t &) const;
+            Vec2t & operator[] (const size_t &);
+            const Vec2t &operator[] (const size_t &) const;
             Mat2t operator+(const Mat2t &) const;
             Mat2t operator-(const Mat2t &) const;
             Mat2t operator*(const Mat2t &) const;
@@ -42,7 +42,7 @@ namespace CDL
             const Mat2t &operator*= (const DT &);
             const Mat2t &operator/= (const DT &);
             const Mat2t &transpose ();
-            const Mat2t &adjoint ();
+            const Mat2t &adjoint();
             const Mat2t &invert ();
             DT det () const;
 
@@ -68,9 +68,9 @@ namespace CDL
             Mat3t (const Vec3t &, const Vec3t &, const Vec3t &);
             Mat3t (const DT &, const DT &, const DT &, const DT &, const DT &,
                    const DT &, const DT &, const DT &, const DT &);
-            Mat2t minor(const int &, const int &) const;
-            Vec3t & operator[] (const int &);
-            const Vec3t & operator[] (const int &) const;
+            Mat2t minor(const size_t &, const size_t &) const;
+            Vec3t & operator[] (const size_t &);
+            const Vec3t & operator[] (const size_t &) const;
             Mat3t operator+(const Mat3t &) const;
             Mat3t operator-(const Mat3t &) const;
             Mat3t operator*(const Mat3t &) const;
@@ -89,7 +89,7 @@ namespace CDL
             const Mat3t &operator*=(const DT &);
             const Mat3t &operator/=(const DT &);
             const Mat3t &transpose ();
-            const Mat3t &adjoint ();
+            const Mat3t &adjoint();
             const Mat3t &invert ();
             DT det () const;
 
@@ -120,9 +120,9 @@ namespace CDL
                    const DT &, const DT &, const DT &,
                    const DT &, const DT &, const DT &, const DT &, const DT &,
                    const DT &, const DT &, const DT &, const DT &, const DT &);
-            Mat3t minor(const int &, const int &) const;
-            Vec4t & operator[] (const int &);
-            const Vec4t & operator[] (const int &) const;
+            Mat3t minor(const size_t &, const size_t &) const;
+            Vec4t & operator[] (const size_t &);
+            const Vec4t & operator[] (const size_t &) const;
             Mat4t operator+(const Mat4t &) const;
             Mat4t operator-(const Mat4t &) const;
             Mat4t operator*(const Mat4t &) const;
@@ -141,7 +141,7 @@ namespace CDL
             const Mat4t &operator*=(const DT &);
             const Mat4t &operator/=(const DT &);
             const Mat4t &transpose ();
-            const Mat4t &adjoint ();
+            const Mat4t &adjoint();
             const Mat4t &invert ();
             DT det () const;
 

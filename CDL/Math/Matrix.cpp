@@ -2,6 +2,7 @@
 
 namespace CDL
 {
+    DEFCLASS("Matrix");
     #define DT DefType
 
     DT operator*(const DT &v, const Mat2t &m)
@@ -102,24 +103,30 @@ namespace CDL
         mp[M2_ij(1,1)]=l;
     }
 
-    const DT& Mat2t::minor(const int &i, const int &j) const
+    const DT& Mat2t::minor(const size_t &i, const size_t &j) const
     {
         if (i == 0)
             return m[1].subVector(j);
         return m[0].subVector(j);
     }
 
-    Vec2t& Mat2t::operator[](const int &i)
+    Vec2t& Mat2t::operator[](const size_t &i)
     {
-        if (i < 0 || i > 1)
+        if (i > 1)
+        {
+            Error_send("Index %d out of range\n", i);
             return m[0];
+        }
         return m[i];
     }
 
-    const Vec2t& Mat2t::operator[](const int &i) const
+    const Vec2t& Mat2t::operator[](const size_t &i) const
     {
-        if (i < 0 || i > 1)
+        if (i > 1)
+        {
+            Error_send("Index %d out of range\n", i);
             return m[0];
+        }
         return m[i];
     }
 
@@ -447,7 +454,7 @@ namespace CDL
         mp[M3_ij(2,2)]=i;
     }
 
-    Mat2t Mat3t::minor(const int &i, const int &j) const
+    Mat2t Mat3t::minor(const size_t &i, const size_t &j) const
     {
         if (i == 0)
             return Mat2t(m[1].subVector(j), m[2].subVector(j));
@@ -456,17 +463,23 @@ namespace CDL
         return Mat2t(m[0].subVector(j), m[1].subVector(j));
     }
 
-    Vec3t& Mat3t::operator[](const int &i)
+    Vec3t& Mat3t::operator[](const size_t &i)
     {
-        if (i < 0 || i > 2)
+        if (i > 2)
+        {
+            Error_send("Index %d out of range\n", i);
             return m[0];
+        }
         return m[i];
     }
 
-    const Vec3t& Mat3t::operator[](const int &i) const
+    const Vec3t& Mat3t::operator[](const size_t &i) const
     {
-        if (i < 0 || i > 2)
+        if (i > 2)
+        {
+            Error_send("Index %d out of range\n", i);
             return m[0];
+        }
         return m[i];
     }
 
@@ -936,7 +949,7 @@ namespace CDL
         mp[M4_ij(3,3)]=p;
     }
 
-    Mat3t Mat4t::minor(const int &i, const int &j) const
+    Mat3t Mat4t::minor(const size_t &i, const size_t &j) const
     {
         if (i == 0)
             return Mat3t(m[1].subVector(j), m[2].subVector(j), m[3].subVector(j));
@@ -947,17 +960,23 @@ namespace CDL
         return Mat3t(m[0].subVector(j), m[1].subVector(j), m[2].subVector(j));
     }
 
-    Vec4t& Mat4t::operator[](const int &i)
+    Vec4t& Mat4t::operator[](const size_t &i)
     {
-        if (i < 0 || i > 3)
+        if (i > 3)
+        {
+            Error_send("Index %d out of range\n", i);
             return m[0];
+        }
         return m[i];
     }
 
-    const Vec4t& Mat4t::operator[](const int &i) const
+    const Vec4t& Mat4t::operator[](const size_t &i) const
     {
-        if (i < 0 || i > 3)
+        if (i > 3)
+        {
+            Error_send("Index %d out of range\n", i);
             return m[0];
+        }
         return m[i];
     }
 

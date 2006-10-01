@@ -12,7 +12,7 @@ namespace CDL
         const size_t &length=v1.getLength();
         DT sum=0;
 
-        for (int i=0; i<length; i++)
+        for (size_t i=0; i<length; i++)
             sum+=p[i]*q[i];
 
         return sum;
@@ -56,7 +56,7 @@ namespace CDL
         const size_t &length=v1.getLength();
         DT ab=0, aa=0, bb=0;
 
-        for (int i=0; i<length; i++)
+        for (size_t i=0; i<length; i++)
         {
             ab+=p[i]*q[i];
             aa+=p[i]*p[i];
@@ -137,7 +137,7 @@ namespace CDL
             size_t length=m_length-1;
             Vector v(length);
 
-            for (int i=0; i<length; i++)
+            for (size_t i=0; i<length; i++)
                 v.m_v[i]=m_v[i];
 
             return v;
@@ -181,7 +181,7 @@ namespace CDL
     {
         Vector v(m_length);
 
-        for (int i=0; i<m_length; i++)
+        for (size_t i=0; i<m_length; i++)
             v.m_v[i]=-m_v[i];
 
         return 0;
@@ -192,7 +192,7 @@ namespace CDL
         if (this == &v) return true;
         if (m_length != v.m_length)
             return false;
-        for (int i=0; i<m_length; i++)
+        for (size_t i=0; i<m_length; i++)
             if (m_v[i] != v.m_v[i])
                 return false;
         return true;
@@ -203,7 +203,7 @@ namespace CDL
         if (this == &v) return false;
         if (m_length != v.m_length)
             return true;
-        for (int i=0; i<m_length; i++)
+        for (size_t i=0; i<m_length; i++)
             if (m_v[i] != v.m_v[i])
                 return true;
         return false;
@@ -220,7 +220,7 @@ namespace CDL
         {
             Vector res(v);
 
-            for (int i=0; i<m_length; i++)
+            for (size_t i=0; i<m_length; i++)
                 res.m_v[i]+=m_v[i];
 
             return res;
@@ -238,7 +238,7 @@ namespace CDL
         {
             Vector res(*this);
 
-            for (int i=0; i<m_length; i++)
+            for (size_t i=0; i<m_length; i++)
                 res.m_v[i]-=v.m_v[i];
 
             return res;
@@ -256,7 +256,7 @@ namespace CDL
         {
             Vector res(v);
 
-            for (int i=0; i<m_length; i++)
+            for (size_t i=0; i<m_length; i++)
                 res.m_v[i]*=m_v[i];
 
             return res;
@@ -267,7 +267,7 @@ namespace CDL
     {
         Vector res(*this);
 
-        for (int i=0; i<m_length; i++)
+        for (size_t i=0; i<m_length; i++)
             res.m_v[i]*=f;
 
         return res;
@@ -278,7 +278,7 @@ namespace CDL
         Vector res(*this);
         const DT f_1=1/f;
 
-        for (int i=0; i<m_length; i++)
+        for (size_t i=0; i<m_length; i++)
             res.m_v[i]*=f_1;
 
         return res;
@@ -311,7 +311,7 @@ namespace CDL
         }
         else
         {
-            for (int i=0; i<m_length; i++)
+            for (size_t i=0; i<m_length; i++)
                 m_v[i]+=v.m_v[i];
         }
 
@@ -326,7 +326,7 @@ namespace CDL
         }
         else
         {
-            for (int i=0; i<m_length; i++)
+            for (size_t i=0; i<m_length; i++)
                 m_v[i]-=v.m_v[i];
         }
 
@@ -341,7 +341,7 @@ namespace CDL
         }
         else
         {
-            for (int i=0; i<m_length; i++)
+            for (size_t i=0; i<m_length; i++)
                 m_v[i]*=v.m_v[i];
         }
 
@@ -350,7 +350,7 @@ namespace CDL
 
     const Vector &Vector::operator*=(const DT &f)
     {
-        for (int i=0; i<m_length; i++)
+        for (size_t i=0; i<m_length; i++)
             m_v[i]*=f;
 
         return *this;
@@ -360,7 +360,7 @@ namespace CDL
     {
         const DT f_1=1/f;
 
-        for (int i=0; i<m_length; i++)
+        for (size_t i=0; i<m_length; i++)
             m_v[i]*=f_1;
 
         return *this;
@@ -379,7 +379,7 @@ namespace CDL
 
         if (m_length == t.m_length)
         {
-            for (int i=0; i<m_length; i++)
+            for (size_t i=0; i<m_length; i++)
             {
                 const DT factor=m_v[i]-t.m_v[i];
                 sum+=factor*factor;
@@ -390,11 +390,27 @@ namespace CDL
         return sum;
     }
 
+    DT Vector::distanceSq(const Vector &t) const
+    {
+        DT sum=0;
+
+        if (m_length == t.m_length)
+        {
+            for (size_t i=0; i<m_length; i++)
+            {
+                const DT factor=m_v[i]-t.m_v[i];
+                sum+=factor*factor;
+            }
+        }
+
+        return sum;
+    }
+
     DT Vector::norm() const
     {
         DT sum=0;
 
-        for (int i=0; i<m_length; i++)
+        for (size_t i=0; i<m_length; i++)
             sum+=m_v[i]*m_v[i];
 
         return sum;
@@ -404,7 +420,7 @@ namespace CDL
     {
         DT sum=0;
 
-        for (int i=0; i<m_length; i++)
+        for (size_t i=0; i<m_length; i++)
             sum+=m_v[i]*m_v[i];
 
         sum=sqrtf(sum);
@@ -419,7 +435,7 @@ namespace CDL
         if (l != 1.0f)
         {
             l=1/sqrtf(l);
-            for (int i=0; i<m_length; i++)
+            for (size_t i=0; i<m_length; i++)
                 m_v[i]*=l;
         }
 
@@ -459,9 +475,9 @@ namespace CDL
         v[1]=t.v[1];
     }
 
-    DT& Vec2t::operator[](const int &i)
+    DT& Vec2t::operator[](const size_t &i)
     {
-        if (i < 0 || i > 1)
+        if (i > 1)
         {
             Error_send("Index %d out of range\n", i);
             return v[0];
@@ -469,9 +485,9 @@ namespace CDL
         return v[i];
     }
 
-    const DT& Vec2t::operator[](const int &i) const
+    const DT& Vec2t::operator[](const size_t &i) const
     {
-        if (i < 0 || i > 1)
+        if (i > 1)
         {
             Error_send("Index %d out of range\n", i);
             return v[0];
@@ -521,7 +537,7 @@ namespace CDL
 
     Vec2t Vec2t::operator/(const DT &f) const
     {
-        DT t=1/f;
+        const DT t=1/f;
         return Vec2t(v[0]*t,v[1]*t);
     }
 
@@ -535,7 +551,7 @@ namespace CDL
         return *this;
     }
 
-    const DT& Vec2t::subVector(const int &i) const
+    const DT& Vec2t::subVector(const size_t &i) const
     {
         if (i == 0)
             return v[1];
@@ -587,7 +603,14 @@ namespace CDL
 
     DT Vec2t::distance(const Vec2t &t) const
     {
-        return sqrtf((v[0]-t.v[0])*(v[0]-t.v[0])+(v[1]-t.v[1])*(v[1]-t.v[1]));
+        const DT f0=v[0]-t.v[0], f1=v[1]-t.v[1];
+        return sqrtf(f0*f0+f1*f1);
+    }
+
+    DT Vec2t::distanceSq(const Vec2t &t) const
+    {
+        const DT f0=v[0]-t.v[0], f1=v[1]-t.v[1];
+        return f0*f0+f1*f1;
     }
 
     DT Vec2t::norm() const
@@ -659,9 +682,9 @@ namespace CDL
         v[2]=DT(1);
     }
 
-    DT& Vec3t::operator[](const int &i)
+    DT& Vec3t::operator[](const size_t &i)
     {
-        if (i < 0 || i > 2)
+        if (i > 2)
         {
             Error_send("Index %d out of range\n", i);
             return v[0];
@@ -669,9 +692,9 @@ namespace CDL
         return v[i];
     }
 
-    const DT& Vec3t::operator[](const int &i) const
+    const DT& Vec3t::operator[](const size_t &i) const
     {
-        if (i < 0 || i > 2)
+        if (i > 2)
         {
             Error_send("Index %d out of range\n", i);
             return v[0];
@@ -736,7 +759,7 @@ namespace CDL
 
     Vec3t Vec3t::operator/(const DT &f) const
     {
-        DT t=1/f;
+        const DT t=1/f;
         return Vec3t(v[0]*t, v[1]*t, v[2]*t);
     }
 
@@ -760,7 +783,7 @@ namespace CDL
         return *this;
     }
 
-    Vec2t Vec3t::subVector(const int &i) const
+    Vec2t Vec3t::subVector(const size_t &i) const
     {
         if (i == 0)
             return Vec2t(v[1],v[2]);
@@ -804,7 +827,7 @@ namespace CDL
 
     const Vec3t& Vec3t::operator/=(const DT &f)
     {
-        DT t=1/f;
+        const DT t=1.0/f;
         v[0]*=t;
         v[1]*=t;
         v[2]*=t;
@@ -820,7 +843,14 @@ namespace CDL
 
     DT Vec3t::distance(const Vec3t &t) const
     {
-        return sqrtf((v[0]-t.v[0])*(v[0]-t.v[0])+(v[1]-t.v[1])*(v[1]-t.v[1])+(v[2]-t.v[2])*(v[2]-t.v[2]));
+        const DT f0=v[0]-t.v[0], f1=v[1]-t.v[1], f2=v[2]-t.v[2];
+        return sqrtf(f0*f0+f1*f1+f2*f2);
+    }
+
+    DT Vec3t::distanceSq(const Vec3t &t) const
+    {
+        const DT f0=v[0]-t.v[0], f1=v[1]-t.v[1], f2=v[2]-t.v[2];
+        return f0*f0+f1*f1+f2*f2;
     }
 
     DT Vec3t::norm() const
@@ -899,9 +929,9 @@ namespace CDL
         v[3]=DT(1);
     }
 
-    DT& Vec4t::operator[](const int &i)
+    DT& Vec4t::operator[](const size_t &i)
     {
-        if (i < 0 || i > 3)
+        if (i > 3)
         {
             Error_send("Index %d out of range\n", i);
             return v[0];
@@ -909,9 +939,9 @@ namespace CDL
         return v[i];
     }
 
-    const DT& Vec4t::operator[](const int &i) const
+    const DT& Vec4t::operator[](const size_t &i) const
     {
-        if (i < 0 || i > 3)
+        if (i > 3)
         {
             Error_send("Index %d out of range\n", i);
             return v[0];
@@ -961,11 +991,11 @@ namespace CDL
 
     Vec4t Vec4t::operator/(const DT &f) const
     {
-        DT t=1/f;
+        const DT t=1/f;
         return Vec4t(v[0]*t, v[1]*t, v[2]*t, v[3]*t);
     }
 
-    Vec3t Vec4t::subVector(const int &i) const
+    Vec3t Vec4t::subVector(const size_t &i) const
     {
         if (i == 0)
             return Vec3t(v[1],v[2],v[3]);
@@ -1036,7 +1066,7 @@ namespace CDL
 
     const Vec4t& Vec4t::operator/=(const DT &f)
     {
-        DT t=1/f;
+        const DT t=1/f;
         v[0]*=t;
         v[1]*=t;
         v[2]*=t;
@@ -1053,7 +1083,14 @@ namespace CDL
 
     DT Vec4t::distance(const Vec4t &t) const
     {
-        return sqrtf((v[0]-t.v[0])*(v[0]-t.v[0])+(v[1]-t.v[1])*(v[1]-t.v[1])+(v[2]-t.v[2])*(v[2]-t.v[2])+(v[3]-t.v[3])*(v[3]-t.v[3]));
+        const DT f0=v[0]-t.v[0], f1=v[1]-t.v[1], f2=v[2]-t.v[2], f3=v[3]-t.v[3];
+        return sqrtf(f0*f0+f1*f1+f2*f2+f3*f3);
+    }
+
+    DT Vec4t::distanceSq(const Vec4t &t) const
+    {
+        const DT f0=v[0]-t.v[0], f1=v[1]-t.v[1], f2=v[2]-t.v[2], f3=v[3]-t.v[3];
+        return f0*f0+f1*f1+f2*f2+f3*f3;
     }
 
     DT Vec4t::norm() const

@@ -51,14 +51,14 @@ namespace CDL
     	if ((T=intersect((Plane &)p)) > 0)
     	{
     		Vec3t pnt=m_point+m_normal*T;
-    		int i1, i2;
+    		size_t i1, i2;
     		if (p.Normal()[0] > p.Normal()[1] && p.Normal()[0] > p.Normal()[2]) {i1=1;i2=2;}
     		else if (p.Normal()[1] > p.Normal()[2]) {i1=0;i2=2;}
     		else {i1=0;i2=1;}
      
     		DefType u0=pnt[i1]-p.Vertex(0)[i1], v0=pnt[i2]-p.Vertex(0)[i2];
     		DefType u1, u2, v1, v2, alpha, beta;
-    		for (int i=1; i<p.Num()-1; i++)
+    		for (size_t i=1; i<p.Num()-1; i++)
     		{
     			u1=p.Vertex(i  )[i1]-p.Vertex(0)[i1];v1=p.Vertex(i  )[i2]-p.Vertex(0)[i2];
     			u2=p.Vertex(i+1)[i1]-p.Vertex(0)[i1];v2=p.Vertex(i+1)[i2]-p.Vertex(0)[i2];

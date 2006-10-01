@@ -20,6 +20,7 @@ namespace CDL
             void  setPoint(const Vec3t &);
             const Vec3t& getNormal() const;
             void  setNormal(const Vec3t &);
+            void flipNormal();
             Intersection intersect(const Ray &) const;
             DefType dist(const Vec3t &) const;
     };

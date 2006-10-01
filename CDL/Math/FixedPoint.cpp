@@ -4,7 +4,7 @@
  *  @author   alcoco
  *  @date     
  *   Created:       16:07:20 08/03/2005
- *   Last Update:   23:24:01 15/03/2005
+ *   Last Update:   00:42:44 01/10/2006
  */
 //========================================================================
 
@@ -14,23 +14,23 @@ namespace CDL
 {
     DEFCLASS("FixedPoint");
 
-    int FixedPoint::D_PRECISION=20;
+    size_t FixedPoint::D_PRECISION=20;
 
-    FixedPoint::FixedPoint(const int &decimal, const fpoint_t &value)
+    FixedPoint::FixedPoint(const size_t &decimal, const fpoint_t &value)
     {
         m_value=value;
         m_decBits=-1;
         setPrecision(decimal);
     }
 
-    FixedPoint::FixedPoint(const int &decimal, const float &value)
+    FixedPoint::FixedPoint(const size_t &decimal, const float &value)
     {
          m_decBits=-1;
          setPrecision(decimal);
          m_value=(fpoint_t)(value*(float)(1LL<<m_decBits));
     }
 
-    FixedPoint::FixedPoint(const int &decimal, const double &value)
+    FixedPoint::FixedPoint(const size_t &decimal, const double &value)
     {
          m_decBits=-1;
          setPrecision(decimal);

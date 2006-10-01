@@ -39,6 +39,7 @@ namespace CDL
             const size_t &getLength() const {return m_length;}
             Vector project(const Vector &) const;
             DT distance(const Vector &) const;
+            DT distanceSq(const Vector &) const;
             DT length() const;
             DT norm() const;
             void reset();
@@ -54,9 +55,9 @@ namespace CDL
             Vec2t(const DT*);
             Vec2t(const DT&, const DT&);
             Vec2t(const Vec2t&);
-            const DT& subVector(const int&i=1) const;
-            DT&       operator[](const int&);
-            const DT& operator[](const int&) const;
+            const DT& subVector(const size_t &i=1) const;
+            DT&       operator[](const size_t &);
+            const DT& operator[](const size_t &) const;
             Vec2t lerp(const Vec2t&, const DT&) const;
             Vec2t operator-() const;
             bool  operator==(const Vec2t&) const;
@@ -75,6 +76,7 @@ namespace CDL
             const Vec2t &normalize();
             Vec2t project(const Vec2t &) const;
             DT distance(const Vec2t&) const;
+            DT distanceSq(const Vec2t&) const;
             DT length() const;
             DT norm()   const;
             void reset();
@@ -91,9 +93,9 @@ namespace CDL
             Vec3t(const DT&, const DT&, const DT&);
             Vec3t(const Vec2t&);
             Vec3t(const Vec3t&);
-            Vec2t subVector(const int&i=2) const;
-            DT&       operator[](const int&);
-            const DT& operator[](const int&) const;
+            Vec2t subVector(const size_t &i=2) const;
+            DT&       operator[](const size_t &);
+            const DT& operator[](const size_t &) const;
             Vec3t lerp(const Vec3t&, const DT&) const;
             Vec3t slerp(const Vec3t&, const DT&) const;
             Vec3t operator-() const;
@@ -114,6 +116,7 @@ namespace CDL
             const Vec3t &normalize();
             Vec3t project(const Vec3t &) const;
             DT distance(const Vec3t&) const;
+            DT distanceSq(const Vec3t&) const;
             DT length() const;
             DT norm()   const;
             void reset();
@@ -130,9 +133,9 @@ namespace CDL
             Vec4t(const DT&, const DT&, const DT&, const DT&);
             Vec4t(const Vec3t&);
             Vec4t(const Vec4t&);
-            Vec3t subVector(const int&i=3) const;
-            DT&       operator[](const int&);
-            const DT& operator[](const int&) const;
+            Vec3t subVector(const size_t &i=3) const;
+            DT&       operator[](const size_t &);
+            const DT& operator[](const size_t &) const;
             Vec4t lerp(const Vec4t&, const DT&) const;
             Vec4t operator-() const;
             bool  operator==(const Vec4t&) const;
@@ -152,6 +155,7 @@ namespace CDL
             const Vec4t &normalize();
             Vec4t project(const Vec4t &) const;
             DT distance(const Vec4t&) const;
+            DT distanceSq(const Vec4t&) const;
             DT length() const;
             DT norm()   const;
             void reset();
