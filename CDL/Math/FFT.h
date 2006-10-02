@@ -10,9 +10,9 @@ namespace CDL
 
     DLL_API void DLL_CALLCONV     FFT(Complex *, const unsigned long&);
     DLL_API void DLL_CALLCONV    iFFT(Complex *, const unsigned long&);
-    DLL_API void DLL_CALLCONV   FFT2D(Complex *, const int&, const int&);
-    DLL_API void DLL_CALLCONV  iFFT2D(Complex *, const int&, const int&);
-    DLL_API void DLL_CALLCONV filter2D(Complex *, const int&, const int&, const FFT_filter &, const DefType&);
+    DLL_API void DLL_CALLCONV   FFT2D(Complex *, const size_t &, const size_t &);
+    DLL_API void DLL_CALLCONV  iFFT2D(Complex *, const size_t &, const size_t &);
+    DLL_API void DLL_CALLCONV filter2D(Complex *, const size_t &, const size_t &, const FFT_filter &, const DefType&);
 }
 
 #endif//__CDL_FFT_H__
