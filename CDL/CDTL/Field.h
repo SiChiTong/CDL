@@ -4,7 +4,7 @@
  *  @author   acornejo
  *  @date
  *   Created:       21:36:35 28/05/2005
- *   Last Update:   02:12:30 23/06/2005
+ *   Last Update:   14:15:09 17/10/2006
  */
 //========================================================================
 
@@ -43,6 +43,7 @@ namespace CDL
                     void setLength(const size_t &, const size_t &);
                     size_t getHash(const size_t & ...) const;
                     const Type &getHashValue(const size_t &) const;
+                    Type &getHashValueRef(const size_t &);
                     void setHashValue(const size_t &, const Type &);
             };
     }
@@ -235,6 +236,7 @@ namespace CDL
             {
                 size_t hash=0;
 
+#ifndef UNSAFE
                 if (m_field)
                 {
                     __FieldHASH(m_dimensions, index0, hash);
@@ -248,6 +250,10 @@ namespace CDL
                 {
                     Error_send("Size not yet defined in all dimensions\n");
                 }
+#else
+                __FieldHASH(m_dimensions, index0, hash);
+                return hash;
+#endif
 
                 return hash;
             }
@@ -255,6 +261,7 @@ namespace CDL
         template<class Type>
             const Type &Field<Type>::getHashValue(const size_t &hash) const
             {
+#ifndef UNSAFE
                 if (m_field)
                 {
                     if (hash >= m_totalSize)
@@ -270,11 +277,39 @@ namespace CDL
                     Error_send("Size not yet defined in all dimensions\n");
                     return m_field[0];
                 }
+#else
+                return m_field[hash];
+#endif
+            }
+
+        template<class Type>
+            Type &Field<Type>::getHashValueRef(const size_t &hash)
+            {
+#ifndef UNSAFE
+                if (m_field)
+                {
+                    if (hash >= m_totalSize)
+                    {
+                        Error_send("Hash %d exceeds maximum of %d\n", hash, m_totalSize);
+                        return m_field[0];
+                    }
+                    else
+                        return m_field[hash];
+                }
+                else
+                {
+                    Error_send("Size not yet defined in all dimensions\n");
+                    return m_field[0];
+                }
+#else
+                return m_field[hash];
+#endif
             }
 
         template<class Type>
             void Field<Type>::setHashValue(const size_t &hash, const Type &v)
             {
+#ifndef UNSAFE
                 if (m_field)
                 {
                     if (hash >= m_totalSize)
@@ -288,6 +323,9 @@ namespace CDL
                 {
                     Error_send("Size not yet defined in all dimensions\n");
                 }
+#else
+                m_field[hash]=v;
+#endif
             }
     }
 }
