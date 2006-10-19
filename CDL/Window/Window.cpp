@@ -628,6 +628,7 @@ namespace CDL
             XF86VidModeSetViewPort(dpy, screen, 0, 0);
 
             win=XCreateWindow(dpy, root, 0,0,m_width,m_height,0,vi->depth,InputOutput,vi->visual,cws,&at);
+            XMapRaised(dpy,win);
             XGrabKeyboard(dpy, win, False, GrabModeAsync, GrabModeAsync, CurrentTime);
             XGrabPointer(dpy, win, False, ButtonPressMask|ButtonReleaseMask|PointerMotionMask, GrabModeAsync, GrabModeAsync, win, None, CurrentTime);
         }
