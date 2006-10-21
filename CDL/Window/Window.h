@@ -45,7 +45,7 @@ namespace CDL
             const int &getWidth()  const;
             const int &getHeight() const;
             const int &getKeyPress() const;
-            static void getDesktopSize(int &, int &);
+            static void getDesktopSize(size_t &, size_t &);
             void setPosition(const int &, const int &);
             void getPosition(int &, int &);
             void setKeyPress(const int &);

@@ -237,7 +237,7 @@ namespace CDL
         glDeleteLists(BACKTEXTURE_LIST,1);
     }
 
-    void Window::getDesktopSize(int &width, int &height)
+    void Window::getDesktopSize(size_t &width, size_t &height)
     {
 #ifdef Windows_NT
         RECT rect;
