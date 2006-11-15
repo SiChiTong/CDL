@@ -165,6 +165,7 @@ namespace CDL
     DLL_API DT DLL_CALLCONV dot(const Vec2t &, const Vec2t &);
     DLL_API DT DLL_CALLCONV dot(const Vec3t &, const Vec3t &);
     DLL_API DT DLL_CALLCONV dot(const Vec4t &, const Vec4t &);
+    DLL_API DT DLL_CALLCONV area(const Vec2t &, const Vec2t &, const Vec2t &);
     DLL_API Vec3t DLL_CALLCONV cross(const Vec3t &, const Vec3t &);
     DLL_API Vec4t DLL_CALLCONV cross(const Vec4t &, const Vec4t &);
     DLL_API DT DLL_CALLCONV angle(const Vector &, const Vector &);

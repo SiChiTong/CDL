@@ -48,6 +48,12 @@ namespace CDL
         return Vec4t(p[1]*q[2]-p[2]*q[1], p[2]*q[0]-p[0]*q[2], p[0]*q[1]-p[1]*q[0], p[3]*q[3]);
     }
 
+
+    DT area(const Vec2t &v1, const Vec2t &v2, const Vec2t &v3)
+    {
+        const DT *p=(DT *)&v1, *q=(DT *)&v2, *r=(DT *)&v3;
+        return 0.5f*(q[0]*r[1]-r[0]*q[1]-p[0]*r[1]+r[0]*p[1]+p[0]*q[1]+q[0]*p[1]);
+    }
 #define ANG(x) (acos(x)*180.0/MM_PI)
 
     DT angle(const Vector &v1, const Vector &v2)
