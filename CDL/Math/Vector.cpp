@@ -52,7 +52,7 @@ namespace CDL
     DT area(const Vec2t &v1, const Vec2t &v2, const Vec2t &v3)
     {
         const DT *p=(DT *)&v1, *q=(DT *)&v2, *r=(DT *)&v3;
-        return 0.5f*(q[0]*r[1]-r[0]*q[1]-p[0]*r[1]+r[0]*p[1]+p[0]*q[1]+q[0]*p[1]);
+        return 0.5f*(q[0]*r[1]-r[0]*q[1]-p[0]*r[1]+r[0]*p[1]+p[0]*q[1]-q[0]*p[1]);
     }
 #define ANG(x) (acos(x)*180.0/MM_PI)
 
