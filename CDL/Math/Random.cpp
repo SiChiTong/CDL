@@ -10,7 +10,7 @@ namespace CDL
 
     Random::Random(const long &s)
     {
-        if (s > 0)
+        if (s >= 0)
             randomize(s);
         else
             randomize(123456789);
