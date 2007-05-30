@@ -27,8 +27,11 @@
 #define DEBUGCDL
 #define DEFCLASS(name)      static const char *__class__=name
 
-// Math definitions
-typedef float DefType;       // What type to use for Math.*
+namespace CDL {
+    // Math definitions
+    typedef float DefType;       // What type to use for Math.*
+    typedef unsigned char byte;
+}
 
 #define Error_send printf("Error at %s.%s defined in %s:%d\n\t",__class__,__func__,__FILE__,__LINE__);printf
 
