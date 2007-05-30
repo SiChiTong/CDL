@@ -30,7 +30,6 @@ namespace CDL
             WSAStartup(MAKEWORD(2,0),&info);        // Unchecked exception
         }
 #endif
-        m_ref=new int(1);
         m_sock=new socket_t;
         *((socket_t*)m_sock)=::socket(AF_INET, SOCK_STREAM,0);	// Unchecked exception
 		if (*((socket_t*)m_sock) == -1)
@@ -42,30 +41,12 @@ namespace CDL
 
     Socket::~Socket()
     {
-        if (!--(*m_ref))
-        {
-            close();
-            delete m_ref;
-            delete (socket_t*)m_sock;
-        }
+        close();
+        delete (socket_t*)m_sock;
 #if defined(Windows_NT)
         if (!--g_ref)
             WSACleanup();
 #endif
-    }
-
-    Socket::Socket(const Socket &s)
-    {
-#if defined(Windows_NT)
-        if (!g_ref++)
-        {
-            WSADATA info;
-            WSAStartup(MAKEWORD(2,0),&info);        // Unchecked exception
-        }
-#endif
-        m_ref=s.m_ref;
-        ++(*m_ref);
-        m_sock=s.m_sock;
     }
 
     Socket::Socket(const void *s)
@@ -77,26 +58,8 @@ namespace CDL
             WSAStartup(MAKEWORD(2,0),&info);        // Unchecked exception
         }
 #endif
-        m_ref=new int(1);
         m_sock=new socket_t;
         *((socket_t*)m_sock)=*((socket_t*)s);
-    }
-
-    const Socket &Socket::operator=(const Socket &s)
-    {
-        if (this != &s)
-        {
-            if (!--(*m_ref))
-            {
-                close();
-                delete m_ref;
-                delete (socket_t*)m_sock;
-            }
-            m_ref=s.m_ref;
-            ++(*m_ref);
-            m_sock=s.m_sock;
-        }
-        return *this;
     }
 
 	InetAddress Socket::getInetAddress() const

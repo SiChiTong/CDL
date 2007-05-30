@@ -24,43 +24,12 @@ namespace CDL
     {
         m_handle=new mutex_t;
         Mutex_create(m_handle);
-        m_ref=new int(1);
     }
 
     Mutex::~Mutex()
     {
-        --(*m_ref);
-        if ((*m_ref) == 0)
-        {
-            delete m_ref;
-            Mutex_destroy(m_handle);
-            delete (mutex_t*)m_handle;
-        }
-    }
-
-    Mutex::Mutex(const Mutex &m)
-    {
-        m_ref=m.m_ref;
-        ++(*m_ref);
-        m_handle=m.m_handle;
-    }
-
-    Mutex& Mutex::operator=(const Mutex &m)
-    {
-        if (this != &m)
-        {
-            --(*m_ref);
-            if (*m_ref == 0)
-            {
-                delete m_ref;
-                Mutex_destroy(m_handle);
-                delete (mutex_t*)m_handle;
-            }
-            m_ref=m.m_ref;
-            ++(*m_ref);
-            m_handle=m.m_handle;
-        }
-        return *this;
+        Mutex_destroy(m_handle);
+        delete (mutex_t*)m_handle;
     }
 
     void *Mutex::getPtr() const

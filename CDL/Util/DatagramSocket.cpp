@@ -30,7 +30,6 @@ namespace CDL
             WSAStartup(MAKEWORD(2,0),&info);        // Unchecked exception
         }
 #endif
-        m_ref=new int(1);
         m_sock=new socket_t;
         *((socket_t*)m_sock)=::socket(AF_INET, SOCK_DGRAM,0);
 		if (*((socket_t*)m_sock) == -1)
@@ -40,70 +39,36 @@ namespace CDL
 		}
     }
 
-    DatagramSocket::DatagramSocket(const DatagramSocket &s)
-    {
-#if defined(Windows_NT)
-        if (!g_ref++)
-        {
-            WSADATA info;
-            WSAStartup(MAKEWORD(2,0),&info);        // Unchecked exception
-        }
-#endif
-        m_ref=s.m_ref;
-        ++(*m_ref);
-        m_sock=s.m_sock;
-    }
-
     DatagramSocket::~DatagramSocket()
     {
-        if (!--(*m_ref))
-        {
-            close();
-            delete m_ref;
-            delete (socket_t*)m_sock;
-        }
+        close();
+        delete (socket_t*)m_sock;
 #if defined(Windows_NT)
         if (!--g_ref)
             WSACleanup();
 #endif
     }
 
-    const DatagramSocket &DatagramSocket::operator=(const DatagramSocket &s)
-    {
-        if (this != &s)
-        {
-            if (!--(*m_ref))
-            {
-                close();
-                delete m_ref;
-                delete (socket_t*)m_sock;
-            }
-            m_ref=s.m_ref;
-            ++(*m_ref);
-            m_sock=s.m_sock;
-        }
-        return *this;
-    }
-
-    int DatagramSocket::read(DatagramPacket &p)
+    int DatagramSocket::read(DatagramPacket &pkt)
     {
 		int numbytes;
 		sockaddr_in addr;
 		socklen_t addr_len=sizeof(addr);
 
-		if ((numbytes=recvfrom(*((socket_t*)m_sock), (char *)p.getBuffer().getData(), p.getBuffer().getLength(), 0,
+		if ((numbytes=recvfrom(*((socket_t*)m_sock), (char *)pkt.getBuffer().getData(), pkt.getBuffer().getLength(), 0,
 						(sockaddr *)&addr, &addr_len)) == -1)
 		{
 			Error_send("Unable to receive packet from UDP socket\n");
 		}
 
-		p.setAddress(InetAddress(inet_ntoa(addr.sin_addr)));
-		p.setLength(numbytes);
+        pkt.setPort(addr.sin_port);
+		pkt.setAddress(InetAddress(inet_ntoa(addr.sin_addr)));
+		pkt.setLength(numbytes);
 
 		return numbytes;
     }
 
-    int DatagramSocket::write(const DatagramPacket &p)
+    int DatagramSocket::write(const DatagramPacket &pkt)
     {
 		int numbytes;
 		sockaddr_in addr;
@@ -111,10 +76,10 @@ namespace CDL
 
 		memset(&addr, 0, addr_len);
 		addr.sin_family=AF_INET;
-		addr.sin_port=htons(p.getPort());
-		addr.sin_addr=*((in_addr*)p.getAddress().getPtr());
+		addr.sin_port=htons(pkt.getPort());
+		addr.sin_addr=*((in_addr*)pkt.getAddress().getPtr());
 
-		if ((numbytes=sendto(*((socket_t*)m_sock), (char *)p.getBuffer().getData(), p.getLength(), 0,
+		if ((numbytes=sendto(*((socket_t*)m_sock), (char *)pkt.getBuffer().getData(), pkt.getLength(), 0,
 						(sockaddr *)&addr, addr_len)) == -1)
 		{
 			Error_send("Unable to send packet from UDP socket\n");

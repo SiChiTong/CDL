@@ -3,13 +3,13 @@
 
 #include <CDL/Util/Buffer.h>
 #include <CDL/Util/InetAddress.h>
+#include <CDL/Util/NonCopyable.h>
 
 namespace CDL
 {
-	class DLL_API DatagramPacket
+	class DLL_API DatagramPacket: public NonCopyable
 	{
 		private:
-			int        *m_ref;
 			int         m_length;
 			int         m_port;
 			Buffer      m_buf;
@@ -17,9 +17,7 @@ namespace CDL
 
 		public:
 			DatagramPacket(const Buffer &b=Buffer(), const InetAddress &i=InetAddress::getLocalHost(), const int &p=0);
-			DatagramPacket(const DatagramPacket &);
 			virtual ~DatagramPacket();
-			const DatagramPacket &operator=(const DatagramPacket &);
 			const int &getLength() const;
 			void setLength(const int &);
 			const Buffer &getBuffer() const;

@@ -2,13 +2,13 @@
 #define __CDL_CONDVAR_H__
 
 #include <CDL/Util/Mutex.h>
+#include <CDL/Util/NonCopyable.h>
 
 namespace CDL
 {
-    class DLL_API CondVar
+    class DLL_API CondVar: public NonCopyable
     {
         private:
-            int   *m_ref;
             void  *m_handle;
             Mutex &m_mutex;
             bool   m_locked;
@@ -16,8 +16,6 @@ namespace CDL
         public:
             CondVar(Mutex &);
             virtual ~CondVar();
-            CondVar(const CondVar &);
-            CondVar& operator=(const CondVar &);
             void wait();
             void signal();
             void broadcast();

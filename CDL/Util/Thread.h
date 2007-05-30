@@ -2,13 +2,13 @@
 #define __CDL_THREAD_H__
 
 #include <CDL/defs.h>
+#include <CDL/Util/NonCopyable.h>
 
 namespace CDL
 {
     class DLL_API Thread
     {
         protected:
-            int     *m_ref;
             void    *m_handle;
             bool     m_alive;
             unsigned int m_id;
@@ -17,8 +17,6 @@ namespace CDL
         public:
             Thread();
             virtual ~Thread();
-            Thread(const Thread &);
-            Thread& operator=(const Thread &);
             virtual void start();
             virtual void stop();
             void join();

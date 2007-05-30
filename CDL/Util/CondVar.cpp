@@ -25,7 +25,6 @@ namespace CDL
 
     CondVar::CondVar(Mutex &mutex): m_mutex(mutex)
     {
-        m_ref=new int(1);
         m_handle=new condvar_t;
         CondVar_create(m_handle);
         m_locked=false;
@@ -33,39 +32,8 @@ namespace CDL
 
     CondVar::~CondVar()
     {
-        if (!--(*m_ref))
-        {
-            delete m_ref;
-            CondVar_destroy(m_handle);
-            delete (condvar_t*)m_handle;
-        }
-    }
-
-    CondVar::CondVar(const CondVar &c): m_mutex(c.m_mutex)
-    {
-        m_ref=c.m_ref;
-        ++(*m_ref);
-        m_handle=c.m_handle;
-        m_locked=c.m_locked;
-    }
-
-    CondVar& CondVar::operator=(const CondVar &c)
-    {
-        if (this != &c)
-        {
-            if (!--(*m_ref))
-            {
-                delete m_ref;
-                CondVar_destroy(m_handle);
-                delete (condvar_t*)m_handle;
-            }
-            m_ref=c.m_ref;
-            ++(*m_ref);
-            m_handle=c.m_handle;
-            m_mutex=c.m_mutex;
-            m_locked=c.m_locked;
-        }
-        return *this;
+        CondVar_destroy(m_handle);
+        delete (condvar_t*)m_handle;
     }
 
     void CondVar::wait()

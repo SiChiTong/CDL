@@ -6,41 +6,12 @@ namespace CDL
 
 	DatagramPacket::DatagramPacket(const Buffer &b, const InetAddress &i, const int &port): m_addr(i)
 	{
-		m_ref=new int(1);
 		m_buf=b;
 		m_port=port;
 		m_length=0;
 	}
 
-	DatagramPacket::DatagramPacket(const DatagramPacket &p): m_addr(p.m_addr)
-	{
-		m_ref=p.m_ref;
-		++(*m_ref);
-		m_length=p.m_length;
-		m_port=p.m_port;
-		m_buf=p.m_buf;
-	}
-
-	DatagramPacket::~DatagramPacket()
-	{
-		if (!--(*m_ref))
-			delete m_ref;
-	}
-
-	const DatagramPacket &DatagramPacket::operator=(const DatagramPacket &p)
-	{
-		if (this != &p)
-		{
-			if (!--(*m_ref))
-				delete m_ref;
-			m_ref=p.m_ref;
-			++(*m_ref);
-			m_length=p.m_length;
-			m_port=p.m_port;
-			m_buf=p.m_buf;
-			m_addr=p.m_addr;
-		}
-	}
+	DatagramPacket::~DatagramPacket() {}
 
 	const int &DatagramPacket::getLength() const
 	{

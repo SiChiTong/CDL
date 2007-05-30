@@ -1,5 +1,5 @@
 #include <CDL/Util/FormatString.h>
-#include <cstdarg>
+#include <stdarg.h>
 
 namespace CDL
 {

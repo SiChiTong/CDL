@@ -38,41 +38,11 @@ namespace CDL
     {
         m_alive=false;
         m_handle=new thread_t;
-        m_ref=new int(1);
     }
 
     Thread::~Thread()
     {
-        if (!--(*m_ref))
-        {
-            delete m_ref;
-            delete (thread_t*)m_handle;
-        }
-    }
-
-    Thread::Thread(const Thread &t)
-    {
-        m_ref=t.m_ref;
-        ++(*m_ref);
-        m_alive=t.m_alive;
-        m_handle=t.m_handle;
-    }
-
-    Thread& Thread::operator=(const Thread &t)
-    {
-        if (this != &t)
-        {
-            if (!--(*m_ref))
-            {
-                delete m_ref;
-                delete (thread_t*)m_handle;
-            }
-            m_ref=t.m_ref;
-            ++(*m_ref);
-            m_alive=t.m_alive;
-            m_handle=t.m_handle;
-        }
-        return *this;
+        delete (thread_t*)m_handle;
     }
 
     void Thread::start()

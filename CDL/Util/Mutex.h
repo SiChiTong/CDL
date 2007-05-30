@@ -2,20 +2,18 @@
 #define __CDL_MUTEX_H__
 
 #include <CDL/defs.h>
+#include <CDL/Util/NonCopyable.h>
 
 namespace CDL
 {
-    class DLL_API Mutex
+    class DLL_API Mutex: public NonCopyable
     {
         protected:
             void   *m_handle;
-            int    *m_ref;
 
         public:
             Mutex();
             virtual ~Mutex();
-            Mutex(const Mutex &);
-            Mutex& operator=(const Mutex &);
             void *getPtr() const;
             void lock();
             void unlock();

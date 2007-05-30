@@ -3,15 +3,15 @@
 
 #include <CDL/Util/Stream.h>
 #include <CDL/Util/InetAddress.h>
+#include <CDL/Util/NonCopyable.h>
 
 namespace CDL
 {
 	class ServerSocket;
 
-    class DLL_API Socket: public IOStream
+    class DLL_API Socket: public IOStream, public NonCopyable
     {
         protected:
-            int*         m_ref;
             void        *m_sock;
             Socket(const void *);
             friend class ServerSocket;
@@ -19,10 +19,8 @@ namespace CDL
         public:
             Socket();
             virtual ~Socket();
-            Socket(const Socket&);
             int  read(void *, const int &);
             int  write(const void *, const int &);
-            const Socket &operator=(const Socket&);
             void connect(const InetAddress &, const int &);
             void bind(const int &);
 			InetAddress getInetAddress() const;

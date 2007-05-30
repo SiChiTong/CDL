@@ -4,7 +4,7 @@
 #include <windows.h>
 #endif
 #include <dirent.h>
-#include <set>
+#include <vector>
 
 namespace CDL
 {
@@ -18,8 +18,8 @@ namespace CDL
         }
     };
 
-    typedef std::set
-        <const char *, ltstr> strset;
+    typedef std::vector<const char *> strset;
+//    typedef std::set <const char *, ltstr> strset;
 
     Directory::Directory(const char *name)
     {
@@ -124,9 +124,9 @@ namespace CDL
             name=new char[strlen(entry->d_name)+1];
             strcpy(name, entry->d_name);
             if (DT_DIR&entry->d_type)
-                ((strset *)m_directories)->insert(name);
+                ((strset *)m_directories)->push_back(name);
             else
-                ((strset *)m_files)->insert(name);
+                ((strset *)m_files)->push_back(name);
         }
 
         closedir(dir);
@@ -148,9 +148,9 @@ namespace CDL
             name=new char[strlen(entry.cFileName)+1];
             strcpy(name, entry.cFileName);
             if (entry.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY)
-                ((strset *)m_directories)->insert(name);
+                ((strset *)m_directories)->push_back(name);
             else
-                ((strset *)m_files)->insert(name);
+                ((strset *)m_files)->push_back(name);
         }
         while(FindNextFile(dir, &entry) != 0);
 
@@ -173,12 +173,7 @@ namespace CDL
         unsigned int count=getDirectoryCount();
 
         if (index < count)
-        {
-            strset::iterator i=((strset *)m_directories)->begin();
-            for (int j=0; j<index; j++, i++)
-                ;
-            return *i;
-        }
+            return (*((strset *)m_directories))[index];
 
         Error_send("Requested subdirectory %d, %s has %d subdirectories\n", index, m_name, count);
         return '\0';
@@ -189,12 +184,7 @@ namespace CDL
         unsigned int count=getFileCount();
 
         if (index < count)
-        {
-            strset::iterator i=((strset *)m_files)->begin();
-            for (int j=0; j<index; j++, i++)
-                ;
-            return *i;
-        }
+            return (*((strset *)m_files))[index];
 
         Error_send("Requested file %d, %s has %d files\n", index, m_name, count);
         return '\0';
