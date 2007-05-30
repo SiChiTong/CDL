@@ -3,6 +3,7 @@
 
 #include <CDL/Util/Stream.h>
 #include <CDL/Util/NonCopyable.h>
+#include <CDL/Util/string.h>
 
 namespace CDL
 {
@@ -10,17 +11,17 @@ namespace CDL
     {
         private:
             FILE *m_fp;
-            char *m_name;
+            string m_name;
 
         public:
             typedef enum {READ=1<<0, WRITE=1<<1, NOCLOSE=1<<2} File_perm;
 
-            File(const char *f='\0', const int &mode=READ);
+            File(const string &n=string::empty, const int &mode=READ);
             virtual ~File();
             File(FILE *, const int &);
-            const char *getName() const;
-            const char *getExtension() const;
-            static bool exists(const char *);
+            const string &getName() const;
+            string getExtension() const;
+            static bool exists(const string &);
             int  read(void *, const int &);
             int  write(const void *, const int &);
             int  seek(const long&, const int &m=SEEK_SET);

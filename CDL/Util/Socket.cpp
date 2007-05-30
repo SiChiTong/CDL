@@ -115,7 +115,7 @@ namespace CDL
         if (::connect(*((socket_t*)m_sock), (sockaddr *)&addr, sizeof(addr)))
 		{
 			int error=errnox;
-			Error_send("Unable to connect to %s:%d with error %d\n", host.getName(), port, error);
+			Error_send("Unable to connect to %s:%d with error %d\n", host.getName().c_str(), port, error);
 		}
     }
 

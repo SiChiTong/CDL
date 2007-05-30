@@ -1,6 +1,7 @@
 #ifndef __CDL_BUFFER_H__
 #define __CDL_BUFFER_H__
 
+#include <CDL/Util/string.h>
 #include <CDL/Util/Stream.h>
 
 namespace CDL
@@ -16,8 +17,8 @@ namespace CDL
             int   m_pos;
 
 		public:
-			Buffer(const int &l=0, unsigned char *b='\0');
-            Buffer(const char *);
+			Buffer(const int &l=0, byte *b='\0');
+            Buffer(const string &);
 			Buffer(const Buffer &);
 			virtual ~Buffer();
 			const Buffer &operator=(const Buffer &);
@@ -32,7 +33,7 @@ namespace CDL
 			void setLength(const int &);
 			void copy(const Buffer &, const int &o=0);
 			void clear();
-            void RC4(const char *);
+            void RC4(const string &);
 			Digest getMD5() const;
 			Digest getSHA1() const;
             Digest getSHA512() const;

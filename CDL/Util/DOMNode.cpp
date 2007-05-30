@@ -1,15 +1,12 @@
 #include <CDL/Util/DOMNode.h>
 #include <map>
 #include <vector>
-#include <string>
 
 namespace CDL
 {
     DEFCLASS("DOMNode");
 
-    struct ltstr {bool operator()(const char *s1, const char *s2) const {return strcmp(s1, s2)<0;}};
-    typedef std::string                value_t;
-    typedef std::map<const char *,DOMNode*,ltstr> child_t;
+    typedef std::map<string,DOMNode*> child_t;
     typedef std::vector<DOMNode*>      sibling_t;
 
     void cleanChilds(child_t *children)
@@ -40,19 +37,12 @@ namespace CDL
         delete siblings;
     }
 
-    DOMNode::DOMNode(const char *name)
+    DOMNode::DOMNode(const string &name)
     {
         m_ref=new int(1);
-        m_value=new value_t();
         m_child=new child_t();
         m_sibling=new sibling_t();
-        if (name != '\0')
-        {
-            m_name=new char[strlen(name)+1];
-            strcpy(m_name, name);
-        }
-        else
-            m_name='\0';
+        m_name=name;
     }
 
     DOMNode::DOMNode(const DOMNode &v)
@@ -70,10 +60,8 @@ namespace CDL
         if (!--(*m_ref))
         {
             delete m_ref;
-            delete (value_t *)m_value;
             cleanChilds((child_t *)m_child);
             cleanSiblings((sibling_t *)m_sibling);
-            if (m_name) delete []m_name;
         }
     }
 
@@ -84,10 +72,8 @@ namespace CDL
             if (!--(*m_ref))
             {
                 delete m_ref;
-                delete (value_t *)m_value;
                 cleanChilds((child_t *)m_child);
                 cleanSiblings((sibling_t *)m_sibling);
-                if (m_name) delete []m_name;
             }
             m_ref=v.m_ref;
             ++(*m_ref);
@@ -100,7 +86,7 @@ namespace CDL
         return *this;
     }
 
-    DOMNode *DOMNode::find(const char *name, const bool &recursive) const
+    DOMNode *DOMNode::find(const string &name, const bool &recursive) const
     {
         child_t::const_iterator found=((child_t*)m_child)->find(name);
         child_t::const_iterator begin(((child_t*)m_child)->begin()), end(((child_t*)m_child)->end());
@@ -124,27 +110,27 @@ namespace CDL
         }
     }
 
-    const DOMNode &DOMNode::operator[](const char *name) const
+    const DOMNode &DOMNode::operator[](const string &name) const
     {
         if (((child_t*)m_child)->find(name) == ((child_t*)m_child)->end())
         {
-            Error_send("Querying for inexistent node [...]%s\\%s\n", m_name, name);
+            Error_send("Querying for inexistent node [...]%s\\%s\n", m_name.c_str(), name.c_str());
             return *this;
         }
         return *((*((child_t*)m_child))[name]);
     }
 
-    DOMNode& DOMNode::operator[](const char *name)
+    DOMNode& DOMNode::operator[](const string &name)
     {
         if (((child_t*)m_child)->find(name) == ((child_t*)m_child)->end())
         {
             DOMNode *node=new DOMNode(name);
-            ((child_t*)m_child)->insert(std::pair<const char *,DOMNode*>(node->getName(), node));
+            ((child_t*)m_child)->insert(std::pair<string,DOMNode*>(node->getName(), node));
         }
         return *((*((child_t*)m_child))[name]);
     }
 
-    const char *DOMNode::getName() const
+    const string &DOMNode::getName() const
     {
         return m_name;
     }
@@ -168,16 +154,16 @@ namespace CDL
         return *(iter->second);
     }
 
-    DOMNode &DOMNode::addChild(const char *name)
+    DOMNode &DOMNode::addChild(const string &name)
     {
         return (*this)[name];
     }
 
-    void DOMNode::deleteChild(const char *name)
+    void DOMNode::deleteChild(const string &name)
     {
         if (((child_t*)m_child)->find(name) == ((child_t*)m_child)->end())
         {
-            Error_send("Unable to delete inexistent child [...]%s\\%s\n", m_name, name);
+            Error_send("Unable to delete inexistent child [...]%s\\%s\n", m_name.c_str(), name.c_str());
         }
         else
             ((child_t*)m_child)->erase(name);
@@ -223,19 +209,20 @@ namespace CDL
         ((sibling_t*)m_sibling)->erase(iter);
     }
 
-    void DOMNode::operator=(const int    &x) {(*((value_t*)m_value))=FormatString("%d", x);}
-    void DOMNode::operator=(const size_t &x) {(*((value_t*)m_value))=FormatString("%ud", x);}
-    void DOMNode::operator=(const float  &x) {(*((value_t*)m_value))=FormatString("%f", x);}
-    void DOMNode::operator=(const double &x) {(*((value_t*)m_value))=FormatString("%lf",x);}
-    void DOMNode::operator=(const char   &x) {(*((value_t*)m_value))=FormatString("%c", x);}
-    void DOMNode::operator=(const bool   &x) {(*((value_t*)m_value))=FormatString("%s", (x ? "true" : "false"));}
-    void DOMNode::operator=(const char   *x) {(*((value_t*)m_value))=FormatString("%s", x);}
+    void DOMNode::operator=(const int    &x) { m_value=string::printf("%d", x);}
+    void DOMNode::operator=(const size_t &x) { m_value=string::printf("%ud", x);}
+    void DOMNode::operator=(const float  &x) { m_value=string::printf("%f", x);}
+    void DOMNode::operator=(const double &x) { m_value=string::printf("%lf",x);}
+    void DOMNode::operator=(const char   &x) { m_value=string::printf("%c", x);}
+    void DOMNode::operator=(const bool   &x) { m_value=string::printf("%s", (x ? "true" : "false"));}
+    void DOMNode::operator=(const char   *x) { m_value=string::printf("%s", x);}
+    void DOMNode::operator=(const string &x) { m_value=x; }
 
-    DOMNode::operator int()         const {return (int)atoi(((value_t*)m_value)->c_str());}
-    DOMNode::operator size_t()      const {return (size_t)atoi(((value_t*)m_value)->c_str());}
-    DOMNode::operator float()       const {return (float)atof(((value_t*)m_value)->c_str());}
-    DOMNode::operator double()      const {return (double)atof(((value_t*)m_value)->c_str());}
-    DOMNode::operator char()        const {return (char)(*((value_t*)m_value))[0];}
-    DOMNode::operator bool()        const {return ((*(value_t*)m_value) == "true" ? true : false);}
-    DOMNode::operator const char*() const {return ((value_t*)m_value)->c_str();}
+    DOMNode::operator int()         const {return (int)atoi(m_value.c_str()); }
+    DOMNode::operator size_t()      const {return (size_t)atoi(m_value.c_str()); }
+    DOMNode::operator float()       const {return (float)atof(m_value.c_str()); }
+    DOMNode::operator double()      const {return (double)atof(m_value.c_str()); }
+    DOMNode::operator char()        const {return (char)m_value.c_str()[0]; }
+    DOMNode::operator bool()        const {return (bool)(m_value == "true" ? true : false); }
+    DOMNode::operator const char*() const {return (const char *)m_value.c_str(); }
 }

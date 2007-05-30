@@ -11,14 +11,14 @@ namespace CDL
 			const Digest &operator=(const Digest &);
 		protected:
             size_t m_length;
-            unsigned char *m_data;
-			char *m_str;
+            byte *m_data;
+            string m_str;
 
 		public:
-			Digest(const unsigned char *d='\0', const int &l=0);
+			Digest(const byte *d='\0', const int &l=0);
 			virtual ~Digest();
-			const unsigned char *getValue() const;
-			const char *getString() const;
+			const byte *getValue() const;
+			const string &getString() const;
             const size_t &getLength() const;
 	};
 }

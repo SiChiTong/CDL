@@ -10,41 +10,34 @@ namespace CDL
 {
     DEFCLASS("File");
 
-    File::File(const char *name, const int &mode)
+    File::File(const string &name, const int &mode): m_name(name)
     {
-        if (name)
+        if (m_name.length() > 0)
         {
+            m_mode=mode;
             char strMode[4]={'w','b','+','\0'};
 
-            if (mode&READ)
+            if (m_mode&READ)
                 strMode[0]='r';
-            if (mode&WRITE)
+            if (m_mode&WRITE)
                 strMode[0]='w';
-            if (mode&WRITE && mode&READ)
+            if (m_mode&WRITE && mode&READ)
                 strMode[2]='+';
             else
                 strMode[2]='\0';
             if (strMode[0] == '\0')
                 return;
 
-            if ((m_fp=fopen(name, strMode)) != NULL)
+            if ((m_fp=fopen(m_name.c_str(), strMode)) == NULL)
             {
-                m_mode=mode;
-                m_name=new char[strlen(name)+1];
-                strcpy(m_name,name);
-            }
-            else
-            {
-                Error_send("Unable to open file %s as %s\n", name, strMode);
+                Error_send("Unable to open file %s as %s\n", m_name.c_str(), strMode);
                 m_mode=0;
-                m_name='\0';
             }
         }
         else
         {
             m_fp=NULL;
             m_mode=0;
-            m_name='\0';
         }
     }
 
@@ -53,7 +46,6 @@ namespace CDL
         m_fp=fp;
         m_mode=mode;
         m_mode|=NOCLOSE;
-        m_name='\0';
     }
 
     File::~File()
@@ -68,31 +60,27 @@ namespace CDL
             fflush(m_fp);
             fclose(m_fp);
         }
-        if (m_name)
-            delete []m_name;
         m_fp=NULL;
         m_mode=0;
-        m_name='\0';
     }
 
-    bool File::exists(const char *name)
+    bool File::exists(const string &name)
     {
-        return access(name, 0) != -1;
+        return access(name.c_str(), 0) != -1;
     }
 
-    const char *File::getName() const
+    const string &File::getName() const
     {
         return m_name;
     }
 
-    const char *File::getExtension() const
+    string File::getExtension() const
     {
-        size_t len=strlen(m_name);
-        for (int i=0; i<len; i++)
-            if (m_name[i] == '.')
-                return &m_name[i+1];
-
-        return "";
+        int pos=m_name.find('.');
+        if (pos == string::npos)
+            return string::empty;
+        else
+            return m_name.substr(pos+1);
     }
 
     void File::flush()
@@ -103,7 +91,7 @@ namespace CDL
         {
             if (m_mode&READ)
             {
-                Error_send("Unable to flush read-only file %s\n", m_name);
+                Error_send("Unable to flush read-only file %s\n", m_name.c_str());
                 return;
             }
         }
@@ -117,7 +105,7 @@ namespace CDL
         {
             if (m_mode&WRITE)
             {
-                Error_send("Unable to put back character in write-only file %s\n", m_name);
+                Error_send("Unable to put back character in write-only file %s\n", m_name.c_str());
                 return;
             }
         }
@@ -136,7 +124,7 @@ namespace CDL
         {
             if (m_mode&WRITE)
             {
-                Error_send("Unable to read write-only file %s\n", m_name);
+                Error_send("Unable to read write-only file %s\n", m_name.c_str());
                 return 0;
             }
             return -1;
@@ -156,7 +144,7 @@ namespace CDL
         {
             if (m_mode&READ)
             {
-                Error_send("Unable to write read-only file %s\n", m_name);
+                Error_send("Unable to write read-only file %s\n", m_name.c_str());
                 return 0;
             }
             return -1;

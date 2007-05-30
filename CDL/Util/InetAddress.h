@@ -3,6 +3,7 @@
 
 #include <CDL/defs.h>
 #include <CDL/Util/NonCopyable.h>
+#include <CDL/Util/string.h>
 
 namespace CDL
 {
@@ -11,13 +12,13 @@ namespace CDL
     {
         private:
             void *m_addr;
-            char  m_hostname[128];
+            string m_hostname;
 
         public:
-            InetAddress(const char *);
+            InetAddress(const string &);
             virtual ~InetAddress();
-            const char *getName() const;
-            const char *getAddress() const;
+            const string &getName() const;
+            string getAddress() const;
 			int getIntAddress() const;
             static InetAddress getLocalHost();
             void *getPtr() const;

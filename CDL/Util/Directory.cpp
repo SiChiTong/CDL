@@ -10,44 +10,29 @@ namespace CDL
 {
     DEFCLASS("Directory");
 
-    struct ltstr
-    {
-        bool operator()(const char *s1, const char *s2)
-        {
-            return strcmp(s1,s2) < 0;
-        }
-    };
+    typedef std::vector<string> strset;
 
-    typedef std::vector<const char *> strset;
-//    typedef std::set <const char *, ltstr> strset;
-
-    Directory::Directory(const char *name)
+    Directory::Directory(const string &name)
     {
         m_ref=new int(1);
         m_directories=new strset;
         m_files=new strset;
-        if (name != '\0')
+        if (name.length() > 0)
         {
-            m_name=new char[strlen(name)+1];
-            strcpy(m_name, name);
-            if (strchr("/\\", m_name[strlen(m_name)-1]))
-                m_name[strlen(m_name)-1]='\0';
+            char lastc=name[name.length()-1];
+            if (lastc == '/' || lastc == '\\')
+                m_name=name.substr(0,name.length()-1);
+            else
+                m_name=name;
         }
-        else
-            m_name='\0';
-
         refresh();
     }
 
     Directory::~Directory()
     {
-        --(*m_ref);
-        if ((*m_ref) == 0)
+        if (!--(*m_ref))
         {
             delete m_ref;
-            if (m_name)
-                delete []m_name;
-            m_name='\0';
             refresh();
             delete ((strset *)m_directories);
             delete ((strset *)m_files);
@@ -67,13 +52,9 @@ namespace CDL
     {
         if (this != &d)
         {
-            --(*m_ref);
-            if (*m_ref == 0)
+            if (!--(*m_ref))
             {
                 delete m_ref;
-                if (m_name)
-                    delete []m_name;
-                m_name='\0';
                 refresh();
                 delete ((strset *)m_directories);
                 delete ((strset *)m_files);
@@ -97,8 +78,6 @@ namespace CDL
         WIN32_FIND_DATA entry;
 #endif
 
-        char *name;
-
         for (strset::iterator i=((strset *)m_files)->begin(); i != ((strset *)m_files)->end(); ++i)
             delete []*i;
         ((strset *)m_files)->clear();
@@ -106,23 +85,22 @@ namespace CDL
             delete []*i;
         ((strset *)m_directories)->clear();
 
-        if (!m_name)
+        if (m_name.length() == 0)
             return;
 
 #if   defined(Linux)
 
-        dir=opendir(m_name);
+        dir=opendir(m_name.c_str());
 
         if (!dir)
         {
-            Error_send("Unable to open directory %s\n", m_name);
+            Error_send("Unable to open directory %s\n", m_name.c_str());
             return;
         }
 
         while ((entry=readdir(dir)) != NULL)
         {
-            name=new char[strlen(entry->d_name)+1];
-            strcpy(name, entry->d_name);
+            string name(entry->d_name);
             if (DT_DIR&entry->d_type)
                 ((strset *)m_directories)->push_back(name);
             else
@@ -132,10 +110,8 @@ namespace CDL
         closedir(dir);
 #elif defined(Windows_NT)
 
-        name=new char[strlen(m_name)+3];
-        strcat(strcpy(name,m_name),"/*");
-        dir=FindFirstFile(name, &entry);
-        delete name;
+        string dir=m_name+"/*";
+        dir=FindFirstFile(dir.c_str(), &entry);
 
         if (dir == INVALID_HANDLE_VALUE)
         {
@@ -145,8 +121,7 @@ namespace CDL
 
         do
         {
-            name=new char[strlen(entry.cFileName)+1];
-            strcpy(name, entry.cFileName);
+            string name(entry.cFileName);
             if (entry.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY)
                 ((strset *)m_directories)->push_back(name);
             else
@@ -168,55 +143,43 @@ namespace CDL
         return ((strset *)m_files)->size();
     }
 
-    const char *Directory::getDirectoryName(const unsigned int &index) const
+    const string &Directory::getDirectoryName(const unsigned int &index) const
     {
         unsigned int count=getDirectoryCount();
 
         if (index < count)
             return (*((strset *)m_directories))[index];
 
-        Error_send("Requested subdirectory %d, %s has %d subdirectories\n", index, m_name, count);
-        return '\0';
+        Error_send("Requested subdirectory %d, %s has %d subdirectories\n", index, m_name.c_str(), count);
+        return string::empty;
     }
 
-    const char *Directory::getFileName(const unsigned int &index) const
+    const string &Directory::getFileName(const unsigned int &index) const
     {
         unsigned int count=getFileCount();
 
         if (index < count)
             return (*((strset *)m_files))[index];
 
-        Error_send("Requested file %d, %s has %d files\n", index, m_name, count);
-        return '\0';
+        Error_send("Requested file %d, %s has %d files\n", index, m_name.c_str(), count);
+        return string::empty;
     }
 
-    Directory Directory::getDirectory(const unsigned int &index) const
+    string Directory::getDirectoryPath(const unsigned int &index) const
     {
-        char path[512];
-        const char *name=getDirectoryName(index);
+        const string &name=getDirectoryName(index);
 
-        if (name)
-        {
-            strcpy(path, m_name);
-            strcat(path, "/");
-            strcat(path,name);
-            return Directory(path);
-        }
-        return Directory();
+        if (name.length() > 0)
+            return m_name+"/"+name;
+        return string::empty;
     }
 
-    File Directory::getFile(const unsigned int &index) const
+    string Directory::getFilePath(const unsigned int &index) const
     {
-        char path[512];
-        const char *name=getFileName(index);
+        const string &name=getFileName(index);
 
-        if (name)
-        {
-            strcpy(path, m_name);
-            strcat(path, "/");
-            strcat(path,name);
-            return File(path, File::READ|File::WRITE);
-        }
-        return File();
+        if (name.length() > 0)
+            return m_name+"/"+name;
+        return string::empty;
     }
 }

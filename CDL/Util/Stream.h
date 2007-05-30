@@ -2,6 +2,7 @@
 #define __CDL_STREAM_H__
 
 #include <CDL/defs.h>
+#include <CDL/Util/string.h>
 
 namespace CDL
 {
@@ -40,9 +41,7 @@ namespace CDL
             void readSize(size_t &);
             void readFloat(float &);
             void readDouble(double &);
-            void readString(char *);
-            void readLine(char *);
-            void readToken(char *, const char &d=',');
+            string readString(const char &d='\0');
     };
 
     class DLL_API OutputStream: public virtual Stream
@@ -58,8 +57,8 @@ namespace CDL
             void writeSize(const size_t &);
             void writeFloat(const float &);
             void writeDouble(const double &);
-            void writeString(const char *);
-            void writeCString(const char *);
+            void writeString(const string &);
+            void writeCString(const string &);
     };
 
     class DLL_API IOStream: public InputStream, public OutputStream {};

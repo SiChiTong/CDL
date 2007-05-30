@@ -4,7 +4,7 @@
  *  @author   alex
  *  @date
  *   Created:       11:36:16 30/05/2007
- *   Last Update:   15:38:45 30/05/2007
+ *   Last Update:   17:50:22 30/05/2007
  */
 //========================================================================
 #ifndef __CDL_STRING_H__
@@ -25,6 +25,7 @@ class string
         enum {npos=-1};
 
         string();
+        string(size_t n, char c);
         string(const char *s, size_t n=npos);
         string(const string &s, size_t pos=0, size_t n=npos);
         string(const string &s1, const string &s2);
@@ -40,10 +41,11 @@ class string
         const string &operator=(const string &s);
         const string &operator=(const char *s);
         const char operator[](size_t n) const {return m_str[n];}
+        const char at(size_t n) const {return m_str[n];}
 
         string toLower() const;
         string toUpper() const;
-        string substring(size_t pos=0, size_t n=npos) const {return string(*this,pos,npos);}
+        string substr(size_t pos=0, size_t n=npos) const {return string(*this,pos,npos);}
         int compare(const string &s) const {return strcmp(m_str,s.m_str);}
         int compare(const char *s) const {return strcmp(m_str,s);}
 
@@ -61,6 +63,9 @@ class string
         size_t rfind_of(const char *s, size_t pos=npos) const;
         size_t rfind_nof(const string &s, size_t pos=npos) const;
         size_t rfind_nof(const char *s, size_t pos=npos) const;
+
+        static const string empty;
+        static string printf(const char *, ...);
 };
 
 #ifndef SKIP_OPERATORS

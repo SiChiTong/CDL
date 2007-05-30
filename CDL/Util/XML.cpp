@@ -4,26 +4,18 @@
  *  @author   acornejo
  *  @date
  *   Created:       02:57:45 02/05/2005
- *   Last Update:   05:09:15 17/05/2005
+ *   Last Update:   17:53:17 30/05/2007
  */
 //========================================================================
 
 #include <CDL/Util/XML.h>
-#include <string>
-
-typedef std::string string_t;
-
-#define TAB "    "
-
-void writeCString(CDL::OutputStream &out, const char *str)
-{
-    for (int i=0; i<strlen(str); i++)
-        out.writeChar(str[i]);
-}
+#include <CDL/Util/string.h>
 
 namespace CDL
 {
     DEFCLASS("XML");
+
+    string TAB("    ");
 
     void write(OutputStream &out, const DOMNode &node, const int &depth)
     {
@@ -31,8 +23,8 @@ namespace CDL
         if (strlen(value))
         {
             for (int i=0;i<depth; i++)
-                writeCString(out,TAB);
-            writeCString(out,FormatString("%s\n", value));
+                out.writeString(TAB);
+            out.writeString(string::printf("%s\n", value));
         }
         if (node.getChildCount())
         {
@@ -41,31 +33,31 @@ namespace CDL
                 const DOMNode &child=node.getChild(i);
                 const char *name=child.getName();
                 for (int j=0; j<depth; j++)
-                    writeCString(out,TAB);
+                    out.writeString(TAB);
                 if (child.getChildCount() > 0)
                 {
-                    writeCString(out,FormatString("<%s>\n", name));
+                    out.writeString(string::printf("<%s>\n",name));
                     write(out, child,depth+1);
                     for (int j=0; j<depth; j++)
-                        writeCString(out,TAB);
-                    writeCString(out,FormatString("</%s>\n", name));
+                        out.writeString(TAB);
+                    out.writeString(string::printf("</%s>\n",name));
                 }
                 else
-                    writeCString(out, FormatString("<%s>%s</%s>\n", name, (const char *)child, name));
+                    out.writeString(string::printf("<%s>%s</%s>\n", name, (const char *)child, name));
                 for (int j=0; j<child.getSiblingCount(); j++)
                 {
                     for (int k=0; k<depth; k++)
-                        writeCString(out,TAB);
+                        out.writeString(TAB);
                     if (child.getChildCount() > 0)
                     {
-                        writeCString(out,FormatString("<%s>\n", name));
+                        out.writeString(string::printf("<%s>\n",name));
                         write(out, child.getSibling(j), depth+1);
                         for (int k=0; k<depth; k++)
-                            writeCString(out,TAB);
-                        writeCString(out,FormatString("</%s>\n", name));
+                            out.writeString(TAB);
+                        out.writeString(string::printf("</%s>\n", name));
                     }
                     else
-                        writeCString(out, FormatString("<%s>%s</%s>\n", name, (const char *)child.getSibling(j), name));
+                        out.writeString(string::printf("<%s>%s</%s>\n", name,(const char *)child.getSibling(j),name));
                 }
             }
         }
@@ -76,37 +68,37 @@ namespace CDL
         CDL::write(out,node,0);
     }
 
-    string_t getToken(InputStream &in)
+    string getToken(InputStream &in)
     {
         char c;
-        string_t str;
+        string str;
 
         do
             in.readChar(c);
         while((c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '<') && in.isValid());
 
-        str+=c;
+        str=str+c;
         do
         {
             in.readChar(c);
-            str+=c;
+            str=str+c;
         }
         while (c != '>' && c != '<' && in.isValid());
 
         if (c == '>')
         {
-            if (str[0] == '!' || str[0] == '?')
+            if (str.at(0) == '!' || str.at(0) == '?')
                 return getToken(in);
             else
-                return "<"+str;
+                return '<'+str;
         }
         else
         {
-            c=str[str.size()-1];
+            c=str.at(str.length()-1);
             while (c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '<')
             {
-                str.erase(str.size()-1);
-                c=str[str.size()-1];
+                str=str.substr(0,str.length()-1);
+                c=str.at(str.length()-1);
             }
 
             return str;
@@ -118,17 +110,16 @@ namespace CDL
     {
         do
         {
-            string_t str=getToken(in);
-            if (str[0] == '<')
+            string str=getToken(in);
+            if (str.at(0) == '<')
             {
-                if (str[1] == '/')
+                if (str.at(0) == '/')
                     return;
-                string_t name=str.substr(1,str.length()-2);
-                const char *cname=name.c_str();
-                if (node.find(cname) == '\0')
-                    read(in, node[cname]);
+                string name=str.substr(1,str.length()-2);
+                if (node.find(name) == '\0')
+                    read(in, node[name]);
                 else
-                    read(in, node[cname].addSibling());
+                    read(in, node[name].addSibling());
             }
             else
                 node=str.c_str();

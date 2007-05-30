@@ -9,7 +9,7 @@ namespace CDL
 {
     DEFCLASS("Buffer");
 
-    Buffer::Buffer(const int &length, unsigned char *data)
+    Buffer::Buffer(const int &length, byte *data)
     {
         m_length=length;
         m_pos=0;
@@ -20,7 +20,7 @@ namespace CDL
                  m_data=data;
             else
             {
-                m_data=new unsigned char[m_length];
+                m_data=new byte[m_length];
                 memset(m_data,0, m_length);
                 m_clean=true;
             }
@@ -29,15 +29,15 @@ namespace CDL
             m_data='\0';
     }
 
-    Buffer::Buffer(const char *str)
+    Buffer::Buffer(const string &str)
     {
-         m_length=strlen(str);
+         m_length=str.length();
          m_pos=0;
          m_clean=true;
          if (m_length)
          {
-             m_data=new char[m_length+1];
-             memcpy(m_data,str,m_length+1);
+             m_data=new char[m_length];
+             memcpy(m_data,str.c_str(),m_length);
          }
          else
              m_data='\0';
@@ -50,7 +50,7 @@ namespace CDL
         m_clean=b.m_clean;
         if (m_clean)
         {
-            m_data=new unsigned char [m_length];
+            m_data=new byte[m_length];
             memcpy(m_data,b.m_data,m_length);
         }
         else
@@ -60,7 +60,7 @@ namespace CDL
     Buffer::~Buffer()
     {
         if (m_data && m_length && m_clean)
-            delete [](unsigned char *)m_data;
+            delete [](byte *)m_data;
     }
 
     const Buffer &Buffer::operator=(const Buffer &b)
@@ -68,7 +68,7 @@ namespace CDL
         if (&b != this)
         {
             if (m_data && m_length && m_clean)
-                delete [](unsigned char *)m_data;
+                delete [](byte *)m_data;
             m_length=b.m_length;
             m_pos=b.m_pos;
             m_pos=b.m_pos;
@@ -76,7 +76,7 @@ namespace CDL
             m_clean=b.m_clean;
             if (m_clean)
             {
-                m_data=new unsigned char [m_length];
+                m_data=new byte[m_length];
                 memcpy(m_data,b.m_data,m_length);
             }
             else
@@ -89,7 +89,7 @@ namespace CDL
     {
         if (m_pos+size <= m_length)
         {
-            memcpy(data, &((unsigned char *)m_data)[m_pos], size);
+            memcpy(data, &((byte *)m_data)[m_pos], size);
             m_pos+=size;
             return size;
         }
@@ -98,7 +98,7 @@ namespace CDL
             int sz=m_length-m_pos;
             if (sz >0)
             {
-                memcpy(data, &((unsigned char *)m_data)[m_pos], sz);
+                memcpy(data, &((byte *)m_data)[m_pos], sz);
                 m_pos+=sz;
                 return sz;
             }
@@ -114,7 +114,7 @@ namespace CDL
     {
         if (m_pos+size <= m_length)
         {
-            memcpy(&((unsigned char *)m_data)[m_pos], data, size);
+            memcpy(&((byte *)m_data)[m_pos], data, size);
             m_pos+=size;
             return size;
         }
@@ -123,7 +123,7 @@ namespace CDL
             int sz=m_length-m_pos;
             if (sz >0)
             {
-                memcpy(&((unsigned char *)m_data)[m_pos], data, sz);
+                memcpy(&((byte *)m_data)[m_pos], data, sz);
                 m_pos+=sz;
                 return sz;
             }
@@ -189,12 +189,12 @@ namespace CDL
     void Buffer::setLength(const int &length)
     {
         int min=MIN(length,m_length);
-        unsigned char *tmp;
-        if (length) tmp=new unsigned char[length];
+        byte *tmp;
+        if (length) tmp=new byte[length];
         else tmp='\0';
         memcpy(tmp,m_data,min);
         if (m_data && m_length)
-            delete [](unsigned char *)m_data;
+            delete [](byte *)m_data;
         m_data=tmp;
         m_length=length;
     }
@@ -214,7 +214,7 @@ namespace CDL
         int count=m_length-offset;
         if (b.m_length < count) count=b.m_length;
 
-        memcpy(&((unsigned char *)m_data)[offset], b.m_data, count);
+        memcpy(&((byte *)m_data)[offset], b.m_data, count);
     }
 
     void Buffer::clear()
@@ -223,16 +223,16 @@ namespace CDL
         m_pos=0;
     }
 
-    void Buffer::RC4(const char *key_text)
+    void Buffer::RC4(const string &key)
     {
-        size_t i, j, key_length=strlen(key_text);
-        unsigned char S[256], T;
+        size_t i, j;
+        byte S[256], T;
 
         for (i=0; i<256; i++)
             S[i]=i;
         for (i=0, j=0; i<256; i++)
         {
-            j=(j+S[i]+key_text[i%key_length])&0xFF;
+            j=(j+S[i]+key[i%key.length()])&0xFF;
             T=S[i];
             S[i]=S[j];
             S[j]=T;

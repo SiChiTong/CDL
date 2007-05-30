@@ -79,49 +79,27 @@ namespace CDL
         LE64_TO_CPU(aDouble);
     }
 
-    void InputStream::readString(char *str)
+    string InputStream::readString(const char &del)
     {
+        static char str[4096];
         str[0]='\0';
-        int index=0, rd;
+        int index=-1, rd;
 
         do
         {
+            index++;
             rd=read(&str[index], sizeof(char));
+        } while(str[index] != del && str[index] != '\0' && rd == 1 && index < 4096);
+
+        if (str[index] != '\0')
+            str[index]='\0';
+        if (str[index-2] == '\r')
+        {
+            str[index-2]='\0';
+            str[index-1]='\0';
         }
-        while (str[index++] != '\0' && rd == 1);
-    }
 
-    void InputStream::readLine(char *str)
-    {
-         str[0]='\0';
-         int index=0, rd;
-
-         do
-         {
-             rd=read(&str[index], sizeof(char));
-         } while(str[index++] != '\n' && rd == 1);
-
-         str[index]='\0';
-         if (str[index-2] == '\r')
-         {
-             str[index-2]='\0';
-             str[index-1]='\0';
-         }
-    }
-
-    void InputStream::readToken(char *str, const char &del)
-    {
-         str[0]='\0';
-         int index=-1, rd;
-
-         do
-         {
-             index++;
-             rd=read(&str[index], sizeof(char));
-         } while(str[index] != del && str[index] != '\0' && rd == 1);
-
-         if (str[index] != '\0')
-             str[index]='\0';
+        return string(str);
     }
 
     void OutputStream::writeChar(const char &aChar)
@@ -171,25 +149,15 @@ namespace CDL
         write(&x, sizeof(double));
     }
 
-    void OutputStream::writeCString(const char *str)
+    void OutputStream::writeCString(const string &str)
     {
-        int index=0;
-
-        do
-        {
-            write(&str[index], sizeof(char));
-        }
-        while (str[index++] != '\0');
+        for (int i=0; i<str.length()+1; i++)
+            write(&str.c_str()[i], sizeof(char));
     }
 
-    void OutputStream::writeString(const char *str)
+    void OutputStream::writeString(const string &str)
     {
-        int index=0;
-
-        while (str[index] != '\0')
-        {
-            write(&str[index], sizeof(char));
-            index++;
-        }
+        for (int i=0; i<str.length(); i++)
+            write(&str.c_str()[i], sizeof(char));
     }
 }

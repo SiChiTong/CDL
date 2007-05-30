@@ -4,21 +4,20 @@ namespace CDL
 {
 	DEFCLASS("Digest");
 
-	Digest::Digest(const unsigned char *data, const int &length)
+	Digest::Digest(const byte *data, const int &length)
 	{
 		if (data && length)
 		{
             m_length=length;
-            m_data=new unsigned char [m_length];
+            m_data=new byte [m_length];
             memcpy(m_data,data,m_length);
-			m_str=new char[m_length*2+1];
+            char str_digest[m_length*2+1];
 			for (int i=0, p=0; i<m_length; i++, p+=2)
-				sprintf(&m_str[p], "%02x", (unsigned int)(((unsigned char *)m_data)[i]));
-			m_str[m_length*2]='\0';
+				sprintf(&str_digest[p], "%02x", (unsigned int)(((unsigned char *)m_data)[i]));
+            m_str=string(str_digest,m_length*2);
 		}
 		else
         {
-			m_str='\0';
             m_data='\0';
             m_length=0;
         }
@@ -26,8 +25,6 @@ namespace CDL
 
 	Digest::~Digest()
 	{
-		if (m_str)
-	        delete []m_str;
         if (m_data)
             delete []m_data;
 	}
@@ -37,7 +34,7 @@ namespace CDL
         return m_data;
 	}
 
-	const char *Digest::getString() const
+	const string &Digest::getString() const
 	{
 		return m_str;
 	}

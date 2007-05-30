@@ -1,7 +1,7 @@
 #ifndef __CDL_DOMNODE_H__
 #define __CDL_DOMNODE_H__
 
-#include <CDL/Util/FormatString.h>
+#include <CDL/Util/string.h>
 
 namespace CDL
 {
@@ -9,28 +9,28 @@ namespace CDL
     {
         private:
 			int   *m_ref;
-			void  *m_value;
+            string m_value;
 			void  *m_child;
             void  *m_sibling;
-            char  *m_name;
+            string m_name;
 
         public:
-			explicit DOMNode(const char *x='\0');
+			explicit DOMNode(const string &x=string::empty);
 			DOMNode(const DOMNode &);
 			virtual ~DOMNode();
             const DOMNode& operator=(const DOMNode&);
 
-            const char *getName() const;
-            DOMNode *find(const char *, const bool &r=false) const;
+            const string &getName() const;
+            DOMNode *find(const string &, const bool &r=false) const;
 
-            const DOMNode& operator[](const char *) const;
-            DOMNode&       operator[](const char *);
+            const DOMNode& operator[](const string &) const;
+            DOMNode&       operator[](const string &);
 
             size_t getChildCount() const;
             const DOMNode &getChild(const size_t &) const;
             DOMNode       &getChild(const size_t &);
-            DOMNode       &addChild(const char *);
-            void deleteChild(const char *);
+            DOMNode       &addChild(const string &);
+            void deleteChild(const string &);
 
             size_t getSiblingCount() const;
             const DOMNode &getSibling(const size_t &) const;
@@ -45,6 +45,7 @@ namespace CDL
             void operator=(const char &);
             void operator=(const bool &);
             void operator=(const char *);
+            void operator=(const string &);
             operator int()    const;
             operator size_t() const;
             operator float()  const;

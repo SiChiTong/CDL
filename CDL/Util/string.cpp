@@ -4,19 +4,52 @@
  *  @author   alex
  *  @date
  *   Created:       11:36:16 30/05/2007
- *   Last Update:   15:39:09 30/05/2007
+ *   Last Update:   17:43:42 30/05/2007
  */
 //========================================================================
 #define SKIP_OPERATORS
 #include "string.h"
+#include <ctype.h>
+#include <cstdarg>
 
 namespace CDL {
+
+const string string::empty;
+
+string string::printf(const char *fmt, ...)
+{
+    char tmp[1];
+    va_list ap;
+
+    va_start(ap, fmt);
+    int len=vsnprintf(tmp, 1, fmt, ap);
+    va_end(ap);
+
+    if (len > 1)
+    {
+        string str(len,'\0'); 
+        va_start(ap, fmt);
+        int len=vsnprintf(str.m_str, len+1, fmt, ap);
+        va_end(ap);
+        return str;
+    }
+
+    return string::empty;
+}
 
 string::string()
 {
     m_ref=new int(1);
     m_length=0;
     m_str=new char[1];
+    m_str[m_length]='\0';
+}
+string::string(size_t n, char c)
+{
+    m_ref=new int(1);
+    m_length=n;
+    m_str=new char[m_length+1];
+    memset(m_str,c,n);
     m_str[m_length]='\0';
 }
 string::string(const char *s, size_t n)

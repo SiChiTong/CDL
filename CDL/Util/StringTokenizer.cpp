@@ -4,136 +4,99 @@
  *  @author   acornejo
  *  @date
  *   Created:       01:23:39 24/01/2006
- *   Last Update:   19:51:46 02/02/2006
+ *   Last Update:   18:47:21 30/05/2007
  */
 //========================================================================
 #include <CDL/Util/StringTokenizer.h>
 
 namespace CDL
 {
-     DEFCLASS("StringTokenizer");
+    DEFCLASS("StringTokenizer");
 
-     const char *StringTokenizer::m_defaultDelim=" \t\n\r\f";
+    const string StringTokenizer::m_defaultDelim=" \t\n\r\f";
 
-     StringTokenizer::StringTokenizer(const char *str, const char *delim)
-     {
-          setDelimiter(delim);
-          setString(str);
-     }
+    StringTokenizer::StringTokenizer(const string &str, const string &delim): m_str(&str), m_delim(&delim)
+    {
+        m_pos=0;
+    }
 
-     StringTokenizer::~StringTokenizer() {}
+    StringTokenizer::~StringTokenizer() {}
 
-     void StringTokenizer::setDelimiter(const char *delim)
-     {
-          m_delim=delim;
-          m_delimCount=strlen(m_delim);
-     }
+    void StringTokenizer::setDelimiter(const string &delim)
+    {
+          m_delim=&delim;
+    }
 
-     void StringTokenizer::setString(const char *str)
-     {
-          m_str=str;
-          m_ptr=&m_str[0];
-     }
+    void StringTokenizer::setString(const string &str)
+    {
+          m_str=&str;
+          m_pos=0;
+    }
 
-     const char *StringTokenizer::getDelimiter() const
-     {
-          return m_delim;
-     }
+    const string &StringTokenizer::getDelimiter() const
+    {
+          return *m_delim;
+    }
 
-     const char *StringTokenizer::getString() const
-     {
-          return m_str;
-     }
+    const string &StringTokenizer::getString() const
+    {
+          return *m_str;
+    }
 
-     size_t StringTokenizer::countTokens() const
-     {
-          size_t tokens=0;
-          size_t pos=0;
+    size_t StringTokenizer::countTokens() const
+    {
+        size_t tokens=0;
+        size_t o_pos=m_pos;
+        size_t n_pos=m_pos;
 
-          while (true)
-          {
-               bool foundToken=true;
-               char c=m_str[pos];
+        while (n_pos != string::npos)
+        {
+            if (n_pos > o_pos+1)
+                tokens++;
+            o_pos=n_pos;
+            n_pos=m_str->find(*m_delim,o_pos+1);
+        }
 
-               if (c == '\0') break;
-               for (int i=0; i<m_delimCount; i++)
-                   if (c == m_delim[i]) foundToken=false;
+        if (o_pos != string::npos && o_pos < m_str->length()-1)
+            tokens++;
 
-               if (foundToken)
-               {
-                    tokens++;
-                    do
-                    {
-                         pos++;
-                         c=m_str[pos];
-                         for (int i=0; i<m_delimCount; i++)
-                             if (c == m_delim[i]) foundToken=false;
-                    }
-                    while (foundToken && c != '\0');
-               }
-               else
-                   pos++;
-          }
+        return tokens;
+    }
 
-          return tokens;
-     }
+    bool StringTokenizer::hasMoreTokens()
+    {
+        size_t o_pos=m_pos;
+        size_t n_pos=m_pos;
 
-     bool StringTokenizer::hasMoreTokens()
-     {
-         while(true)
-         {
-              bool foundToken=true;
-              char c=*m_ptr;
-              for (int i=0; i<m_delimCount; i++)
-                  if (c == m_delim[i]) foundToken=false;
+        while (n_pos != string::npos)
+        {
+            if (n_pos > o_pos+1)
+                return true;
+            o_pos=n_pos;
+            n_pos=m_str->find(*m_delim,o_pos+1);
+        }
 
-              if (foundToken)
-              {
-                  if (c == '\0')
-                      return false;
-                  else
-                      return true;
-              }
-              else
-                  m_ptr++;
-         }
-     }
+        if (o_pos != string::npos && o_pos < m_str->length()-1)
+            return true;
 
-     const char *StringTokenizer::nextToken(char *_token)
-     {
-          static char f_token[512];
-          char *token;
-          const char *token_ptr;
+        return false;
+    }
 
-          if (_token)
-              token=_token;
-          else
-              token=f_token;
-          token_ptr=&token[0];
+    string StringTokenizer::nextToken()
+    {
+        size_t o_pos=m_pos;
 
-          while (true)
-          {
-               bool foundToken=true;
-               char c=*m_ptr;
-               for (int i=0; i<m_delimCount; i++)
-                   if (c == m_delim[i]) foundToken=false;
+        while (m_pos != string::npos)
+        {
+            if (m_pos > o_pos+1)
+                return m_str->substr(o_pos+1,m_pos);
+            o_pos=m_pos;
+            m_pos=m_str->find(*m_delim,o_pos+1);
+        }
 
-               if (foundToken)
-               {
-                    do
-                    {
-                         if (*m_ptr == '\0') break;
-                         *(token++)=*(m_ptr++);
-                         c=*m_ptr;
-                         for (int i=0; i<m_delimCount; i++)
-                                if (c == m_delim[i]) foundToken=false;
-                    }
-                    while (foundToken);
-                    *token='\0';
-                    return token_ptr;
-               }
-               else
-                   m_ptr++;
-          }
-     }
+        if (o_pos != string::npos && o_pos < m_str->length()-1)
+            return m_str->substr(o_pos);
+
+        return string::empty;
+    }
 }

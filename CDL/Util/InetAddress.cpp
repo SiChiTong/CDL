@@ -13,7 +13,7 @@
 
 namespace CDL
 {
-    InetAddress::InetAddress(const char *name)
+    InetAddress::InetAddress(const string &name)
     {
 #if defined(Windows_NT)
         if (!g_ref++)
@@ -23,14 +23,12 @@ namespace CDL
         }
 #endif
         m_addr=new in_addr;
-        hostent *he=gethostbyname(name);
+        hostent *he=gethostbyname(name.c_str());
         if (he)
         {
             *((in_addr*)m_addr)=*((in_addr *)he->h_addr);
-			strcpy(m_hostname, he->h_name);
+            m_hostname=he->h_name;
         }
-        else
-			strcpy(m_hostname, "");
     }
 
     InetAddress::~InetAddress()
@@ -42,14 +40,14 @@ namespace CDL
         delete (in_addr*)m_addr;
     }
 
-    const char *InetAddress::getName() const
+    const string &InetAddress::getName() const
     {
         return m_hostname;
     }
 
-    const char *InetAddress::getAddress() const
+    string InetAddress::getAddress() const
     {
-        return inet_ntoa(*((in_addr*)m_addr));
+        return string(inet_ntoa(*((in_addr*)m_addr)));
     }
 
 	int InetAddress::getIntAddress() const
