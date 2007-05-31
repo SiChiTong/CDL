@@ -4,7 +4,7 @@
  *  @author   alex
  *  @date
  *   Created:       11:36:16 30/05/2007
- *   Last Update:   22:39:28 30/05/2007
+ *   Last Update:   02:05:32 31/05/2007
  */
 //========================================================================
 #define SKIP_OPERATORS
@@ -219,7 +219,7 @@ size_t string::rfind(const string &s, size_t pos) const
 
 size_t string::rfind(const char *s, size_t pos) const
 {
-    for (int i=(pos == npos ? m_length -1 : npos); i>=0; i--)
+    for (int i=(pos == npos ? m_length -1 : pos); i>=0; i--)
         if (!strcmp(&m_str[pos],s))
             return i;
     return npos;
@@ -227,7 +227,7 @@ size_t string::rfind(const char *s, size_t pos) const
 
 size_t string::rfind(char c, size_t pos) const
 {
-    for (int i=(pos == npos ? m_length -1 : npos); i>=0; i--)
+    for (int i=(pos == npos ? m_length -1 : pos); i>=0; i--)
         if (m_str[i] == c)
             return i;
     return npos;
@@ -281,7 +281,7 @@ size_t string::find_nof(const char *s, size_t pos) const
 
 size_t string::rfind_of(const string &s, size_t pos) const
 {
-    for (int i=(pos == npos ? m_length -1 : npos); i>=0; i--)
+    for (int i=(pos == npos ? m_length -1 : pos); i>=0; i--)
     {
         for (int j=0; j<s.m_length; j++)
             if (m_str[i] == s.m_str[j])
@@ -293,7 +293,7 @@ size_t string::rfind_of(const string &s, size_t pos) const
 size_t string::rfind_of(const char *s, size_t pos) const
 {
     int len=strlen(s);
-    for (int i=(pos == npos ? m_length -1 : npos); i>=0; i--)
+    for (int i=(pos == npos ? m_length -1 : pos); i>=0; i--)
     {
         for (int j=0; j<len; j++)
             if (m_str[i] == s[j])
@@ -304,7 +304,7 @@ size_t string::rfind_of(const char *s, size_t pos) const
 
 size_t string::rfind_nof(const string &s, size_t pos) const
 {
-    for (int i=(pos == npos ? m_length -1 : npos); i>=0; i--)
+    for (int i=(pos == npos ? m_length -1 : pos); i>=0; i--)
     {
         for (int j=0; j<s.m_length; j++)
             if (m_str[i] != s.m_str[j])
@@ -316,7 +316,7 @@ size_t string::rfind_nof(const string &s, size_t pos) const
 size_t string::rfind_nof(const char *s, size_t pos) const
 {
     int len=strlen(s);
-    for (int i=(pos == npos ? m_length -1 : npos); i>=0; i--)
+    for (int i=(pos == npos ? m_length -1 : pos); i>=0; i--)
     {
         for (int j=0; j<len; j++)
             if (m_str[i] != s[j])
