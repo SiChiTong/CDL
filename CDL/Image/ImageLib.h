@@ -4,7 +4,7 @@
  *  @author   alcoco
  *  @date     
  *   Created:       00:28:32 06/03/2005
- *   Last Update:   22:18:36 18/09/2006
+ *   Last Update:   20:26:48 30/05/2007
  */
 //========================================================================
 #ifndef __CDL_IMAGELIB_H__
@@ -12,6 +12,7 @@
 
 #include <CDL/Image/Image.h>
 #include <CDL/Util/Stream.h>
+#include <CDL/Util/string.h>
 
 namespace CDL
 {
@@ -22,10 +23,10 @@ namespace CDL
             static ImageLib *m_instance;
 
         public:
-            virtual Image load(const char *)=0;
-            virtual Image load(RandomAccessIOStream &, const char *)=0;
-            virtual void save(const char *, const Image &)=0;
-            virtual void save(RandomAccessIOStream &, const Image &, const char *type="jpg")=0;
+            virtual Image load(const string &)=0;
+            virtual Image load(RandomAccessIOStream &, const string &)=0;
+            virtual void save(const string &, const Image &)=0;
+            virtual void save(RandomAccessIOStream &, const Image &, const string &type="jpg")=0;
             static ImageLib &newInstance();
             static void registerLibrary(ImageLib &);
     };

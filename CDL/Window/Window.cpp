@@ -1,5 +1,5 @@
 #include <CDL/Window/Window.h>
-#include <cstdarg>
+#include <stdarg.h>
 #include <GL/gl.h>        // glWindow.*
 #include <GL/glu.h>       // glWindow.*
 
@@ -79,29 +79,22 @@ namespace CDL
         }
     }
 
-    void Window::print(const int &x, const int &y, const char *str, ...) const
+    void Window::print(const int &x, const int &y, const string &str) const
     {
-        va_list ap;
-        char strText[256];
-
-        if (str == '\0' || str[0] == '\0') return;
-
-        va_start(ap, str);
-        vsprintf(strText,str,ap);
-        va_end(ap);
+        if (str.length() <= 0) return;
 
         glTranslatef(x,y,0);
         glRasterPos2f(0,12);
         glPushAttrib(GL_LIST_BIT);
         glListBase(FONT_LIST);
-        glCallLists(strlen(strText), GL_UNSIGNED_BYTE, strText);
+        glCallLists(str.length(), GL_UNSIGNED_BYTE, str.c_str());
         glPopAttrib();
         glTranslatef(-x,-y,0);
     }
 
-    void Window::processCommand(const char *str)
+    void Window::processCommand(const string &str)
     {
-        m_console.print("Unknown command '%s'\n", str);
+        m_console.print(string::printf("Unknown command '%s'\n", str.c_str()));
     }
 
     void Window::write(const Image &img, const size_t &x, const size_t &y)

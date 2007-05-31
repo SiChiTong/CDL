@@ -4,33 +4,30 @@
  *  @author   acornejo
  *  @date
  *   Created:       16:19:29 14/09/2006
- *   Last Update:   18:51:26 14/09/2006
+ *   Last Update:   21:47:51 30/05/2007
  */
 //========================================================================
 #include <CDL/Window/Console.h>
+#include <CDL/Util/string.h>
 #include <CDL/Util/StringTokenizer.h>
-#include <deque>
-#include <string>
-#include <cstdarg>
+#include <deque> // should replace for list
+#include <stdarg.h>
 #include <GL/gl.h>
 
-typedef std::string string_t;
-typedef std::deque<string_t> queue_t;
+namespace CDL
+{
+
+typedef std::deque<string> queue_t;
 #define _history ((queue_t*)m_history)
 #define history (*_history)
 #define _buffer ((queue_t*)m_buffer)
 #define buffer (*_buffer)
-#define _curLine ((string_t*)m_curLine)
-#define curLine (*_curLine)
 
-namespace CDL
-{
     Console::Console(Window &win): m_win(win)
     {
         m_win=win;
         m_history=new queue_t();
         m_buffer=new queue_t();
-        m_curLine=new string_t("");
         m_bufferSize=800;
         m_historySize=50;
         m_bufferPos=0;
@@ -44,16 +41,15 @@ namespace CDL
         buffer.clear();
         delete _history;
         delete _buffer;
-        delete _curLine;
     }
 
     const Console &Console::operator=(const Console &cons)
     {
         if (this != &cons)
         {
-            curLine=*((string_t*)cons.m_curLine);
             history=*((queue_t*)cons.m_history);
             buffer=*((queue_t*)cons.m_buffer);
+            m_curLine=cons.m_curLine;
             m_win=cons.m_win;
             m_bufferSize=cons.m_bufferSize;
             m_historySize=cons.m_historySize;
@@ -91,21 +87,14 @@ namespace CDL
             buffer.resize(m_bufferSize);
     }
 
-    void Console::print(const char *fmt, ...)
+    void Console::print(const string &str)
     {
-        va_list ap;
-        char str[256];
-
-        va_start(ap, fmt);
-        vsprintf(str,fmt,ap);
-        va_end(ap);
-
         StringTokenizer tokens(str,"\n");
         while (tokens.hasMoreTokens())
         {
             if (buffer.size() == m_bufferSize)
                 buffer.pop_back();
-            buffer.push_front(string_t(tokens.nextToken()));
+            buffer.push_front(tokens.nextToken());
         }
     }
 
@@ -118,24 +107,24 @@ namespace CDL
                 if (m_curPos > 0) m_curPos--;
                 break;
             case Window::KEY_RIGHT:
-                if (m_curPos < curLine.length()) m_curPos++;
+                if (m_curPos < m_curLine.length()) m_curPos++;
                 break;
             case Window::KEY_BACKSPACE:
                 if (m_curPos > 0)
                 {
                     m_curPos--;
-                    curLine.erase(m_curPos,1);
+//                    m_curLine.erase(m_curPos,1); missing
                 }
                 break;
             case Window::KEY_DELETE:
-                curLine.erase(m_curPos,1);
+//                m_curLine.erase(m_curPos,1); missing
                 break;
             case Window::KEY_UP:
                 if (m_historyPos < histSize)
                 {
                     m_historyPos++;
-                    curLine=history[histSize-m_historyPos];
-                    m_curPos=curLine.length();
+                    m_curLine=history[histSize-m_historyPos];
+                    m_curPos=m_curLine.length();
                 }
                 break;
             case Window::KEY_DOWN:
@@ -143,10 +132,10 @@ namespace CDL
                 {
                     m_historyPos--;
                     if (!m_historyPos)
-                        curLine="";
+                        m_curLine=string::empty;
                     else
-                        curLine=history[history.size()-m_historyPos];
-                    m_curPos=curLine.length();
+                        m_curLine=history[history.size()-m_historyPos];
+                    m_curPos=m_curLine.length();
                 }
                 break;
             case Window::KEY_PGUP:
@@ -166,17 +155,17 @@ namespace CDL
                 }
                 break;
             case Window::KEY_ENTER:
-                print("> %s\n", curLine.c_str());
+                print(string::printf("> %s\n", m_curLine.c_str()));
                 if (histSize == m_historySize)
                     history.pop_front();
-                history.push_back(curLine);
+                history.push_back(m_curLine);
                 m_historyPos=0;
                 m_curPos=0;
-                m_win.processCommand(curLine.c_str());
-                curLine="";
+                m_win.processCommand(m_curLine);
+                m_curLine=string::empty;
                 break;
             default:
-                curLine.insert(m_curPos,1,(char)key);
+//                m_curLine.insert(m_curPos,1,(char)key); missing
                 m_curPos++;
         }
     }
@@ -209,7 +198,7 @@ namespace CDL
             glVertex2f(0,26);
         glEnd();
         glColor3f(1,1,1);
-        m_win.print(5,0,"> %s", curLine.c_str());
+        m_win.print(5,0,string::printf("> %s", m_curLine.c_str()));
         m_win.print(23+m_curPos*9,0,"_");
         size_t bufsize=buffer.size(), lines=m_win.getHeight()/18;
         if (bufsize > lines) bufsize=lines;

@@ -4,7 +4,7 @@
  *  @author   acornejo
  *  @date
  *   Created:       02:57:45 02/05/2005
- *   Last Update:   17:53:17 30/05/2007
+ *   Last Update:   23:50:15 30/05/2007
  */
 //========================================================================
 
@@ -19,31 +19,19 @@ namespace CDL
 
     void write(OutputStream &out, const DOMNode &node, const int &depth)
     {
-        const char *value=node;
-        if (strlen(value))
+        const string &value=node.value();
+        if (value.length() > 0)
         {
             for (int i=0;i<depth; i++)
                 out.writeString(TAB);
-            out.writeString(string::printf("%s\n", value));
+            out.writeString(string::printf("%s\n", value.c_str()));
         }
         if (node.getChildCount())
         {
             for (int i=0; i<node.getChildCount(); i++)
             {
                 const DOMNode &child=node.getChild(i);
-                const char *name=child.getName();
-                for (int j=0; j<depth; j++)
-                    out.writeString(TAB);
-                if (child.getChildCount() > 0)
-                {
-                    out.writeString(string::printf("<%s>\n",name));
-                    write(out, child,depth+1);
-                    for (int j=0; j<depth; j++)
-                        out.writeString(TAB);
-                    out.writeString(string::printf("</%s>\n",name));
-                }
-                else
-                    out.writeString(string::printf("<%s>%s</%s>\n", name, (const char *)child, name));
+                const char *name=child.getName().c_str();
                 for (int j=0; j<child.getSiblingCount(); j++)
                 {
                     for (int k=0; k<depth; k++)
@@ -57,7 +45,7 @@ namespace CDL
                         out.writeString(string::printf("</%s>\n", name));
                     }
                     else
-                        out.writeString(string::printf("<%s>%s</%s>\n", name,(const char *)child.getSibling(j),name));
+                        out.writeString(string::printf("<%s>%s</%s>\n", name,child.getSibling(j).value().c_str(),name));
                 }
             }
         }
@@ -113,7 +101,7 @@ namespace CDL
             string str=getToken(in);
             if (str.at(0) == '<')
             {
-                if (str.at(0) == '/')
+                if (str.at(1) == '/')
                     return;
                 string name=str.substr(1,str.length()-2);
                 if (node.find(name) == '\0')
@@ -122,7 +110,7 @@ namespace CDL
                     read(in, node[name].addSibling());
             }
             else
-                node=str.c_str();
+                node=str;
         }
         while (in.isValid());
     }

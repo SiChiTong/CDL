@@ -4,9 +4,14 @@
  *  @author   acornejo
  *  @date
  *   Created:       10:32:04 09/03/2007
- *   Last Update:   23:08:02 28/05/2007
+ *   Last Update:   16:36:07 29/05/2007
  */
 //========================================================================
+#ifndef __CDTL_MATH_H__
+#define __CDTL_MATH_H__
+
+namespace CDL { namespace CDTL {
+
 template <size_t M, size_t N> // log_M (N)
 struct Log
 {
@@ -68,3 +73,6 @@ struct Unroll<T,0>
     static MUSTINLINE void copy(T *target_array, T *source_array) {}
     static MUSTINLINE void copy(T *target_array, T *source_array, int *index_array, int j) {}
 };
+
+} /* namespace CDTL */ } /* namespace CDL */
+#endif//__CDTL_MATH_H__

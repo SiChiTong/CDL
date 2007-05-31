@@ -30,13 +30,13 @@ namespace CDL
         public:
             Window();
             void open(const char *title, const int &width, const int &height);
-            void print(const int &, const int &, const char *fmt, ...) const;
+            void print(const int &, const int &, const string &) const;
             void write(const Image &img, const size_t &x=0, const size_t &y=0);
             void read(Image &img, const size_t &x=0, const size_t &y=0, const size_t &w=0, const size_t &h=0);
             virtual void init() {};
             virtual void update()=0;
             virtual void deinit() {};
-            virtual void processCommand(const char *);
+            virtual void processCommand(const string &);
             void close();
             const bool &isRunning()  const;
             const bool &isVisible() const;

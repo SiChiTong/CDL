@@ -4,11 +4,11 @@
  *  @author   alcoco
  *  @date     
  *   Created:       16:07:20 08/03/2005
- *   Last Update:   00:42:44 01/10/2006
+ *   Last Update:   22:51:10 28/05/2007
  */
 //========================================================================
 
-#include "FixedPoint.h"
+#include <CDL/Math/FixedPoint.h>
 
 namespace CDL
 {

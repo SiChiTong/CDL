@@ -15,7 +15,7 @@
 #include <CDL/Util/Mutex.h>
 #include <CDL/Util/CondVar.h>
 #include <CDL/Util/Timer.h>
-#include <CDL/Util/FormatString.h>
+#include <CDL/Util/string.h>
 #include <CDL/Util/Buffer.h>
 #include <CDL/Util/Digest.h>
 #include <CDL/Util/StringTokenizer.h>

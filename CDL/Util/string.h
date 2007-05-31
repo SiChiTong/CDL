@@ -4,7 +4,7 @@
  *  @author   alex
  *  @date
  *   Created:       11:36:16 30/05/2007
- *   Last Update:   17:50:22 30/05/2007
+ *   Last Update:   23:17:30 30/05/2007
  */
 //========================================================================
 #ifndef __CDL_STRING_H__
@@ -36,7 +36,6 @@ class string
         virtual ~string();
 
         const size_t &length() const {return m_length;}
-        operator const char *() const {return m_str;}
         const char *c_str() const {return m_str;}
         const string &operator=(const string &s);
         const string &operator=(const char *s);
@@ -45,7 +44,7 @@ class string
 
         string toLower() const;
         string toUpper() const;
-        string substr(size_t pos=0, size_t n=npos) const {return string(*this,pos,npos);}
+        string substr(size_t pos=0, size_t n=npos) const {return string(*this,pos,n);}
         int compare(const string &s) const {return strcmp(m_str,s.m_str);}
         int compare(const char *s) const {return strcmp(m_str,s);}
 
@@ -63,6 +62,12 @@ class string
         size_t rfind_of(const char *s, size_t pos=npos) const;
         size_t rfind_nof(const string &s, size_t pos=npos) const;
         size_t rfind_nof(const char *s, size_t pos=npos) const;
+
+        int    toInt() const;
+        char   toChar() const;
+        bool   toBool() const;
+        float  toFloat() const;
+        double toDouble() const;
 
         static const string empty;
         static string printf(const char *, ...);

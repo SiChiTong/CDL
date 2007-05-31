@@ -78,11 +78,7 @@ namespace CDL
         WIN32_FIND_DATA entry;
 #endif
 
-        for (strset::iterator i=((strset *)m_files)->begin(); i != ((strset *)m_files)->end(); ++i)
-            delete []*i;
         ((strset *)m_files)->clear();
-        for (strset::iterator i=((strset *)m_directories)->begin(); i != ((strset *)m_directories)->end(); ++i)
-            delete []*i;
         ((strset *)m_directories)->clear();
 
         if (m_name.length() == 0)

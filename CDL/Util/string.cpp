@@ -4,12 +4,13 @@
  *  @author   alex
  *  @date
  *   Created:       11:36:16 30/05/2007
- *   Last Update:   17:43:42 30/05/2007
+ *   Last Update:   22:39:28 30/05/2007
  */
 //========================================================================
 #define SKIP_OPERATORS
 #include "string.h"
 #include <ctype.h>
+#include <stdlib.h>
 #include <cstdarg>
 
 namespace CDL {
@@ -323,5 +324,11 @@ size_t string::rfind_nof(const char *s, size_t pos) const
     }
     return npos;
 }
+
+int    string::toInt()    const {return (int)atoi(m_str);}
+char   string::toChar()   const {return (char)m_str[0];}
+bool   string::toBool()   const {return (bool)(!compare("true") ? true : false);}
+float  string::toFloat()  const {return (float)atof(m_str);}
+double string::toDouble() const {return (double)atof(m_str);}
 
 }

@@ -38,21 +38,15 @@ namespace CDL
             DOMNode       &addSibling();
             void deleteSibling(const size_t &);
 
+            const string &value() const {return m_value;}
+
             void operator=(const int &);
             void operator=(const size_t &);
             void operator=(const float &);
             void operator=(const double &);
             void operator=(const char &);
             void operator=(const bool &);
-            void operator=(const char *);
             void operator=(const string &);
-            operator int()    const;
-            operator size_t() const;
-            operator float()  const;
-            operator double() const;
-            operator char()   const;
-            operator bool()   const;
-            operator const char*()  const;
     };
 }
 

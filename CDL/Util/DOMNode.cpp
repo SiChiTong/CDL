@@ -215,14 +215,5 @@ namespace CDL
     void DOMNode::operator=(const double &x) { m_value=string::printf("%lf",x);}
     void DOMNode::operator=(const char   &x) { m_value=string::printf("%c", x);}
     void DOMNode::operator=(const bool   &x) { m_value=string::printf("%s", (x ? "true" : "false"));}
-    void DOMNode::operator=(const char   *x) { m_value=string::printf("%s", x);}
     void DOMNode::operator=(const string &x) { m_value=x; }
-
-    DOMNode::operator int()         const {return (int)atoi(m_value.c_str()); }
-    DOMNode::operator size_t()      const {return (size_t)atoi(m_value.c_str()); }
-    DOMNode::operator float()       const {return (float)atof(m_value.c_str()); }
-    DOMNode::operator double()      const {return (double)atof(m_value.c_str()); }
-    DOMNode::operator char()        const {return (char)m_value.c_str()[0]; }
-    DOMNode::operator bool()        const {return (bool)(m_value == "true" ? true : false); }
-    DOMNode::operator const char*() const {return (const char *)m_value.c_str(); }
 }
