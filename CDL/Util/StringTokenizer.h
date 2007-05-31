@@ -4,7 +4,7 @@
  *  @author   acornejo
  *  @date
  *   Created:       01:13:56 24/01/2006
- *   Last Update:   18:45:37 30/05/2007
+ *   Last Update:   00:53:52 31/05/2007
  */
 //========================================================================
 
@@ -20,19 +20,19 @@ namespace CDL
     {
         private:
             static const string m_defaultDelim;
-            const string *m_str;
-            const string *m_delim;
+            string m_str;
+            string m_delim;
             size_t m_pos;
 
         public:
-            StringTokenizer(const string &str=string::empty, const string &delim=m_defaultDelim);
-            void setDelimiter(const string &);
+            StringTokenizer(string str=string::empty, string delim=m_defaultDelim);
+            void setDelimiter(string &);
             const string &getDelimiter() const;
-            void setString(const string &);
+            void setString(string &);
             const string &getString() const;
             virtual ~StringTokenizer();
             size_t countTokens() const;
-            bool hasMoreTokens();
+            bool hasMoreTokens() const;
             string nextToken();
     };
 }

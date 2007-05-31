@@ -4,7 +4,7 @@
  *  @author   acornejo
  *  @date
  *   Created:       16:19:29 14/09/2006
- *   Last Update:   21:47:51 30/05/2007
+ *   Last Update:   00:52:49 31/05/2007
  */
 //========================================================================
 #include <CDL/Window/Console.h>
@@ -89,7 +89,7 @@ typedef std::deque<string> queue_t;
 
     void Console::print(const string &str)
     {
-        StringTokenizer tokens(str,"\n");
+        StringTokenizer tokens(string(str),string("\n"));
         while (tokens.hasMoreTokens())
         {
             if (buffer.size() == m_bufferSize)
