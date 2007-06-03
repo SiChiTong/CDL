@@ -4,18 +4,22 @@
  *  @author   alex
  *  @date
  *   Created:       11:36:16 30/05/2007
- *   Last Update:   02:05:32 31/05/2007
+ *   Last Update:   20:25:03 02/06/2007
  */
 //========================================================================
 #define SKIP_OPERATORS
 #include "string.h"
+#include <CDL/CDTL/function_base.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <cstdarg>
 
 namespace CDL {
 
-const string string::empty;
+using CDTL::min;
+using CDTL::max;
+
+const string string::nullstr;
 
 string string::printf(const char *fmt, ...)
 {
@@ -35,7 +39,7 @@ string string::printf(const char *fmt, ...)
         return str;
     }
 
-    return string::empty;
+    return string::nullstr;
 }
 
 string::string()
@@ -193,134 +197,97 @@ string string::toUpper() const
     return upper;
 }
 
-size_t string::find(const string &s, size_t pos) const
+size_t string::find(const char *s, size_t pos, size_t n) const
 {
-    return find(s.m_str,pos);
-}
-
-size_t string::find(const char *s, size_t pos) const
-{
-    char *ptr=strstr(&m_str[pos],s);
-    if (ptr == NULL) return npos;
-    return ptr-m_str;
+    if (!n) return 0;
+    size_t limit=m_length-n;
+    while (pos < limit)
+    {
+        if (!string_traits::compare(m_str+pos,s,n))
+            return pos;
+        ++pos;
+    }
+    return npos;
 }
 
 size_t string::find(char c, size_t pos) const
 {
-    char *ptr=strchr(&m_str[pos],c);
-    if (ptr == NULL) return npos;
-    return ptr-m_str;
+    if (pos < m_length)
+    {
+        const char *p=string_traits::find(m_str+pos,m_length-pos,c);
+        if (p)
+            return p-m_str;
+    }
+    return npos;
 }
 
-size_t string::rfind(const string &s, size_t pos) const
+size_t string::rfind(const char *s, size_t pos, size_t n) const
 {
-    return rfind(s.m_str,pos);
-}
-
-size_t string::rfind(const char *s, size_t pos) const
-{
-    for (int i=(pos == npos ? m_length -1 : pos); i>=0; i--)
-        if (!strcmp(&m_str[pos],s))
-            return i;
+    if (!n) return m_length;
+    size_t p=min(pos,m_length-n)+1;
+    while (p-- > 0)
+    {
+        if (!string_traits::compare(m_str+p,s,n))
+            return p;
+    }
     return npos;
 }
 
 size_t string::rfind(char c, size_t pos) const
 {
-    for (int i=(pos == npos ? m_length -1 : pos); i>=0; i--)
-        if (m_str[i] == c)
-            return i;
-    return npos;
-}
-
-size_t string::find_of(const string &s, size_t pos) const
-{
-    for (int i=pos; i<m_length; i++)
+    size_t p=min(pos,m_length-1)+1;
+    while (p-- > 0)
     {
-        for (int j=0; j<s.m_length; j++)
-            if (m_str[i] == s.m_str[j])
-                return i;
+        if (m_str[p] == c)
+            return p;
     }
     return npos;
 }
 
-size_t string::find_of(const char *s, size_t pos) const
+size_t string::find_first_of(const char *s, size_t pos, size_t n) const
 {
-    int len=strlen(s);
-    for (int i=pos; i<m_length; i++)
+    while (pos < m_length)
     {
-        for (int j=0; j<len; j++)
-            if (m_str[i] == s[j])
-                return i;
+        for (int i=0; i<n; i++)
+            if (m_str[pos] == s[i])
+                return pos;
+        pos++;
     }
     return npos;
 }
 
-size_t string::find_nof(const string &s, size_t pos) const
+size_t string::find_first_not_of(const char *s, size_t pos, size_t n) const
 {
-    for (int i=pos; i<m_length; i++)
+    while (pos < m_length)
     {
-        for (int j=0; j<s.m_length; j++)
-            if (m_str[i] != s.m_str[j])
-                return i;
+        for (int i=0; i<n; i++)
+            if (m_str[pos] != s[i])
+                return pos;
+        pos++;
     }
     return npos;
 }
 
-size_t string::find_nof(const char *s, size_t pos) const
+size_t string::find_last_of(const char *s, size_t pos, size_t n) const
 {
-    int len=strlen(s);
-    for (int i=pos; i<m_length; i++)
+    size_t p=min(pos,m_length-n)+1;
+    while (p-- > 0)
     {
-        for (int j=0; j<len; j++)
-            if (m_str[i] != s[j])
-                return i;
+        for (int i=0; i<n; i++)
+            if (m_str[p] == s[i])
+                return p;
     }
     return npos;
 }
 
-size_t string::rfind_of(const string &s, size_t pos) const
+size_t string::find_last_not_of(const char *s, size_t pos, size_t n) const
 {
-    for (int i=(pos == npos ? m_length -1 : pos); i>=0; i--)
+    size_t p=min(pos,m_length-n)+1;
+    while (p-- > 0)
     {
-        for (int j=0; j<s.m_length; j++)
-            if (m_str[i] == s.m_str[j])
-                return i;
-    }
-    return npos;
-}
-
-size_t string::rfind_of(const char *s, size_t pos) const
-{
-    int len=strlen(s);
-    for (int i=(pos == npos ? m_length -1 : pos); i>=0; i--)
-    {
-        for (int j=0; j<len; j++)
-            if (m_str[i] == s[j])
-                return i;
-    }
-    return npos;
-}
-
-size_t string::rfind_nof(const string &s, size_t pos) const
-{
-    for (int i=(pos == npos ? m_length -1 : pos); i>=0; i--)
-    {
-        for (int j=0; j<s.m_length; j++)
-            if (m_str[i] != s.m_str[j])
-                return i;
-    }
-    return npos;
-}
-
-size_t string::rfind_nof(const char *s, size_t pos) const
-{
-    int len=strlen(s);
-    for (int i=(pos == npos ? m_length -1 : pos); i>=0; i--)
-    {
-        for (int j=0; j<len; j++)
-            if (m_str[i] != s[j])
-                return i;
+        for (int i=0; i<n; i++)
+            if (m_str[p] != s[i])
+                return p;
     }
     return npos;
 }

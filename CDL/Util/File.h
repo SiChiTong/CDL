@@ -16,7 +16,7 @@ namespace CDL
         public:
             typedef enum {READ=1<<0, WRITE=1<<1, NOCLOSE=1<<2} File_perm;
 
-            File(const string &n=string::empty, const int &mode=READ);
+            File(const string &n=string::nullstr, const int &mode=READ);
             virtual ~File();
             File(FILE *, const int &);
             const string &getName() const;

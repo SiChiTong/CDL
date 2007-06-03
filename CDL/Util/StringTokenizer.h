@@ -4,7 +4,7 @@
  *  @author   acornejo
  *  @date
  *   Created:       01:13:56 24/01/2006
- *   Last Update:   00:53:52 31/05/2007
+ *   Last Update:   17:43:43 02/06/2007
  */
 //========================================================================
 
@@ -25,7 +25,7 @@ namespace CDL
             size_t m_pos;
 
         public:
-            StringTokenizer(string str=string::empty, string delim=m_defaultDelim);
+            StringTokenizer(string str=string::nullstr, string delim=m_defaultDelim);
             void setDelimiter(string &);
             const string &getDelimiter() const;
             void setString(string &);

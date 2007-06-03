@@ -4,7 +4,7 @@
  *  @author   acornejo
  *  @date
  *   Created:       01:23:39 24/01/2006
- *   Last Update:   01:26:13 31/05/2007
+ *   Last Update:   17:43:49 02/06/2007
  */
 //========================================================================
 #include <CDL/Util/StringTokenizer.h>
@@ -52,7 +52,7 @@ namespace CDL
         do
         {
             o_pos=n_pos+1;
-            n_pos=m_str.find_of(m_delim,o_pos);
+            n_pos=m_str.find_first_of(m_delim,o_pos);
             if (n_pos != string::npos && n_pos > o_pos)
                 tokens++;
         }
@@ -72,7 +72,7 @@ namespace CDL
         do
         {
             o_pos=n_pos+1;
-            n_pos=m_str.find_of(m_delim,o_pos);
+            n_pos=m_str.find_first_of(m_delim,o_pos);
             if (n_pos != string::npos && n_pos > o_pos)
                 return true;
         }
@@ -91,7 +91,7 @@ namespace CDL
         do
         {
             o_pos=m_pos+1;
-            m_pos=m_str.find_of(m_delim,o_pos);
+            m_pos=m_str.find_first_of(m_delim,o_pos);
             if (m_pos != string::npos && m_pos > o_pos)
                 return m_str.substr(o_pos,m_pos-o_pos);
         }
@@ -103,6 +103,6 @@ namespace CDL
             return m_str.substr(o_pos);
         }
 
-        return string::empty;
+        return string::nullstr;
     }
 }

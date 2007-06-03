@@ -14,7 +14,7 @@ namespace CDL
             int  *m_ref;
 
         public:
-            Directory(const string &n=string::empty);
+            Directory(const string &n=string::nullstr);
             virtual ~Directory();
             Directory(const Directory &);
             Directory& operator=(const Directory &);

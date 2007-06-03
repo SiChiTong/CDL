@@ -15,7 +15,7 @@ namespace CDL
             string m_name;
 
         public:
-			explicit DOMNode(const string &x=string::empty);
+			explicit DOMNode(const string &x=string::nullstr);
 			DOMNode(const DOMNode &);
 			virtual ~DOMNode();
             const DOMNode& operator=(const DOMNode&);

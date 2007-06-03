@@ -147,7 +147,7 @@ namespace CDL
             return (*((strset *)m_directories))[index];
 
         Error_send("Requested subdirectory %d, %s has %d subdirectories\n", index, m_name.c_str(), count);
-        return string::empty;
+        return string::nullstr;
     }
 
     const string &Directory::getFileName(const unsigned int &index) const
@@ -158,7 +158,7 @@ namespace CDL
             return (*((strset *)m_files))[index];
 
         Error_send("Requested file %d, %s has %d files\n", index, m_name.c_str(), count);
-        return string::empty;
+        return string::nullstr;
     }
 
     string Directory::getDirectoryPath(const unsigned int &index) const
@@ -167,7 +167,7 @@ namespace CDL
 
         if (name.length() > 0)
             return m_name+"/"+name;
-        return string::empty;
+        return string::nullstr;
     }
 
     string Directory::getFilePath(const unsigned int &index) const
@@ -176,6 +176,6 @@ namespace CDL
 
         if (name.length() > 0)
             return m_name+"/"+name;
-        return string::empty;
+        return string::nullstr;
     }
 }

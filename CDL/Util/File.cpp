@@ -78,7 +78,7 @@ namespace CDL
     {
         int pos=m_name.find('.');
         if (pos == string::npos)
-            return string::empty;
+            return string::nullstr;
         else
             return m_name.substr(pos+1);
     }
