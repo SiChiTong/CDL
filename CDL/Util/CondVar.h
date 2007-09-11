@@ -10,13 +10,12 @@ namespace CDL
     {
         private:
             void  *m_handle;
-            Mutex &m_mutex;
             bool   m_locked;
 
         public:
-            CondVar(Mutex &);
+            CondVar();
             virtual ~CondVar();
-            void wait();
+            void wait(Mutex &m);
             void signal();
             void broadcast();
     };

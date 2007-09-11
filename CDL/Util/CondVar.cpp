@@ -23,11 +23,10 @@ namespace CDL
 	#define CondVar_wait(handle,x)    pthread_cond_wait((condvar_t*)handle, (mutex_t *)x.getPtr())
 #endif
 
-    CondVar::CondVar(Mutex &mutex): m_mutex(mutex)
+    CondVar::CondVar()
     {
         m_handle=new condvar_t;
         CondVar_create(m_handle);
-        m_locked=false;
     }
 
     CondVar::~CondVar()
@@ -36,33 +35,18 @@ namespace CDL
         delete (condvar_t*)m_handle;
     }
 
-    void CondVar::wait()
+    void CondVar::wait(Mutex &mutex)
     {
-        m_mutex.lock();
-        while (m_locked)
-            CondVar_wait(m_handle,m_mutex); // unlocks and waits, then lockes external mutex when returning
-        m_locked=true;
-        // here insert what to do
-        m_mutex.unlock();
+        CondVar_wait(m_handle,mutex); // unlocks and waits, then lockes external mutex when returning
     }
 
     void CondVar::broadcast()
     {
-        m_mutex.lock();
-        // here insert what to do
-        m_locked=false;
         CondVar_broadcast(m_handle);
-        m_mutex.unlock();
     }
 
     void CondVar::signal()
     {
-        m_mutex.lock();
-        if (m_locked)
-        {
-            m_locked=false;
-            CondVar_signal(m_handle);
-        }
-        m_mutex.unlock();
+        CondVar_signal(m_handle);
     }
 }
