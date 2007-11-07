@@ -6,7 +6,7 @@
 
 namespace CDL
 {
-    class DLL_API Thread
+    class DLL_API Thread: public NonCopyable
     {
         protected:
             void    *m_handle;
