@@ -14,7 +14,7 @@ namespace CDL
 #else
 	#include <pthread.h>
 	#define thread_t pthread_t
-    #define Thread_create(handle)  pthread_create((thread_t *)handle,&attr,entryPoint,this)
+    #define Thread_create(handle) {pthread_attr_t attr;pthread_attr_init(&attr);pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);pthread_create((thread_t *)handle,&attr,entryPoint,this);pthread_attr_destroy(&attr);}
     #define Thread_destroy(handle) pthread_cancel(*((thread_t*)handle))
     #define Thread_join(handle)    pthread_join(*((thread_t*)handle), NULL)
     #define Thread_yield()         pthread_yield()
@@ -47,19 +47,8 @@ namespace CDL
 
     void Thread::start()
     {
-#if defined(Linux)
-        pthread_attr_t attr;
-        pthread_attr_init(&attr);
-        pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-#endif
-
-//        if (m_alive)
-//            return;
         m_alive=true;
         Thread_create(m_handle);
-#if defined(Linux)
-        pthread_attr_destroy(&attr);
-#endif
     }
 
     void Thread::stop()

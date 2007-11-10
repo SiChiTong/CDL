@@ -16,6 +16,7 @@ namespace CDL
             CondVar();
             virtual ~CondVar();
             void wait(Mutex &m);
+            void timedwait(Mutex &m, const size_t &ms);
             void signal();
             void broadcast();
     };

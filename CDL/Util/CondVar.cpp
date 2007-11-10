@@ -12,6 +12,8 @@ namespace CDL
     #define CondVar_broadcast(handle) PulseEvent(*((condvar_t*)handle))
 	#define CondVar_wait(handle,x)    {SignalObjectAndWait(*((condvar_t*)x.getPtr()),*((condvar_t*)handle),INFINITE, \
             FALSE);WaitForSingleObject(*((condvar_t*)x.getPtr()),INFINITE);};
+	#define CondVar_timedwait(handle,x,ms) {SignalObjectAndWait(*((condvar_t*)x.getPtr()),*((condvar_t*)handle),ms, \
+            FALSE);WaitForSingleObject(*((condvar_t*)x.getPtr()),INFINITE);};
 #else
 	#include <pthread.h>
 	#define condvar_t pthread_cond_t
@@ -21,6 +23,7 @@ namespace CDL
     #define CondVar_signal(handle)    pthread_cond_signal((condvar_t*)handle)
     #define CondVar_broadcast(handle) pthread_cond_broadcast((condvar_t*)handle)
 	#define CondVar_wait(handle,x)    pthread_cond_wait((condvar_t*)handle, (mutex_t *)x.getPtr())
+	#define CondVar_timedwait(handle,x,ms) {timeval now;gettimeofday(&now,NULL);timespec timeout;timeout.tv_sec=now.tv_sec+(ms/1000);timeout.tv_nsec=now.tv_usec*1000+(ms%1000)*1000000;pthread_cond_timedwait((condvar_t*)handle, (mutex_t *)x.getPtr(),&timeout);}
 #endif
 
     CondVar::CondVar()
@@ -38,6 +41,11 @@ namespace CDL
     void CondVar::wait(Mutex &mutex)
     {
         CondVar_wait(m_handle,mutex); // unlocks and waits, then lockes external mutex when returning
+    }
+
+    void CondVar::timedwait(Mutex &mutex, const size_t &ms)
+    {
+        CondVar_timedwait(m_handle,mutex,ms);
     }
 
     void CondVar::broadcast()
