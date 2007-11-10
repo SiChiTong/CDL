@@ -3,10 +3,11 @@
 
 #include <CDL/defs.h>
 #include <CDL/Util/NonCopyable.h>
+#include <CDL/Util/Lockable.h>
 
 namespace CDL
 {
-    class DLL_API Mutex: public NonCopyable
+    class DLL_API Mutex: public NonCopyable, public Lockable
     {
         protected:
             void   *m_handle;

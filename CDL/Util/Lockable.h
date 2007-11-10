@@ -4,7 +4,7 @@
  *  @author   alex
  *  @date
  *   Created:       01:23:51 11/09/2007
- *   Last Update:   19:46:31 06/11/2007
+ *   Last Update:   15:01:18 10/11/2007
  */
 //========================================================================
 #ifndef __CDL_LOCKABLE_H__
@@ -15,25 +15,29 @@ namespace CDL
 
     class Lockable
     {
-        private:
-            Mutex m_lockmutex;
-
-        protected:
-            class ScopeLock
-            {
-                private:
-                    bool m_first;
-                    Lockable *m_lck;
-                public:
-                    ScopeLock(Lockable *lck): m_first(true), m_lck(lck) {m_lck->m_lockmutex.lock();}
-                    ~ScopeLock() {m_lck->m_lockmutex.unlock();}
-                    void finish() {m_first=false;}
-                    operator bool () const {return m_first;}
-            };
+        public:
+            virtual ~Lockable() {}
+            virtual void lock()=0;
+            virtual void unlock()=0;
     };
 
-#define syncrhonized for(ScopeLock scopelock=this; scopelock; scopelock.finish())
+    class ScopeLock
+    {
+        private:
+            bool m_first;
+            Lockable *m_lck;
+        public:
+            ScopeLock(Lockable *lck): m_first(true), m_lck(lck) {m_lck->lock();}
+            ~ScopeLock() {m_lck->unlock();}
+            void finish() {m_first=false;}
+            operator bool () const {return m_first;}
+    };
+
+#define synchronized_scope_on(x) (ScopeLock)(x)
+#define synchronized_scope       synchronized_scope_on(this)
+
 #define synchronized_on(x) for(ScopeLock scopelock=x; scopelock; scopelock.finish())
+#define syncrhonized       synchronized_on(this)
 }
 
 #endif//__CDL_LOCKABLE_H__

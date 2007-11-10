@@ -3,10 +3,11 @@
 
 #include <CDL/defs.h>
 #include <CDL/Util/NonCopyable.h>
+#include <CDL/Util/Runnable.h>
 
 namespace CDL
 {
-    class DLL_API Thread: public NonCopyable
+    class DLL_API Thread: public NonCopyable, public Runnable
     {
         protected:
             void    *m_handle;
@@ -23,7 +24,6 @@ namespace CDL
             static void yield();
             static unsigned int currentThread();
             const unsigned int &getID() const;
-            virtual void run()=0;
             const bool &isAlive() const;
     };
 }
