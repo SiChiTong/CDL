@@ -4,7 +4,7 @@
  *  @author   alex
  *  @date
  *   Created:       01:23:51 11/09/2007
- *   Last Update:   01:31:02 11/09/2007
+ *   Last Update:   19:46:31 06/11/2007
  */
 //========================================================================
 #ifndef __CDL_LOCKABLE_H__
@@ -33,6 +33,7 @@ namespace CDL
     };
 
 #define syncrhonized for(ScopeLock scopelock=this; scopelock; scopelock.finish())
+#define synchronized_on(x) for(ScopeLock scopelock=x; scopelock; scopelock.finish())
 }
 
 #endif//__CDL_LOCKABLE_H__
