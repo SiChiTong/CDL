@@ -23,7 +23,7 @@ namespace CDL
     #define CondVar_signal(handle)    pthread_cond_signal((condvar_t*)handle)
     #define CondVar_broadcast(handle) pthread_cond_broadcast((condvar_t*)handle)
 	#define CondVar_wait(handle,x)    pthread_cond_wait((condvar_t*)handle, (mutex_t *)x.getPtr())
-	#define CondVar_timedwait(handle,x,ms) {timeval now;gettimeofday(&now,NULL);timespec timeout;timeout.tv_sec=now.tv_sec+(ms/1000);timeout.tv_nsec=now.tv_usec*1000+(ms%1000)*1000000;pthread_cond_timedwait((condvar_t*)handle, (mutex_t *)x.getPtr(),&timeout);}
+	#define CondVar_timedwait(handle,x,ms) {timeval now;gettimeofday(&now,NULL);timespec timeout;timeout.tv_sec=now.tv_sec+(ms/1000);timeout.tv_nsec=now.tv_usec*1000+(ms%1000)*1000000;while(timeout.tv_nsec > 1000000000) {timeout.tv_nsec-=1000000000;timeout.tv_sec++;}pthread_cond_timedwait((condvar_t*)handle, (mutex_t *)x.getPtr(),&timeout);}
 #endif
 
     CondVar::CondVar()
