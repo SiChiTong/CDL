@@ -16,6 +16,7 @@ namespace CDL
             FALSE);WaitForSingleObject(*((condvar_t*)x.getPtr()),INFINITE);};
 #else
 	#include <pthread.h>
+	#include <sys/time.h>
 	#define condvar_t pthread_cond_t
 	#define mutex_t pthread_mutex_t
     #define CondVar_create(handle)    pthread_cond_init((condvar_t*)handle,NULL)

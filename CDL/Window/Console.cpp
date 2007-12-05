@@ -4,7 +4,7 @@
  *  @author   acornejo
  *  @date
  *   Created:       16:19:29 14/09/2006
- *   Last Update:   00:52:49 31/05/2007
+ *   Last Update:   16:28:08 05/12/2007
  */
 //========================================================================
 #include <CDL/Window/Console.h>
@@ -132,7 +132,7 @@ typedef std::deque<string> queue_t;
                 {
                     m_historyPos--;
                     if (!m_historyPos)
-                        m_curLine=string::empty;
+                        m_curLine=string::nullstr;
                     else
                         m_curLine=history[history.size()-m_historyPos];
                     m_curPos=m_curLine.length();
@@ -162,7 +162,7 @@ typedef std::deque<string> queue_t;
                 m_historyPos=0;
                 m_curPos=0;
                 m_win.processCommand(m_curLine);
-                m_curLine=string::empty;
+                m_curLine=string::nullstr;
                 break;
             default:
 //                m_curLine.insert(m_curPos,1,(char)key); missing
