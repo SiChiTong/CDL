@@ -4,7 +4,7 @@
  *  @author   alex
  *  @date
  *   Created:       11:36:16 30/05/2007
- *   Last Update:   22:45:18 06/09/2007
+ *   Last Update:   18:02:12 05/12/2007
  */
 //========================================================================
 #define SKIP_OPERATORS
@@ -54,18 +54,18 @@ string::string(size_t n, char c)
     m_ref=new int(1);
     m_length=n;
     m_str=new char[m_length+1];
-    memset(m_str,c,n);
+    string_traits::assign(m_str,n,c);
     m_str[m_length]='\0';
 }
 string::string(const char *s, size_t n)
 {
     m_ref=new int(1);
     if (n == npos)
-        m_length=strlen(s);
+        m_length=string_traits::length(s);
     else
         m_length=n;
     m_str=new char[m_length+1];
-    memcpy(m_str,s,m_length);
+    string_traits::copy(m_str,s,m_length);
     m_str[m_length]='\0';
 }
 string::string(const string &s, size_t pos, size_t n)
@@ -82,7 +82,7 @@ string::string(const string &s, size_t pos, size_t n)
         m_ref=new int(1);
         m_length=n;
         m_str=new char[m_length+1];
-        memcpy(m_str,&s.m_str[pos],m_length);
+        string_traits::copy(m_str,&s.m_str[pos],m_length);
         m_str[m_length]='\0';
     }
 }
@@ -91,28 +91,28 @@ string::string(const string &s1, const string &s2)
     m_ref=new int(1);
     m_length=s1.m_length+s2.m_length;
     m_str=new char[m_length+1];
-    memcpy(m_str,s1.m_str,s1.m_length);
-    memcpy(&m_str[s1.m_length],s2.m_str,s2.m_length);
+    string_traits::copy(m_str,s1.m_str,s1.m_length);
+    string_traits::copy(&m_str[s1.m_length],s2.m_str,s2.m_length);
     m_str[m_length]='\0';
 }
 string::string(const string &s1, const char *s2)
 {
-    int len2=strlen(s2);
+    int len2=string_traits::length(s2);
     m_ref=new int(1);
     m_length=s1.m_length+len2;
     m_str=new char[m_length+1];
-    memcpy(m_str,s1.m_str,s1.m_length);
-    memcpy(&m_str[s1.m_length],s2,len2);
+    string_traits::copy(m_str,s1.m_str,s1.m_length);
+    string_traits::copy(&m_str[s1.m_length],s2,len2);
     m_str[m_length]='\0';
 }
 string::string(const char *s1, const string &s2)
 {
-    int len1=strlen(s1);
+    int len1=string_traits::length(s1);
     m_ref=new int(1);
     m_length=len1+s2.m_length;
     m_str=new char[m_length+1];
-    memcpy(m_str,s1,len1);
-    memcpy(&m_str[len1],s2.m_str,s2.m_length);
+    string_traits::copy(m_str,s1,len1);
+    string_traits::copy(&m_str[len1],s2.m_str,s2.m_length);
     m_str[m_length]='\0';
 }
 string::string(const string &s, char c)
@@ -120,7 +120,7 @@ string::string(const string &s, char c)
     m_ref=new int(1);
     m_length=s.m_length+1;
     m_str=new char[m_length+1];
-    memcpy(m_str,s.m_str,s.m_length);
+    string_traits::copy(m_str,s.m_str,s.m_length);
     m_str[s.m_length]=c;
     m_str[m_length]='\0';
 }
@@ -130,7 +130,7 @@ string::string(char c, const string &s)
     m_length=s.m_length+1;
     m_str=new char[m_length+1];
     m_str[0]=c;
-    memcpy(&m_str[1],s.m_str,s.m_length);
+    string_traits::copy(&m_str[1],s.m_str,s.m_length);
     m_str[m_length]='\0';
 }
 string::~string()
@@ -170,9 +170,9 @@ const string &string::operator=(const char *s)
             delete []m_str;
         }
         m_ref=new int(1);
-        m_length=strlen(s);
+        m_length=string_traits::length(s);
         m_str=new char[m_length+1];
-        memcpy(m_str,s,m_length);
+        string_traits::copy(m_str,s,m_length);
         m_str[m_length]='\0';
     }
 
