@@ -1,9 +1,8 @@
 #include <CDL/Util/Buffer.h>
-#include <CDL/Math/Random.h>
 #include <CDL/Util/md5.h>
 #include <CDL/Util/sha1.h>
+#include <CDL/Util/sha2.h>
 #include <CDL/Util/crc64.h>
-#include <CDL/Util/sha512.h>
 
 namespace CDL
 {
@@ -240,15 +239,6 @@ namespace CDL
 
         i=0;
         j=0;
-/*        for (size_t k=0; k<1024; k++) // Skip first 1024 bytes
-        {
-            i=(i+1)&0xFF;
-            j=(j+S[i])&0xFF;
-            T=S[i];
-            S[i]=S[j];
-            S[j]=T;
-        }*/
-
         unsigned char *data=(unsigned char *)m_data;
         for (size_t total=m_length; total; total--)
         {
@@ -285,14 +275,38 @@ namespace CDL
         return Digest(digest,20);
     }
 
+    Digest Buffer::getSHA256() const
+    {
+        unsigned char digest[32]={0};
+        SHA256_CTX context;
+
+        SHA256_Init(&context);
+        SHA256_Update(&context, (unsigned char *)m_data, m_length);
+        SHA256_Final(digest, &context);
+
+        return Digest(digest,32);
+    }
+
+    Digest Buffer::getSHA384() const
+    {
+        unsigned char digest[48]={0};
+        SHA384_CTX context;
+
+        SHA384_Init(&context);
+        SHA384_Update(&context, (unsigned char *)m_data, m_length);
+        SHA384_Final(digest, &context);
+
+        return Digest(digest,48);
+    }
+
     Digest Buffer::getSHA512() const
     {
         unsigned char digest[64]={0};
-        sha512_ctx context;
+        SHA512_CTX context;
 
-        sha512_init(&context);
-        sha512_update(&context, (unsigned char *)m_data, m_length);
-        sha512_final(&context, digest);
+        SHA512_Init(&context);
+        SHA512_Update(&context, (unsigned char *)m_data, m_length);
+        SHA512_Final(digest, &context);
 
         return Digest(digest,64);
     }

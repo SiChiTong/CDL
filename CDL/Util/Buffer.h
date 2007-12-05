@@ -36,6 +36,8 @@ namespace CDL
             void RC4(const string &);
 			Digest getMD5() const;
 			Digest getSHA1() const;
+            Digest getSHA256() const;
+            Digest getSHA384() const;
             Digest getSHA512() const;
 			Digest getCRC64() const;
 	};
