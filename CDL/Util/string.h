@@ -4,13 +4,14 @@
  *  @author   alex
  *  @date
  *   Created:       11:36:16 30/05/2007
- *   Last Update:   20:22:21 02/06/2007
+ *   Last Update:   16:34:26 18/01/2008
  */
 //========================================================================
 #ifndef __CDL_STRING_H__
 #define __CDL_STRING_H__
 
 #include <CDL/defs.h>
+#include <stdlib.h>
 
 namespace CDL {
 
@@ -23,6 +24,9 @@ struct string_traits
     static char *move(char *s1, const char *s2, size_t n) {return (char *)memmove(s1,s2,n);}
     static char *copy(char *s1, const char *s2, size_t n) {return (char *)memcpy(s1,s2,n);}
     static char *assign(char *s1, size_t n, char c) {return (char *)memset(s1,c,n);}
+    static float   toFloat(const char *s) {return (float)atof(s);}
+    static double toDouble(const char *s) {return (double)atof(s);}
+    static int       toInt(const char *s) {return (int)atoi(s);}
 };
 
 class string
@@ -99,11 +103,11 @@ class string
         size_t find_last_not_of(char c, size_t pos=npos) const        {return find_last_not_of(&c,pos,1);}
         size_t find_last_not_of(const char *s, size_t pos, size_t n) const;
 
-        int    toInt() const;
-        char   toChar() const;
-        bool   toBool() const;
-        float  toFloat() const;
-        double toDouble() const;
+        int    toInt()    const {return string_traits::toInt(m_str);}
+        char   toChar()   const {return (char)m_str[0];}
+        bool   toBool()   const {return (bool)(!compare("true") ? true : false);}
+        float  toFloat()  const {return string_traits::toFloat(m_str);}
+        double toDouble() const {return string_traits::toDouble(m_str);}
 
         static const string nullstr;
         static string printf(const char *, ...);

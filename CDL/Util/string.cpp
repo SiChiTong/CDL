@@ -4,14 +4,13 @@
  *  @author   alex
  *  @date
  *   Created:       11:36:16 30/05/2007
- *   Last Update:   18:02:12 05/12/2007
+ *   Last Update:   16:34:46 18/01/2008
  */
 //========================================================================
 #define SKIP_OPERATORS
 #include "string.h"
 #include <CDL/CDTL/function_base.h>
 #include <ctype.h>
-#include <stdlib.h>
 #include <cstdarg>
 
 namespace CDL {
@@ -32,7 +31,7 @@ string string::printf(const char *fmt, ...)
 
     if (len > 1)
     {
-        string str(len,'\0'); 
+        string str(len,'\0');
         va_start(ap, fmt);
         int len=vsnprintf(str.m_str, len+1, fmt, ap);
         va_end(ap);
@@ -291,11 +290,4 @@ size_t string::find_last_not_of(const char *s, size_t pos, size_t n) const
     }
     return npos;
 }
-
-int    string::toInt()    const {return (int)atoi(m_str);}
-char   string::toChar()   const {return (char)m_str[0];}
-bool   string::toBool()   const {return (bool)(!compare("true") ? true : false);}
-float  string::toFloat()  const {return (float)atof(m_str);}
-double string::toDouble() const {return (double)atof(m_str);}
-
 }
