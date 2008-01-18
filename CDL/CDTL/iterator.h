@@ -41,7 +41,7 @@ struct iterator_traits<T *>
 
 template <class iterator_category_t, class value_type_t,\
           class difference_type_t=ptrdiff_t, class pointer_t=value_type_t*, class reference_t=value_type_t&>
-struct iterator
+struct iterator_base
 {
     typedef iterator_category_t iterator_category;
     typedef value_type_t value_type;
@@ -105,11 +105,11 @@ inline void advance(Iterator &i, typename iterator_traits<Iterator>::difference_
 }
 
 template <class Iterator>
-class reverse_iterator: public iterator<typename Iterator::category_type,
-                                        typename Iterator::value_type,
-                                        typename Iterator::difference_type,
-                                        typename Iterator::pointer,
-                                        typename Iterator::reference>
+class reverse_iterator: public iterator_base<typename Iterator::category_type,
+                                             typename Iterator::value_type,
+                                             typename Iterator::difference_type,
+                                             typename Iterator::pointer,
+                                             typename Iterator::reference>
 {
     protected:
         Iterator current;

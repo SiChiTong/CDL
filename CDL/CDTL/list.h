@@ -4,7 +4,7 @@
  *  @author   acornejo
  *  @date
  *   Created:       14:57:55 07/03/2007
- *   Last Update:   21:48:58 29/05/2007
+ *   Last Update:   13:34:40 18/01/2008
  */
 //========================================================================
 #ifndef __CDTL_LIST_H__
@@ -18,14 +18,14 @@ namespace CDL { namespace CDTL {
 class list_base
 {
     protected:
-        struct NodeBase
+        struct node_base
         {
-            NodeBase *next;
-            NodeBase *prev;
+            node_base *next;
+            node_base *prev;
         } *m_base;
 
     public:
-        list_base() {m_base=new NodeBase;m_base->next=m_base->prev=m_base;}
+        list_base() {m_base=new node_base;m_base->next=m_base->prev=m_base;}
         virtual ~list_base() {delete m_base;}
 };
 
@@ -33,10 +33,10 @@ template <class Data>
 class list: public list_base
 {
     private:
-        struct Node: public NodeBase
+        struct node: public node_base
         {
                 Data data;
-                Node(Data _data): data(_data) {}
+                node(Data _data): data(_data) {}
         };
     public:
         typedef Data value_type;
@@ -47,31 +47,31 @@ class list: public list_base
         typedef const value_type *const_pointer;
         typedef size_t size_type;
         template <class T>
-        class list_iterator: public iterator<bidirectional_iterator_tag,T,int>
+        class list_iterator: public iterator_base<bidirectional_iterator_tag,T,int>
         {
             private:
-                NodeBase *node;
+                node_base *ptr;
 
                 transfer(list_iterator first, list_iterator last)
                 {
-                    last.node->prev->next=node;
-                    first.node->prev->next=last.node;
-                    node->prev->next=first.node;
+                    last.ptr->prev->next=ptr;
+                    first.ptr->prev->next=last.ptr;
+                    ptr->prev->next=first.ptr;
 
-                    NodeBase *tmp=node->prev;
-                    node->prev=last.node->prev;
-                    last.node->prev=first.node->prev;
-                    first.node->prev=tmp;
+                    node_base *tmp=ptr->prev;
+                    ptr->prev=last.ptr->prev;
+                    last.ptr->prev=first.ptr->prev;
+                    first.ptr->prev=tmp;
                 }
             public:
-                list_iterator(NodeBase *_node=NULL): node(_node) {}
-                reference operator*() {return ((Node *)node)->data;}
-                list_iterator &operator++() {node=node->next; return *this;}
-                list_iterator &operator--() {node=node->prev; return *this;}
-                list_iterator operator++(int) {list_iterator tmp=*this; node=node->next; return tmp;}
-                list_iterator operator--(int) {list_iterator tmp=*this; node=node->prev; return tmp;}
-                bool operator==(const list_iterator &r) const {return node == r.node;}
-                bool operator!=(const list_iterator &r) const {return node != r.node;}
+                list_iterator(node_base *_ptr=NULL): ptr(_ptr) {}
+                reference operator*() {return ((node *)ptr)->data;}
+                list_iterator &operator++() {ptr=ptr->next; return *this;}
+                list_iterator &operator--() {ptr=ptr->prev; return *this;}
+                list_iterator operator++(int) {list_iterator tmp=*this; ptr=ptr->next; return tmp;}
+                list_iterator operator--(int) {list_iterator tmp=*this; ptr=ptr->prev; return tmp;}
+                bool operator==(const list_iterator &r) const {return ptr == r.ptr;}
+                bool operator!=(const list_iterator &r) const {return ptr != r.ptr;}
 
             friend class list;
         };
@@ -81,6 +81,7 @@ class list: public list_base
         typedef reverse_iterator<iterator> reverse_iterator;
         typedef list<Data> self;
 
+// constructors
         list() {}
         list(size_type n) {insert(begin(),n,value_type());}
         list(size_type n, const_reference t) {insert(begin(),n,t);}
@@ -89,11 +90,12 @@ class list: public list_base
         list(const self &x) {insert(begin(),x.begin(),x.end());}
         virtual ~list() {clear();}
 
+// modifiers
         iterator insert(iterator pos, const_reference data)
         {
-            Node *elem=new Node(data);
-            NodeBase *n=pos.node;
-            NodeBase *p=n->prev;
+            node *elem=new node(data);
+            node_base *n=pos.ptr;
+            node_base *p=n->prev;
             elem->next=n;
             elem->prev=p;
             p->next=elem;
@@ -103,9 +105,9 @@ class list: public list_base
 
         iterator erase(iterator pos)
         {
-            Node *n=(Node *)pos.node;
-            NodeBase *next=n->next;
-            NodeBase *prev=n->prev;
+            node *n=(node *)pos.ptr;
+            node_base *next=n->next;
+            node_base *prev=n->prev;
             prev->next=next;
             next->prev=prev;
             delete n;
@@ -253,27 +255,37 @@ class list: public list_base
         void unique() {unique(equal_to<Data>());}
         void merge(self &x) {merge(x,less<Data>());}
         void sort() {sort(less<Data>());}
-        size_type max_size() const {return size_type(-1);}
-        size_type size() const {return distance(begin(),end());}
-        bool empty() const {return m_base->next == m_base;}
+
+// forward iterator support
         iterator begin() {return iterator(m_base->next);}
         iterator end() {return iterator(m_base);}
-        reverse_iterator rbegin() {return reverse_iterator(begin());}
-        reverse_iterator rend() {return reverse_iterator(end());}
         const_iterator begin() const {return iterator(m_base->next);}
         const_iterator end() const {return iterator(m_base);}
+
+// reverse iterator support
+        reverse_iterator rbegin() {return reverse_iterator(begin());}
+        reverse_iterator rend() {return reverse_iterator(end());}
         const_reverse_iterator rbegin() const {return const_reverse_iterator(begin());}
         const_reverse_iterator rend() const {return const_reverse_iterator(end());}
+
+// element access
         reference front() {return *begin();}
         reference back()  {return *(--end());}
         const_reference front() const {return *begin();}
         const_reference back()  const {return *(--end());}
+
+// standard modifiers
         void push_front(const_reference data) {insert(begin(),data);}
         void push_back(const_reference data) {insert(end(),data);}
         void pop_front() {erase(begin());}
         void pop_back() {erase(--end());}
         void clear() {erase(begin(),end());}
-        void swap(self &x) {NodeBase *tmp=m_base;m_base=x.m_base;x.m_base=tmp;}
+        void swap(self &x) {node_base *tmp=m_base;m_base=x.m_base;x.m_base=tmp;}
+
+// capacity
+        size_type max_size() const {return size_type(-1);}
+        size_type size() const {return distance(begin(),end());}
+        bool empty() const {return m_base->next == m_base;}
 };
 
 } /* namespace CDTL */ } /* namespace CDL */
