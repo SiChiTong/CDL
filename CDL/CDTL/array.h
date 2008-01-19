@@ -3,23 +3,16 @@
 
 #include <CDL/CDTL/iterator.h>
 #include <CDL/CDTL/function_base.h>
-#define rangecheck(i) {}
 
 namespace CDL { namespace CDTL {
 
 template <class T, size_t N>
 class array
 {
-    public: // misses iterator
-        typedef T value_type;
-        typedef value_type &reference;
-        typedef value_type *pointer;
-        typedef int difference_type;
-        typedef const value_type &const_reference;
-        typedef const value_type *const_pointer;
-        typedef size_t size_type;
-        typedef array<T,N> self;
-
+    private:
+        T elem[N];
+        
+    public:
         template <class U>
         class array_iterator: public iterator<random_access_iterator_tag,T,int>
         {
@@ -37,7 +30,6 @@ class array
                 bool operator==(const self &r) const {return ptr == r.ptr;}
                 bool operator!=(const self &r) const {return ptr != r.ptr;}
 
-                // random access iterator
                 self operator+(difference_type n) const {return self(ptr+n);}
                 self operator-(difference_type n) const {return self(ptr-n);}
                 self &operator+=(difference_type n) {ptr+=n; return *this;}
@@ -46,18 +38,25 @@ class array
 
             friend class array;
         };
+        typedef array<T,N> self;
+
+// Container types
+        typedef T value_type;
+        typedef value_type &reference;
+        typedef value_type *pointer;
+        typedef int difference_type;
+        typedef const value_type &const_reference;
+        typedef const value_type *const_pointer;
+        typedef size_t size_type;
         typedef array_iterator<const value_type> const_iterator;
         typedef array_iterator<value_type> iterator;
+
+// Reversible container types
         typedef reverse_iterator<const_iterator> const_reverse_iterator;
         typedef reverse_iterator<iterator> reverse_iterator;
 
-    private:
-        T elem[N];
-
-    public:
-// constructors
+// Container methods
         array() {}
-
         template <class U>
         array(const array<U,N> &a)
         {
@@ -71,15 +70,13 @@ class array
                 elem[i]=a.elem[i];
             return *this;
         }
-
-// modifiers
-        template <class U>
-        void assign(const U &val)
-        {
-            for (size_type i=0; i<N; i++)
-                elem[i]=val;
-        }
-
+        iterator       begin() {return elem;}
+        const_iterator begin() const {return elem;}
+        iterator       end()   {return elem+N;}
+        const_iterator end() const {return elem+N;}
+        size_type       max_size() const {return N;}
+        size_type       size() const {return N;}
+        bool            empty() const {return N == 0;}
         template <class U>
         void swap(const array<U,N> &a)
         {
@@ -91,34 +88,33 @@ class array
                 elem[i]=tmp;
             }
         }
+        reference       front() {return elem[0];}
+        const_reference front() const {return elem[0];}
 
-// forward iterator support
-        iterator       begin() {return elem;}
-        const_iterator begin() const {return elem;}
-        iterator       end()   {return elem+N;}
-        const_iterator end() const {return elem+N;}
-
-// reverse iterator support
+// Reversible container methods
         reverse_iterator       rbegin() {return reverse_iterator(end());}
         const_reverse_iterator rbegin() const {return const_reverse_iterator(end());}
         reverse_iterator       rend()   {return reverse_iterator(begin());}
         const_reverse_iterator rend() const {return const_reverse_iterator(begin());}
 
-// element access
-        reference       at(size_type i) { rangecheck(i); return elems[i]; }
-        const_reference at(size_type i) const { rangecheck(i); return elems[i]; }
+// Random access container
+        reference       at(size_type i) { return elems[i]; }       // should do rangecheck and throw exception
+        const_reference at(size_type i) const { return elems[i]; } // should do rangecheck and throw exception
         reference       operator[](size_type i) {return elem[i];}
         const_reference operator[](size_type i) const {return elem[i];}
-        reference       front() {return elem[0];}
-        const_reference front() const {return elem[0];}
+
+// Assign specific methods
+        template <class U>
+        void assign(const U &val)
+        {
+            for (size_type i=0; i<N; i++)
+                elem[i]=val;
+        }
+        pointer         c_array() {return elem;}
         reference       back()  {return elem[N-1];}
         const_reference back() const {return elem[N-1];}
-        pointer         c_array() {return elem;}
 
 // capacity
-        size_type       max_size() const {return N;}
-        size_type       size() const {return N;}
-        bool            empty() const {return N == 0;}
 };
 
 }} /* namespace CDTL, namespace CDL */
