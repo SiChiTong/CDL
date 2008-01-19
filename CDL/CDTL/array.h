@@ -14,15 +14,16 @@ class array
         
     public:
         template <class U>
-        class array_iterator: public iterator<random_access_iterator_tag,T,int>
+        class array_iterator: public iterator_base<random_access_iterator_tag,U,int>
         {
+// FIXME: should use reference instead of U& and difference_type instead of int
             private:
                 U *ptr;
             public:
                 typedef array_iterator<U> self;
 
                 array_iterator(U *_ptr): ptr(_ptr) {}
-                reference operator*() {return *ptr;}
+                U &operator*() {return *ptr;}
                 self &operator++() {ptr++; return *this;}
                 self &operator--() {ptr--; return *this;}
                 self operator++(int) {self tmp=*this; ptr++; return tmp;}
@@ -30,11 +31,11 @@ class array
                 bool operator==(const self &r) const {return ptr == r.ptr;}
                 bool operator!=(const self &r) const {return ptr != r.ptr;}
 
-                self operator+(difference_type n) const {return self(ptr+n);}
-                self operator-(difference_type n) const {return self(ptr-n);}
-                self &operator+=(difference_type n) {ptr+=n; return *this;}
-                self &operator-=(difference_type n) {ptr-=n; return *this;}
-                reference operator[](difference_type n) const {return *(*this+n);}
+                self operator+(int n) const {return self(ptr+n);}
+                self operator-(int n) const {return self(ptr-n);}
+                self &operator+=(int n) {ptr+=n; return *this;}
+                self &operator-=(int n) {ptr-=n; return *this;}
+                U &operator[](int n) const {return *(*this+n);}
 
             friend class array;
         };
@@ -74,9 +75,9 @@ class array
         const_iterator begin() const {return elem;}
         iterator       end()   {return elem+N;}
         const_iterator end() const {return elem+N;}
-        size_type       max_size() const {return N;}
-        size_type       size() const {return N;}
-        bool            empty() const {return N == 0;}
+        size_type      max_size() const {return N;}
+        size_type      size() const {return N;}
+        bool           empty() const {return N == 0;}
         template <class U>
         void swap(const array<U,N> &a)
         {
@@ -98,12 +99,12 @@ class array
         const_reverse_iterator rend() const {return const_reverse_iterator(begin());}
 
 // Random access container
-        reference       at(size_type i) { return elems[i]; }       // should do rangecheck and throw exception
-        const_reference at(size_type i) const { return elems[i]; } // should do rangecheck and throw exception
+        reference       at(size_type i) { return elem[i]; }       // should do rangecheck and throw exception
+        const_reference at(size_type i) const { return elem[i]; } // should do rangecheck and throw exception
         reference       operator[](size_type i) {return elem[i];}
         const_reference operator[](size_type i) const {return elem[i];}
 
-// Assign specific methods
+// Array specific methods
         template <class U>
         void assign(const U &val)
         {
@@ -113,8 +114,6 @@ class array
         pointer         c_array() {return elem;}
         reference       back()  {return elem[N-1];}
         const_reference back() const {return elem[N-1];}
-
-// capacity
 };
 
 }} /* namespace CDTL, namespace CDL */

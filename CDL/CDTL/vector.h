@@ -23,22 +23,52 @@ class vector_base
         T *m_eos;
 
     public:
+        typedef vector_base<T> self;
+    
         vector_base(): m_start(0), m_finish(0), m_eos(0) {}
-        vector_base(size_t n)
+        vector_base(size_t n): m_start(0)
         {
-            m_start=new T[n];
-            m_finish=m_start;
-            m_eos=m_start+n;
+            realloc(n);
         }
         ~vector_base()
         {
             if (m_start)
                 delete []m_start;
         }
+        void realloc(size_t n)
+        {
+            if (m_start)
+            {
+                size_t osize=m_finish-m_start;
+                T *start=new T[n];
+                T *ostart=m_start;
+                m_start=start;
+                m_finish=start+osize;
+                m_eos=start+n;
+                while (start < m_finish)
+                {
+                    *start=*ostart;
+                    ostart++;
+                    start++;
+                }
+            }
+            else
+            {
+                m_start=new T[n];
+                m_finish=m_start;
+                m_eos=m_start+n;
+            }
+        }
+        void swap(self &x)
+        {
+            swap(m_start,x.m_start);
+            swap(m_finish,x.m_finish);
+            swap(m_eos,x.m_eos);        
+        }
 };
 
 template <class T>
-class vector: public vector_base
+class vector: public vector_base<T>
 {
     public:
         typedef vector<T> self;
@@ -60,15 +90,15 @@ class vector: public vector_base
 
 // Container methods
         vector() {}
-        vector(const self &x): vector_base(x.size()) { insert(begin(),x.begin(),x.end()); }
-        iterator       begin()          { return m_start; }
-        const_iterator begin() const    { return m_start; }
-        iterator       end()            { return m_finish; }
-        const_iterator end() const      { return m_finish; }
+        vector(const self &x): vector_base<T>(x.size()) { insert(begin(),x.begin(),x.end()); }
+        iterator       begin()          { return vector_base<T>::m_start; }
+        const_iterator begin() const    { return vector_base<T>::m_start; }
+        iterator       end()            { return vector_base<T>::m_finish; }
+        const_iterator end() const      { return vector_base<T>::m_finish; }
         size_type      max_size() const { return size_type(-1) / sizeof(T); }
-        size_type      size()     const { return size_type(m_finish-m_start); }
-        bool           empty()    const { return m_start == m_finish; }
-        void swap(self &x)              { swap(m_start,x.m_start);swap(m_end,x.m_end);swap(m_eos,x.m_eos); }
+        size_type      size()     const { return size_type(vector_base<T>::m_finish-vector_base<T>::m_start); }
+        bool           empty()    const { return vector_base<T>::m_start == vector_base<T>::m_finish; }
+        void swap(self &x)              { vector_base<T>::swap(x); }
         reference front()               { return *begin(); }
         const_reference front() const   { return *begin(); }        
 
@@ -79,9 +109,9 @@ class vector: public vector_base
         const_reverse_iterator rend() const   { return const_reverse_iterator(begin()); }
 
 // Sequence methods
-        vector(size_type n): vector_base(n) {insert(begin(),n,value_type());}
-        vector(size_type n, const_reference x): vector_base(n) {insert(begin(),n,x);}
-        template <InputIterator>
+        vector(size_type n): vector_base<T>(n) {insert(begin(),n,value_type());}
+        vector(size_type n, const_reference x): vector_base<T>(n) {insert(begin(),n,x);}
+        template <class InputIterator>
         vector(InputIterator first, InputIterator last) {insert(begin(),first,last);}
         virtual ~vector() {clear();}
         void clear() {erase(begin(),end());}
@@ -98,33 +128,11 @@ class vector: public vector_base
         /* FIXME: missing insert and erase */
 
 // Vector methods
-        size_type capacity() const             { return size_type(m_eos - m_start); }
+        size_type capacity() const { return size_type(vector_base<T>::m_eos - vector_base<T>::m_start); }
         void reserve(size_type n)
         {
             if (capacity() < n)
-            {
-                const size_type osize=size();
-                if (m_start)
-                {
-                    pointer tmp=new value_type[n];
-                    start=tmp;
-                    m_finish=tmp+osize;
-                    m_eos=tmp+n;
-                    while (start < m_finish)
-                    {
-                        *start=*m_start;
-                        m_start++;
-                        start++;
-                    }
-                    m_start=tmp;
-                }
-                else
-                {
-                    m_start=new value_type[n];
-                    m_finish=m_start;
-                    m_eos=m_start+n;
-                }
-            }
+                vector_base<T>::realloc(n);
         }
 
 // Random access container

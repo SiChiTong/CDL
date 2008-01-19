@@ -36,13 +36,14 @@ class list: public list_base
         struct node: public node_base
         {
                 T data;
-                node(Data _data): data(_data) {}
-        } *m_base;
+                node(T _data): data(_data) {}
+        };
 
     public:
         template <class U>
         class list_iterator: public iterator_base<bidirectional_iterator_tag,U,int>
         {
+// FIXME: should use reference instead of U&
             private:
                 node_base *ptr;
 
@@ -58,14 +59,16 @@ class list: public list_base
                     first.ptr->prev=tmp;
                 }
             public:
+                typedef list_iterator<U> self;
+
                 list_iterator(node_base *_ptr=NULL): ptr(_ptr) {}
-                reference operator*() {return ((node *)ptr)->data;}
+                U &operator*() {return ((node *)ptr)->data;}
                 list_iterator &operator++() {ptr=ptr->next; return *this;}
                 list_iterator &operator--() {ptr=ptr->prev; return *this;}
-                list_iterator operator++(int) {list_iterator tmp=*this; ptr=ptr->next; return tmp;}
-                list_iterator operator--(int) {list_iterator tmp=*this; ptr=ptr->prev; return tmp;}
-                bool operator==(const list_iterator &r) const {return ptr == r.ptr;}
-                bool operator!=(const list_iterator &r) const {return ptr != r.ptr;}
+                list_iterator operator++(int) {self tmp=*this; ptr=ptr->next; return tmp;}
+                list_iterator operator--(int) {self tmp=*this; ptr=ptr->prev; return tmp;}
+                bool operator==(const self &r) const {return ptr == r.ptr;}
+                bool operator!=(const self &r) const {return ptr != r.ptr;}
 
             friend class list;
         };
@@ -106,7 +109,7 @@ class list: public list_base
 
 // Sequence methods
         list(size_type n) {insert(begin(),n,value_type());}
-        list(size_type n, const_reference t) {insert(begin(),n,x);}
+        list(size_type n, const_reference x) {insert(begin(),n,x);}
         template <class InputIterator>
         list(InputIterator first, InputIterator last) {insert(begin(),first,last);}
         virtual ~list() {clear();}
