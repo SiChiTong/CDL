@@ -106,7 +106,7 @@ class list: public list_base
 
 // Sequence methods
         list(size_type n) {insert(begin(),n,value_type());}
-        list(size_type n, const_reference t) {insert(begin(),n,t);}
+        list(size_type n, const_reference t) {insert(begin(),n,x);}
         template <class InputIterator>
         list(InputIterator first, InputIterator last) {insert(begin(),first,last);}
         virtual ~list() {clear();}
@@ -131,7 +131,7 @@ class list: public list_base
                 insert(pos,*first);
         }
 
-        void insert(iterator pos, size_type n, const_reference&x)
+        void insert(iterator pos, size_type n, const_reference x)
         {
             for (; n > 0; --n)
                 insert(pos,x);
@@ -155,22 +155,19 @@ class list: public list_base
             return last;
         }
 
-        void resize(size_type new_size, const_reference x)
+        void resize(size_type n, const_reference x)
         {
             iterator i = begin();
             size_type len = 0;
-            for ( ; i != end() && len < new_size; ++i, ++len);
+            for ( ; i != end() && len < n; ++i, ++len);
 
-            if (len == new_size)
+            if (len == n)
                 erase(i, end());
             else
-              insert(end(), new_size - len, x);
+              insert(end(), n - len, x);
         }
         
-        void resize(size_type new_size)
-        {
-            resize(new_size,value_type());
-        }
+        void resize(size_type n) {resize(n,value_type());}
 
 // Front insertion sequence methods
         reference front() {return *begin();}
