@@ -102,10 +102,10 @@ class list: public list_base
         void swap(self &x) {node_base *tmp=m_base;m_base=x.m_base;x.m_base=tmp;}
 
 // Reversible container methods
-        reverse_iterator rbegin() {return reverse_iterator(begin());}
-        reverse_iterator rend() {return reverse_iterator(end());}
-        const_reverse_iterator rbegin() const {return const_reverse_iterator(begin());}
-        const_reverse_iterator rend() const {return const_reverse_iterator(end());}
+        reverse_iterator rbegin() {return reverse_iterator(end());}
+        reverse_iterator rend() {return reverse_iterator(begin());}
+        const_reverse_iterator rbegin() const {return const_reverse_iterator(end());}
+        const_reverse_iterator rend() const {return const_reverse_iterator(begin());}
 
 // Sequence methods
         list(size_type n) {insert(begin(),n,value_type());}

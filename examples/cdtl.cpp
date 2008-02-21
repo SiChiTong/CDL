@@ -4,7 +4,7 @@
  *  @author   acornejo
  *  @date
  *   Created:       01:12:44 19/01/2008
- *   Last Update:   01:46:51 19/01/2008
+ *   Last Update:   16:31:46 20/01/2008
  */
 //========================================================================
 #include <CDL/CDTL/list.h>
@@ -34,7 +34,7 @@ int main()
         printf("%d\n", *first);fflush(stdout);
         ++first;
     }
-        
+
     for (int i=0; i<iarray.size(); i++)
         printf("array[%d]=%d\n", i,iarray[i]);
 

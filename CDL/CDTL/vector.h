@@ -4,7 +4,7 @@
  *  @author   alex
  *  @date
  *   Created:       20:08:35 29/05/2007
- *   Last Update:   20:58:38 29/05/2007
+ *   Last Update:   15:25:09 20/01/2008
  */
 //========================================================================
 #ifndef __CDTL_VECTOR_H__
@@ -91,30 +91,30 @@ class vector: public vector_base<T>
 // Container methods
         vector() {}
         vector(const self &x): vector_base<T>(x.size()) { insert(begin(),x.begin(),x.end()); }
-        iterator       begin()          { return vector_base<T>::m_start; }
-        const_iterator begin() const    { return vector_base<T>::m_start; }
-        iterator       end()            { return vector_base<T>::m_finish; }
-        const_iterator end() const      { return vector_base<T>::m_finish; }
-        size_type      max_size() const { return size_type(-1) / sizeof(T); }
-        size_type      size()     const { return size_type(vector_base<T>::m_finish-vector_base<T>::m_start); }
-        bool           empty()    const { return vector_base<T>::m_start == vector_base<T>::m_finish; }
-        void swap(self &x)              { vector_base<T>::swap(x); }
-        reference front()               { return *begin(); }
-        const_reference front() const   { return *begin(); }        
+        iterator        begin()          { return vector_base<T>::m_start; }
+        const_iterator  begin() const    { return vector_base<T>::m_start; }
+        iterator        end()            { return vector_base<T>::m_finish; }
+        const_iterator  end() const      { return vector_base<T>::m_finish; }
+        size_type       max_size() const { return size_type(-1) / sizeof(T); }
+        size_type       size() const     { return size_type(vector_base<T>::m_finish-vector_base<T>::m_start); }
+        bool            empty() const    { return vector_base<T>::m_start == vector_base<T>::m_finish; }
+        void            swap(self &x)    { vector_base<T>::swap(x); }
+        reference       front()          { return *begin(); }
+        const_reference front() const    { return *begin(); }
 
 // Reversible container method
-        reverse_iterator rbegin()             { return reverse_iterator(end()); }
+        reverse_iterator       rbegin()       { return reverse_iterator(end()); }
         const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); }
-        reverse_iterator rend()               { return reverse_iterator(begin()); }
+        reverse_iterator       rend()         { return reverse_iterator(begin()); }
         const_reverse_iterator rend() const   { return const_reverse_iterator(begin()); }
 
 // Sequence methods
-        vector(size_type n): vector_base<T>(n) {insert(begin(),n,value_type());}
+        vector(size_type n): vector_base<T>(n) { vector_base<T>::m_finish=vector_base<T>::m_start+n; }
         vector(size_type n, const_reference x): vector_base<T>(n) {insert(begin(),n,x);}
         template <class InputIterator>
         vector(InputIterator first, InputIterator last) {insert(begin(),first,last);}
-        virtual ~vector() {clear();}
-        void clear() {erase(begin(),end());}
+        virtual ~vector() { clear(); }
+        void clear() { erase(begin(),end()); }
 
         void resize(size_type n, const_reference x)
         {
@@ -123,7 +123,68 @@ class vector: public vector_base<T>
             else insert(end(),n-size(),x);
         }
 
-        void resize(size_type n) {resize(n,value_type());}
+        void resize(size_type n) { resize(n,value_type()); }
+
+        iterator insert(iterator pos, const_reference x)
+        {
+            insert(pos,1,x);
+        }
+
+        template<class InputIterator>
+        void insert(iterator pos, InputIterator first, InputIterator last)
+        {
+            // check if input iterator or forward iterator
+            // if input insert one by one calling insert(pos,x)
+            // if forward insert a range
+            for (; first != last; ++first)
+                insert(pos,*first);
+        }
+
+        void insert(iterator pos, size_type n, const_reference x)
+        {
+            if (vector_base<T>::m_finish+n > vector_base<T>::m_eos) // overflow
+            {
+            
+            }
+            else
+            {
+                iterator src_end(end());
+                iterator dst_end(pos+n);
+            }
+        }
+
+        iterator erase(iterator pos)
+        {
+            iterator prev(pos);
+            iterator next(prev+1);
+            iterator last(end());
+            while (next != last)
+            {
+                *prev=*next;
+                prev=next;
+                ++next;
+            }
+            vector_base<T>::m_finish--;
+            vector_base<T>::m_finish->~T(); //destroy
+                
+            return pos;
+        }
+
+        iterator erase(iterator first, iterator last)
+        {
+            iterator src(last);
+            iterator dst(first);
+            for (; dst != last; ++src, ++dst)
+                *dst=*src;
+            iterator start(src); // destroy range
+            while (start != vector_base<T>::m_finish)
+            {
+                start->~T();
+                ++start;
+            }
+            vector_base<T>::m_finish=src;
+            return first;
+        }
         
         /* FIXME: missing insert and erase */
 
@@ -136,16 +197,16 @@ class vector: public vector_base<T>
         }
 
 // Random access container
-        reference operator[](size_type n)    { return *(begin()+n); }
+        reference       operator[](size_type n)       { return *(begin()+n); }
         const_reference operator[](size_type n) const { return *(begin()+n); }
-        reference at(size_type n)              { return (*this)[n]; }
-        const_reference at(size_type n) const  { return (*this)[n]; }
+        reference       at(size_type n)               { return *(begin()+n); }
+        const_reference at(size_type n) const         { return *(begin()+n) }
 
 // Back insertion sequence methods
-        reference back()  {return *(--end());}
-        const_reference back()  const {return *(--end());}
-        void push_back(const_reference x) {insert(end(),x);}
-        void pop_back() {erase(--end());}
+        reference       back()                       { return *(--end()); }
+        const_reference back() const                 { return *(--end()); }
+        void            push_back(const_reference x) { insert(end(),x); }
+        void            pop_back()                   { erase(--end()); }
 };
 
 } /* namespace CDTL */ } /* namespace CDL */
